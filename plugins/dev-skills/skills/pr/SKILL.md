@@ -55,8 +55,7 @@ was made with.
 Before changing anything, find out:
 
 - the current branch, the default branch, and the **base**: the branch named in
-  the arguments; otherwise the branch the repository's contributing guide tells
-  pull requests to target; otherwise the default branch;
+  the arguments, otherwise the default branch;
 - what the pull request will contain: every commit and the whole diff against
   the base (`git log <base>..HEAD`, `git diff <base>...HEAD`), not only the last
   commit;
