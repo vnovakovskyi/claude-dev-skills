@@ -1,0 +1,16 @@
+# IDE and editor project files
+.idea/
+.vscode/
+
+# Backups created by install.sh / uninstall.sh when they rewrite settings.json
+*.bak
+
+# Gate marker files, created when testing hooks/gate.sh inside this repo
+.claude-phase-gate
+.claude-phase-approved
+
+# Claude Code local, per-developer settings
+.claude/settings.local.json
+
+# macOS
+.DS_Store
