@@ -12,7 +12,8 @@ research → plan → implement
 Each step is a slash command that writes a document into your project's `docs/`
 folder. You read it, correct it, and decide when to move on. Two optional
 skills, `architecture` and `data-model`, cover design questions that deserve a
-document of their own.
+document of their own. A sixth skill, `pr`, turns the finished work into a pull
+request.
 
 Skills for reviewing articles and drafts live in a separate repository:
 [claude-writer-skills](https://github.com/vnovakovskyi/claude-writer-skills).
@@ -26,9 +27,11 @@ Skills for reviewing articles and drafts live in a separate repository:
 | `/implement` | Implements one phase of the plan, runs its automated checks, ticks its checkboxes, then pauses for your manual verification. | code, and the checkboxes in `docs/01-plan.md` |
 | `/architecture` | Optional. Documents, reviews, or proposes the architecture of a new idea or an existing service, with ADR-style decisions. | `docs/02-architecture.md` |
 | `/data-model` | Optional. Documents, reviews, or redesigns the domain and data model: schemas, constraints, indexes, migrations, data flows. | `docs/03-data-model.md` |
+| `/pr` | Commits what belongs to the change, pushes the branch, and opens or updates a pull request described in three parts: motivation, what was done, how to verify. | commits, and the pull request |
 
-All five run only when you type the command. Claude never starts them on its own
-(`disable-model-invocation: true`).
+The five workflow skills run only when you type the command. Claude never starts
+them on its own (`disable-model-invocation: true`). `/pr` also starts when you
+ask for a pull request in plain words.
 
 Use `architecture` or `data-model` whenever they help:
 
@@ -117,6 +120,33 @@ Review the plan in `docs/01-plan.md`, then implement it phase by phase:
 `/implement` implements one phase, runs its checks, ticks its boxes, and pauses
 for your manual verification. Tell it to continue when you are ready for the
 next phase.
+
+## Opening a pull request
+
+```text
+/pr <optional: base branch, issue to link, "draft", or what to emphasize>
+```
+
+`pr` reads the whole branch against its base, commits what belongs to the
+change, pushes the branch, and opens the pull request. If the branch already has
+one, it rewrites the description so that it covers the new commits too.
+
+The description always answers three questions:
+
+```md
+## Motivation
+## What was done
+## How to verify
+```
+
+A pull request is a record of the work, so `pr` writes nothing about the tools
+behind it: no `Co-Authored-By` trailer for an AI model, no "Generated with …"
+line, no mention of an agent in the commit messages, the title, or the body.
+
+It also keeps to a few limits. It never pushes to the default branch, never
+force-pushes unless you ask, stages files by name, and stops at the open pull
+request without merging it. If the repository has its own pull request template,
+`pr` fills that template and makes sure the three questions are still answered.
 
 ## Generated docs
 
@@ -232,17 +262,18 @@ if the optional gate was installed, removes the `gate.sh` symlink and its
 `settings.json.bak` first), leaving all your other settings intact. Per-project
 marker files are left untouched.
 
-## Note about `/plan`
+## Note about `/plan` and `/pr`
 
-`plan` is a short and convenient name, but it is also generic.
+`plan` and `pr` are short and convenient names, but they are also generic.
 
-If it conflicts with an existing Claude Code command or your own setup, rename
+If one conflicts with an existing Claude Code command or your own setup, rename
 the skill folder and frontmatter `name` to something more specific, for example:
 
 ```text
 mvp-plan
 product-plan
 phase-plan
+open-pr
 ```
 
 ## Repository layout

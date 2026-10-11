@@ -1,7 +1,7 @@
 ---
 name: implement
 description: Main workflow phase 3. Implement one phase at a time from docs/01-plan.md, run its automated checks, tick its checkboxes, then pause for human verification before the next phase.
-argument-hint: <optional: a specific phase from the plan>
+argument-hint: "<optional: a specific phase from the plan>"
 disable-model-invocation: true
 ---
 

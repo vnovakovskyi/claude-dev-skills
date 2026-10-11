@@ -1,36 +1,19 @@
 <!--
 Thanks for contributing! Please keep PRs small and focused.
-See CONTRIBUTING.md for scope and the full testing guidance.
+See CONTRIBUTING.md for the scope and for how to test a change.
 -->
 
-## Summary
+## Motivation
 
-What does this PR change, and why?
+<!-- Why is this change needed? What problem does it solve? Link the issue, if any. -->
 
-## Linked issue
+## What was done
 
-Closes #<!-- issue number, if any -->
+<!-- The changes, grouped by meaning. Mention decisions a reviewer should know about. -->
 
-## Type of change
+## How to verify
 
-- [ ] Bug fix
-- [ ] New skill / hook / enhancement
-- [ ] Documentation
-- [ ] Other (describe):
-
-## Scope
-
-- [ ] This change is generic and reusable (in scope per [CONTRIBUTING.md](https://github.com/vnovakovskyi/claude-dev-skills/blob/main/CONTRIBUTING.md) — not project-specific logic).
-
-## Testing
-
-- [ ] `bash -n` passes on any changed shell script (`install.sh`, `uninstall.sh`, `hooks/gate.sh`).
-- [ ] Ran install/uninstall against a throwaway `HOME` (and `./install.sh --with-gate` if the hook is touched).
-- [ ] Exercised `hooks/gate.sh` allow/block cases (only if the gate logic changed).
-- [ ] Ran the changed skill in a real project (only if a skill changed).
-- [ ] `shellcheck` clean, if available (optional).
-- [ ] Updated `README.md` if user-visible behavior changed.
-
-## Notes for the reviewer
-
-Anything else the maintainer should know.
+<!--
+Commands or steps a reviewer can run, and what they should see.
+Say which checks you already ran ("Testing your change" in CONTRIBUTING.md lists them).
+-->

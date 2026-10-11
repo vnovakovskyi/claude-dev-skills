@@ -136,6 +136,7 @@ echo "Done."
 echo
 echo "Main line:  /research -> /plan -> /implement"
 echo "Optional:   /architecture, /data-model"
+echo "When done:  /pr"
 echo
 if [[ "$WITH_GATE" == "1" ]]; then
   echo "Optional hard gate is ENABLED."

@@ -40,8 +40,9 @@ contributions keep it that way.
 3. Make a **small, focused change** — one logical improvement per PR is much
    easier to review than a large mixed one.
 4. **Test** your change (see below).
-5. Open a **Pull Request against `main`** with a clear description of *what*
-   changed and *how you tested it*.
+5. Open a **Pull Request against `main`**. Describe the *motivation*, *what was
+   done*, and *how to verify* it — the pull request template has these three
+   sections.
 6. The maintainer reviews, may ask for changes, and merges when it's ready.
 
 **Issues:** direct PRs are welcome for small fixes. For large, breaking, or
