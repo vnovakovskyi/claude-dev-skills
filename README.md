@@ -75,14 +75,14 @@ marketplace once and install the skills:
 
 ```text
 /plugin marketplace add vnovakovskyi/claude-dev-skills
-/plugin install dev-skills@vnovakovskyi-dev-skills
+/plugin install dev-skills@novakovskyi-dev-skills
 ```
 
 The same from your shell, without starting a session:
 
 ```bash
 claude plugin marketplace add vnovakovskyi/claude-dev-skills
-claude plugin install dev-skills@vnovakovskyi-dev-skills
+claude plugin install dev-skills@novakovskyi-dev-skills
 ```
 
 Then type `/` in a session: the commands appear as `/dev-skills:research`,
@@ -172,7 +172,7 @@ If you want Claude to be *physically* unable to edit code before you approve
 (rather than relying on the skills' instructions), install the second plugin:
 
 ```text
-/plugin install phase-gate@vnovakovskyi-dev-skills
+/plugin install phase-gate@novakovskyi-dev-skills
 ```
 
 `phase-gate` adds one `PreToolUse` [hook](https://code.claude.com/docs/en/hooks)
@@ -268,8 +268,8 @@ claude plugin list
 To update, refresh the marketplace and then the plugin:
 
 ```bash
-claude plugin marketplace update vnovakovskyi-dev-skills
-claude plugin update dev-skills@vnovakovskyi-dev-skills
+claude plugin marketplace update novakovskyi-dev-skills
+claude plugin update dev-skills@novakovskyi-dev-skills
 ```
 
 A session that is already open keeps the version it loaded; run
@@ -286,13 +286,13 @@ changed in each.
 Remove one plugin:
 
 ```text
-/plugin uninstall phase-gate@vnovakovskyi-dev-skills
+/plugin uninstall phase-gate@novakovskyi-dev-skills
 ```
 
 Or remove the marketplace, which also uninstalls every plugin installed from it:
 
 ```text
-/plugin marketplace remove vnovakovskyi-dev-skills
+/plugin marketplace remove novakovskyi-dev-skills
 ```
 
 Files the skills wrote into your projects (`docs/`, the gate's marker files) are
