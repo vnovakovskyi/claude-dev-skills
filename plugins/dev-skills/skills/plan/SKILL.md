@@ -45,7 +45,7 @@ Before planning, check whether these files exist:
 
 If `docs/00-research.md` is missing, do one of these:
 
-1. Ask the user to run `/research` first, or
+1. Ask the user to run `/dev-skills:research` first, or
 2. Create a lightweight research section inside the plan only if the user explicitly wants a fast/rough plan.
 
 ## Planning principles
@@ -171,7 +171,7 @@ Planning is complete only when:
 ## Do not implement
 
 This phase produces a plan only. Do **not** write code. End by asking the user
-to review `docs/01-plan.md` and, when satisfied, to run `/implement` for the
+to review `docs/01-plan.md` and, when satisfied, to run `/dev-skills:implement` for the
 first phase. Implementation begins only when the user explicitly invokes it.
 
 At the end of your response, summarize:

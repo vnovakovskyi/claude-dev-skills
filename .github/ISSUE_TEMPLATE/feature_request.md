@@ -1,6 +1,6 @@
 ---
 name: Feature / skill idea
-about: Suggest a new skill, hook improvement, or other enhancement
+about: Suggest a new skill, a phase gate improvement, or other enhancement
 title: "[Idea] "
 labels: enhancement
 assignees: ""
@@ -12,7 +12,7 @@ What are you trying to do, and what's missing or awkward today?
 
 ## Proposed change
 
-The skill, hook change, or improvement you have in mind. Be as concrete as you can.
+The skill, gate change, or improvement you have in mind. Be as concrete as you can.
 
 ## Scope fit
 

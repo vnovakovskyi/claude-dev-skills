@@ -21,7 +21,7 @@ without drifting into uncontrolled scope expansion.
 ## Hard rules
 
 - Do **not** start implementation if `docs/01-plan.md` is missing. Ask the user
-  to run `/plan` first.
+  to run `/dev-skills:plan` first.
 - Implement **only one phase per run**, unless the user explicitly asks you to
   continue through multiple phases.
 - Do not silently redesign the architecture.
@@ -90,7 +90,8 @@ If you discover that the plan is wrong or incomplete:
   How should I proceed?
   ```
 
-- Update `docs/01-plan.md` or recommend running `/architecture` or `/data-model`.
+- Update `docs/01-plan.md` or recommend running `/dev-skills:architecture` or
+  `/dev-skills:data-model`.
 - Wait for the user's direction before continuing if the change is significant.
 
 ## Output expectations

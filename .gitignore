@@ -2,10 +2,7 @@
 .idea/
 .vscode/
 
-# Backups created by install.sh / uninstall.sh when they rewrite settings.json
-*.bak
-
-# Gate marker files, created when testing hooks/gate.sh inside this repo
+# Gate marker files, created when testing the phase gate inside this repo
 .claude-phase-gate
 .claude-phase-approved
 

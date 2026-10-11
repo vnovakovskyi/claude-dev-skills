@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Something in the skills, hook, or install scripts isn't working
+about: Something in the skills, the phase gate, or the plugin install isn't working
 title: "[Bug] "
 labels: bug
 assignees: ""
@@ -22,16 +22,14 @@ What you expected to happen instead.
 
 ## Affected part
 
-Which skill / hook / script is involved (e.g. `skills/plan`, `hooks/gate.sh`, `install.sh`).
+Which skill or plugin is involved (e.g. `/dev-skills:plan`, `phase-gate`, installing or updating).
 
 ## Environment
 
 - OS:
-- Shell (and version):
-- Install mode: default / `--with-gate`
-- `jq` version (if the gate is involved):
-- `python3` version (if install/uninstall is involved):
-- Claude Code version:
+- Claude Code version (`claude --version`):
+- Plugin versions (`claude plugin list`):
+- `jq` version (if the phase gate is involved):
 
 ## Additional context
 
