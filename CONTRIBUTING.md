@@ -65,8 +65,10 @@ submitting:
   claude plugin validate . --strict
   ```
 
-- **Skills:** load your working copy for one session, without installing it, and
-  run the changed skill in a real project. Say in the PR what you ran it on.
+- **Skills:** run the changed skill from your working copy in a real project,
+  and say in the PR what you ran it on. [docs/unreleased.md](docs/unreleased.md)
+  shows how to make Claude Code read the plugins straight from your clone, or
+  load them for a single session:
 
   ```bash
   claude --plugin-dir /path/to/claude-dev-skills/plugins/dev-skills
@@ -75,16 +77,20 @@ submitting:
 - **Phase gate (`plugins/phase-gate/scripts/gate.sh`):** syntax-check it, and if
   you change its logic, exercise both the "should allow" and "should block"
   cases. Feed it sample JSON payloads whose `cwd` is a directory that contains a
-  `.claude-phase-gate` file (without the marker the gate allows everything):
+  `.claude-phase-gate` file (without the marker the gate allows everything). Give
+  file paths as absolute paths, the way Claude Code sends them:
 
   ```bash
   bash -n plugins/phase-gate/scripts/gate.sh
   G="$(mktemp -d)" && touch "$G/.claude-phase-gate"
   echo "{\"cwd\":\"$G\",\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"npm test 2>&1\"}}" | bash plugins/phase-gate/scripts/gate.sh; echo "exit=$?"
+  echo "{\"cwd\":\"$G\",\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$G/docs/01-plan.md\"}}" | bash plugins/phase-gate/scripts/gate.sh; echo "exit=$?"
+  echo "{\"cwd\":\"$G\",\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$G/src/App.java\"}}" | bash plugins/phase-gate/scripts/gate.sh; echo "exit=$?"
   ```
 
-  Read-only commands (`2>&1`, `/dev/null`, interpreters) should pass; file-writing
-  commands and source edits (without approval) should exit `2`.
+  The first two print `exit=0` and the third `exit=2`: read-only commands
+  (`2>&1`, `/dev/null`, interpreters) and edits under `docs/` pass, while
+  file-writing commands and source edits are blocked until approval.
 
 - **`shellcheck`** is recommended if you have it installed.
 

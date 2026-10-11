@@ -9,8 +9,9 @@ plan before it writes code, and then turns the finished work into a pull request
 research → plan → implement → pr
 ```
 
-Each step is a command. The first three write a document into your project's
-`docs/` folder, so you can read it, correct it, and decide when to move on.
+Each step is a command. `research` and `plan` write a document into your
+project's `docs/` folder, so you can read it, correct it, and decide when to move
+on. `implement` then builds the plan one phase at a time.
 
 ## Install
 
@@ -25,7 +26,8 @@ Type `/` and the commands appear as `/dev-skills:research`, `/dev-skills:plan`,
 and so on. The plugin adds skills only: no hooks, no servers.
 
 From a shell, the same two commands start with `claude plugin` instead of
-`/plugin`.
+`/plugin`. Once installed, the plugin is also there in the desktop app and the
+VS Code extension on the same machine.
 
 ## Stay up to date
 
@@ -51,6 +53,9 @@ Then start a new session, or run `/reload-plugins` in an open one.
 `claude plugin list` shows the version you have, and
 [CHANGELOG.md](CHANGELOG.md) says what changed in each one.
 
+Want a change before it is released? See
+[docs/unreleased.md](docs/unreleased.md).
+
 ## Skills
 
 | Command | What it does | Writes |
@@ -70,7 +75,7 @@ for a pull request in plain words.
 Run Claude Code inside your project:
 
 ```text
-/dev-skills:research <idea, feature, migration, or problem>
+/dev-skills:research <idea, feature, problem, or codebase area to research>
 /dev-skills:plan <what should be planned>
 /dev-skills:implement
 /dev-skills:pr
@@ -113,6 +118,8 @@ projects are left untouched.
 - [docs/workflow.md](docs/workflow.md) — how the workflow keeps Claude from
   coding too early, and what each skill writes
 - [docs/phase-gate.md](docs/phase-gate.md) — the optional hard gate
+- [docs/unreleased.md](docs/unreleased.md) — running `dev`, a branch, or your
+  own clone before a release
 - [CHANGELOG.md](CHANGELOG.md) — what changed in each version
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to propose a change
 - [claude-writer-skills](https://github.com/vnovakovskyi/claude-writer-skills) —

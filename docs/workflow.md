@@ -33,14 +33,14 @@ picks up at the first unchecked phase.
 Run Claude Code inside your project and start with:
 
 ```text
-/dev-skills:research <idea, feature, migration, or problem>
+/dev-skills:research <idea, feature, problem, or codebase area to research>
 /dev-skills:plan <what should be planned>
 ```
 
 Review the plan in `docs/01-plan.md`, then implement it phase by phase:
 
 ```text
-/dev-skills:implement <optional: a specific phase>
+/dev-skills:implement <optional: a specific phase from the plan>
 ```
 
 `implement` implements one phase, runs its checks, ticks its boxes, and pauses
@@ -50,8 +50,8 @@ next phase.
 ## The optional skills
 
 ```text
-/dev-skills:architecture <what architecture should be analyzed or designed>
-/dev-skills:data-model <what data model should be analyzed or designed>
+/dev-skills:architecture <architecture to analyze or design>
+/dev-skills:data-model <data model to analyze or design>
 ```
 
 Use them whenever they help:
@@ -116,7 +116,8 @@ A pull request is a record of the work, so `pr` writes nothing about the tools
 behind it: no `Co-Authored-By` trailer for an AI model, no "Generated with …"
 line, no mention of an agent in the commit messages, the title, or the body.
 
-It also keeps to a few limits. It never pushes to the default branch, never
+It also keeps to a few limits. It never pushes your work to the default branch
+or to the base (if you are on one of them, it creates a branch first), never
 force-pushes unless you ask, stages files by name, and stops at the open pull
 request without merging it. If the repository has its own pull request template,
 `pr` fills that template and makes sure the three questions are still answered.
