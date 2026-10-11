@@ -50,8 +50,18 @@ is_allowed_planning_path() {
   # Empty path means this tool call is not file-specific.
   [[ -z "$path" ]] && return 1
 
+  # Claude Code sends absolute paths. Make a path inside the project relative to
+  # the project root (we already cd'ed there), so the patterns below match it.
+  path="${path#"$PWD"/}"
+  path="${path#"$(pwd -P)"/}"
+
   # Normalize leading ./
   path="${path#./}"
+
+  # docs/../src/App.java is not a docs path.
+  case "/$path/" in
+    */../*) return 1 ;;
+  esac
 
   case "$path" in
     docs/*) return 0 ;;
