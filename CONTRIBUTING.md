@@ -5,8 +5,8 @@ collection of reusable [Claude Code](https://code.claude.com) skills for
 software development (and an optional enforcement hook), packaged as plugins
 that anyone is welcome to use and improve.
 
-**Every change comes in through a pull request** against `main`. That is the
-only way a contribution gets merged.
+**Every change comes in through a pull request against the `dev` branch.**
+`main` holds released versions only; see [Branches and releases](#branches-and-releases).
 
 Contributions are reviewed personally by the maintainer. Not every change will
 be merged, and response times may vary — but well-scoped, tested PRs are always
@@ -37,13 +37,14 @@ contributions keep it that way.
 ## How to contribute
 
 1. **Fork** the repository and clone your fork.
-2. Create a **feature branch** off `main` (e.g. `git checkout -b improve-gate-regex`).
+2. Create a **feature branch** off `dev`
+   (e.g. `git checkout -b improve-gate-regex origin/dev`).
 3. Make a **small, focused change** — one logical improvement per PR is much
    easier to review than a large mixed one.
 4. **Test** your change (see below).
 5. Add a line under **Unreleased** in [CHANGELOG.md](CHANGELOG.md) when the
-   change is visible to users.
-6. Open a **Pull Request against `main`**. Describe the *motivation*, *what was
+   change is visible to users. Leave the version numbers alone.
+6. Open a **Pull Request against `dev`**. Describe the *motivation*, *what was
    done*, and *how to verify* it — the pull request template has these three
    sections.
 7. The maintainer reviews, may ask for changes, and merges when it's ready.
@@ -103,27 +104,53 @@ submitting:
   in a project without the `.claude-phase-gate` marker.
 - **Docs numbering** (`docs/00`–`03`) indicates document *type*, not order.
 - **Markdown:** plain GitHub-flavored Markdown, English, wrap reasonably.
-- **Update the README** when you change user-visible behavior.
+- **Keep the README short.** It says what the project is, how to install it, and
+  how to stay up to date. Details go in `docs/`.
 
-## Versions and releases
+## Branches and releases
+
+| Branch | What it holds |
+|---|---|
+| `main` | Released versions. This is what people install. It changes only when a release is merged. |
+| `dev` | The next release, collected one pull request at a time. |
+
+The split exists because of how plugin versions work. Someone who installs a
+plugin keeps those files until its version number changes, while a new install
+always takes the current `main`. If `main` changed between releases, two people
+on the same version would have different skills. So `main` never changes without
+a new version number.
 
 Both plugins share one version number, kept in
 `plugins/dev-skills/.claude-plugin/plugin.json` and
-`plugins/phase-gate/.claude-plugin/plugin.json`. Users stay on the version they
-installed until that number changes, so a change reaches them only with a
-release.
+`plugins/phase-gate/.claude-plugin/plugin.json`. It follows
+[semantic versioning](https://semver.org); `CHANGELOG.md` says what counts as
+major, minor, and patch here.
 
-Contributors don't bump the version. Add your line under **Unreleased** in
-`CHANGELOG.md` and leave the manifests alone.
+A release is made by the maintainer:
 
-A release is a pull request by the maintainer that:
+1. On `dev`, set the new version in both `plugin.json` files, rename
+   **Unreleased** in `CHANGELOG.md` to the version and date, and open a new empty
+   **Unreleased**.
+2. Open a pull request from `dev` into `main`, titled `Release X.Y.Z`.
+3. Merge it **with a merge commit, not a squash**. The two branches then keep a
+   shared history, and the next release pull request shows only what is new.
+4. Tag the merge commit `vX.Y.Z` and publish a GitHub release with that changelog
+   entry. People who watch the repository's releases are notified.
 
-1. sets the new version in both `plugin.json` files;
-2. renames **Unreleased** in `CHANGELOG.md` to the version and date, and opens a
-   new empty **Unreleased**.
+## Repository layout
 
-After it is merged, the maintainer tags the commit `vX.Y.Z` and publishes a
-GitHub release with that changelog entry.
+```text
+.claude-plugin/marketplace.json     the marketplace: lists the two plugins
+plugins/dev-skills/                 the plugin with the six skills
+  .claude-plugin/plugin.json
+  skills/<name>/SKILL.md
+plugins/phase-gate/                 the plugin with the optional hard gate
+  .claude-plugin/plugin.json
+  hooks/hooks.json
+  scripts/gate.sh
+docs/                               user documentation beyond the README
+CHANGELOG.md                        what changed in each version
+```
 
 ## Commits & pull requests
 

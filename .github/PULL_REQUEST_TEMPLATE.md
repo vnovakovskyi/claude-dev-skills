@@ -1,5 +1,6 @@
 <!--
-Thanks for contributing! Please keep PRs small and focused.
+Thanks for contributing! Please keep PRs small and focused, and open them
+against the `dev` branch (`main` holds released versions only).
 See CONTRIBUTING.md for the scope and for how to test a change.
 -->
 
