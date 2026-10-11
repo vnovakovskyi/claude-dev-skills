@@ -81,7 +81,9 @@ runs that phase's checks, and waits for you before it starts the next one. The
 step from planning to coding is always yours to take.
 
 `pr` describes the work in three parts — motivation, what was done, how to
-verify — and never credits an AI tool in the commits or in the pull request.
+verify — and never credits an AI tool in the commits or in the pull request. It
+targets the default branch; name another one to target that instead, for example
+`/dev-skills:pr dev`. A branch that does not exist yet is created.
 
 The details are in [docs/workflow.md](docs/workflow.md).
 

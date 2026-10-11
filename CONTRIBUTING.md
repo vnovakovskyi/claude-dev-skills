@@ -46,7 +46,7 @@ contributions keep it that way.
    change is visible to users. Leave the version numbers alone.
 6. Open a **Pull Request against `dev`**. Describe the *motivation*, *what was
    done*, and *how to verify* it — the pull request template has these three
-   sections.
+   sections. With the plugin installed, `/dev-skills:pr dev` does this for you.
 7. The maintainer reviews, may ask for changes, and merges when it's ready.
 
 **Issues:** direct PRs are welcome for small fixes. For large, breaking, or

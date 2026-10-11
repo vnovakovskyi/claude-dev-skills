@@ -1,8 +1,8 @@
 ---
 name: pr
 description: Finish a piece of work as a pull request. Commits what belongs to the change, pushes the branch, and opens the pull request — or updates the one that already exists — with a description in three parts (motivation, what was done, how to verify). Commit messages and the pull request describe the work only and never credit an AI tool or agent. Use when the user asks to create, open, raise, or update a pull request.
-argument-hint: '<optional: base branch, issue to link, "draft", or what to emphasize>'
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(gh pr view:*), Bash(gh pr list:*)
+argument-hint: '<optional: base branch, then "draft", an issue to link, or what to emphasize>'
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(git ls-remote:*), Bash(gh pr view:*), Bash(gh pr list:*)
 ---
 
 # Pull request
@@ -54,11 +54,15 @@ was made with.
 
 Before changing anything, find out:
 
-- the current branch, the default branch, and the **base**: the branch named in
-  the arguments, otherwise the default branch;
+- the current branch, the default branch, and the **base**. When the arguments
+  start with a branch name, as in `/dev-skills:pr dev`, that branch is the base.
+  Otherwise the base is the default branch;
+- whether the base exists on the remote (`git ls-remote --heads origin <base>`).
+  A base the user named that is not there yet is created in Step 4;
 - what the pull request will contain: every commit and the whole diff against
   the base (`git log <base>..HEAD`, `git diff <base>...HEAD`), not only the last
-  commit;
+  commit. For a base that does not exist yet, compare against the default
+  branch, which it will be created from;
 - what is uncommitted, and which of it belongs to this change;
 - whether the branch already has an open pull request (`gh pr view`). If it does,
   this run **updates** it;
@@ -124,17 +128,22 @@ Already run: <check → result>. Not run: <check, and why>.
 
 ## Step 4 — Push and open
 
-1. `git push -u origin <branch>`.
-2. Put the body in a temporary file outside the repository, so the formatting
+1. If the user named a base that does not exist on the remote, create it there
+   from the tip of the default branch:
+   `git push origin origin/<default>:refs/heads/<base>`. Do this only for a
+   branch the user named. If you are not sure that the first word of the
+   arguments is a branch name, ask before creating anything.
+2. `git push -u origin <branch>`.
+3. Put the body in a temporary file outside the repository, so the formatting
    survives the shell.
-3. New pull request:
+4. New pull request:
    `gh pr create --base <base> --title <title> --body-file <file>`. Add `--draft`
    when the user asks for a draft or the work is not finished.
-4. Existing pull request:
+5. Existing pull request:
    `gh pr edit <number> --title <title> --body-file <file>`. Rewrite the
    description so that it covers the whole pull request, not only the new
    commits.
-5. Without `gh`: push, then give the user the title, the body, and the link the
+6. Without `gh`: push, then give the user the title, the body, and the link the
    remote printed for opening the pull request by hand.
 
 ## Before you send — self-check
@@ -157,6 +166,7 @@ The skill is complete only when:
 
 At the end of your response, report:
 
-1. The pull request link, and whether it was created or updated.
+1. The pull request link, whether it was created or updated, and its base
+   branch. Say so if you created that branch.
 2. Which checks you ran and which you did not.
 3. Anything you left uncommitted, and why.

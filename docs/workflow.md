@@ -86,12 +86,23 @@ docs/01-plan.md
 ## Opening a pull request
 
 ```text
-/dev-skills:pr <optional: base branch, issue to link, "draft", or what to emphasize>
+/dev-skills:pr <optional: base branch, then "draft", an issue to link, or what to emphasize>
 ```
 
 `pr` reads the whole branch against its base, commits what belongs to the
 change, pushes the branch, and opens the pull request. If the branch already has
 one, it rewrites the description so that it covers the new commits too.
+
+The base is the branch the pull request goes into. Without arguments it is the
+repository's default branch. Name a branch first to target that one instead:
+
+```text
+/dev-skills:pr dev
+/dev-skills:pr dev draft
+```
+
+If the branch you name does not exist on the remote yet, `pr` creates it from
+the default branch and tells you so.
 
 The description always answers three questions:
 
