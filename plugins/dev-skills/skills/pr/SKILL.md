@@ -38,8 +38,8 @@ was made with.
 - **Commit as the user.** Use the git identity that is already configured. Never
   pass `--author`, never change `git config`. Add a `Co-Authored-By:` trailer for
   a human co-author only when the user asks for it.
-- **Never push to the default branch.** If the work sits on it, create a branch
-  first. Never force-push unless the user asks.
+- **Never push work to the default branch or to the base.** If the work sits on
+  one of them, create a branch first. Never force-push unless the user asks.
 - **Only this change.** Stage files by name, never with `git add -A` or
   `git add .`. Leave unrelated changes, and anything that looks like a secret or
   local configuration (`.env`, credentials, IDE files), unstaged, and say so.
@@ -77,8 +77,8 @@ If there is nothing to commit and no commit ahead of the base, say so and stop.
 
 ## Step 2 — Branch and commit
 
-1. On the default branch, create a branch first: a short, descriptive name in the
-   style the repository already uses.
+1. On the default branch, or on the base itself, create a branch first: a short,
+   descriptive name in the style the repository already uses.
 2. Commit the uncommitted work that belongs to the change. One commit is fine;
    split only where the parts are clearly separate.
 3. Write the message in the repository's style: a short subject that says what
@@ -153,7 +153,7 @@ Already run: <check → result>. Not run: <check, and why>.
 - [ ] Someone who was not here can follow "How to verify".
 - [ ] Every check reported as run was run.
 - [ ] Nothing unrelated and nothing secret is in the commits.
-- [ ] Nothing was pushed to the default branch, force-pushed, or merged.
+- [ ] No work was pushed to the default branch or to the base, and nothing was force-pushed or merged.
 
 ## Completion criteria
 
