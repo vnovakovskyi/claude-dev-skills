@@ -61,7 +61,12 @@ outside it.
 
 It is read-only. It answers in the chat, backs every statement with a file and
 line, and says what it could not confirm. It describes the code without
-suggesting changes unless you ask for them.
+suggesting changes unless you ask for them; where the code contradicts itself,
+it lists both sides.
+
+When the folder holds several repositories, it names the ones it searched. A
+narrow question it answers itself; a broad one it splits between subagents and
+checks every line they report before it answers.
 
 Add `save` to the question, or ask after the answer, and it writes
 `docs/codebase/<topic>.md` with the commit it looked at, so a later reader can

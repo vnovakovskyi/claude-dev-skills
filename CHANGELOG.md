@@ -19,7 +19,9 @@ To see which version you have installed, run `claude plugin list`.
 
 - `research-codebase` — answers a question about the existing code in the chat,
   with file and line references, and saves the answer to
-  `docs/codebase/<topic>.md` when asked.
+  `docs/codebase/<topic>.md` when asked. It works across several repositories,
+  starts from what `docs/codebase/` already holds, and splits a broad question
+  between subagents with a shared brief that keeps their areas apart.
 
 ### Changed
 
