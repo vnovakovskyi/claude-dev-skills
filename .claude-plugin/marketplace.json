@@ -1,0 +1,22 @@
+{
+  "name": "novakovskyi-dev-skills",
+  "owner": {
+    "name": "Vadym Novakovskyi",
+    "url": "https://github.com/vnovakovskyi"
+  },
+  "description": "Claude Code skills for a research → plan → implement development workflow, with an optional hard gate.",
+  "plugins": [
+    {
+      "name": "dev-skills",
+      "source": "./plugins/dev-skills",
+      "description": "Skills that make Claude research and plan before it codes, and a skill that turns finished work into a pull request.",
+      "category": "development"
+    },
+    {
+      "name": "phase-gate",
+      "source": "./plugins/phase-gate",
+      "description": "Optional hard gate for the dev-skills workflow: a hook that blocks source edits in opted-in projects until you approve the plan.",
+      "category": "development"
+    }
+  ]
+}
