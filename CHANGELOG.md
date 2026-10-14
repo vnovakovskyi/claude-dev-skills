@@ -15,6 +15,18 @@ To see which version you have installed, run `claude plugin list`.
 
 ## [Unreleased]
 
+### Added
+
+- `research-codebase` — answers a question about the existing code in the chat,
+  with file and line references, and saves the answer to
+  `docs/codebase/<topic>.md` when asked.
+
+### Changed
+
+- `research` is about the task now, not about explaining the code: it reads
+  `docs/codebase/` for context and points to `research-codebase` for questions
+  about how the code works.
+
 ## [1.0.0] - 2026-10-11
 
 First release.

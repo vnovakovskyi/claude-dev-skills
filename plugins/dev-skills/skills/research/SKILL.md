@@ -1,7 +1,7 @@
 ---
 name: research
-description: Main workflow phase 1. Research an idea, feature, problem, or existing codebase before planning or coding. Produces docs/00-research.md. No implementation.
-argument-hint: <idea, feature, problem, or codebase area to research>
+description: Main workflow phase 1. Research an idea, feature, problem, or technical change before planning or coding. Produces docs/00-research.md. No implementation.
+argument-hint: <idea, feature, problem, or change to research>
 disable-model-invocation: true
 ---
 
@@ -22,8 +22,12 @@ This phase may be used for:
 - A new product idea.
 - A new feature.
 - A technical migration.
-- An existing codebase investigation.
 - A bug-prone or legacy area that needs analysis before action.
+
+This phase is about the task: understanding it, finding the information it
+needs, and weighing it. It is not for explaining how existing code works. When
+the request is only a question about the code, tell the user that
+`/dev-skills:research-codebase` answers it, and stop.
 
 ## Hard rules
 
@@ -39,11 +43,18 @@ This phase may be used for:
 ## Working process
 
 1. Clarify the target of research from `$ARGUMENTS`.
-2. Inspect existing files if this is an existing project.
-3. Identify the problem, context, constraints, assumptions, and risks.
-4. Separate facts from assumptions.
-5. Identify unknowns and open questions.
-6. Recommend whether the work should move to planning.
+2. Gather the information the task needs: the request, the project's docs, and
+   outside sources such as documentation, standards, and comparable solutions
+   when your environment can reach them.
+3. In an existing project, read `docs/codebase/` first if it exists: it holds
+   earlier code investigations. Look at the code only as far as the task needs
+   it (the affected modules, integration points, constraints). If the task
+   depends on code nobody has investigated yet, recommend
+   `/dev-skills:research-codebase` for it.
+4. Identify the problem, context, constraints, assumptions, and risks.
+5. Separate facts from assumptions.
+6. Identify unknowns and open questions.
+7. Recommend whether the work should move to planning.
 
 ## Output file
 
@@ -112,6 +123,7 @@ Questions that should be answered before or during planning.
 
 Recommended next step:
 - Continue to `plan`
+- Run `research-codebase` first, to understand the code the task touches
 - Run `architecture` first
 - Run `data-model` first
 - Stop / rethink

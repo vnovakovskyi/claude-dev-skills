@@ -33,7 +33,7 @@ picks up at the first unchecked phase.
 Run Claude Code inside your project and start with:
 
 ```text
-/dev-skills:research <idea, feature, problem, or codebase area to research>
+/dev-skills:research <idea, feature, problem, or change to research>
 /dev-skills:plan <what should be planned>
 ```
 
@@ -46,6 +46,27 @@ Review the plan in `docs/01-plan.md`, then implement it phase by phase:
 `implement` implements one phase, runs its checks, ticks its boxes, and pauses
 for your manual verification. Tell it to continue when you are ready for the
 next phase.
+
+## Questions about the code
+
+```text
+/dev-skills:research-codebase <question about the code>
+```
+
+`research` thinks about the task. `research-codebase` explains the code as it
+is: where something lives, how a flow runs from its entry point to its side
+effects, why a line is the way it is (from `git log` and `git blame`). Use it
+whenever you want to understand a part of the code, inside the workflow or
+outside it.
+
+It is read-only. It answers in the chat, backs every statement with a file and
+line, and says what it could not confirm. It describes the code without
+suggesting changes unless you ask for them.
+
+Add `save` to the question, or ask after the answer, and it writes
+`docs/codebase/<topic>.md` with the commit it looked at, so a later reader can
+tell how old the description is. `research` reads that folder as context for a
+task.
 
 ## The optional skills
 
@@ -70,7 +91,11 @@ docs/00-research.md
 docs/01-plan.md
 docs/02-architecture.md
 docs/03-data-model.md
+docs/codebase/<topic>.md
 ```
+
+`docs/codebase/` is written only when you ask `research-codebase` to save an
+answer.
 
 `architecture` and `data-model` are optional. The main line only requires:
 
@@ -124,7 +149,7 @@ request without merging it. If the repository has its own pull request template,
 
 ## Who starts a skill
 
-The five workflow skills run only when you type the command. Claude never starts
+The workflow skills and `research-codebase` run only when you type the command. Claude never starts
 them on its own (`disable-model-invocation: true`). `pr` also starts when you ask
 for a pull request in plain words.
 

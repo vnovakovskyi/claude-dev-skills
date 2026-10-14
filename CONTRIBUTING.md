@@ -147,7 +147,7 @@ A release is made by the maintainer:
 
 ```text
 .claude-plugin/marketplace.json     the marketplace: lists the two plugins
-plugins/dev-skills/                 the plugin with the six skills
+plugins/dev-skills/                 the plugin with the seven skills
   .claude-plugin/plugin.json
   skills/<name>/SKILL.md
 plugins/phase-gate/                 the plugin with the optional hard gate

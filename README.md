@@ -72,22 +72,23 @@ Want a change before it is released? See
 
 | Command | What it does | Writes |
 |---|---|---|
-| `/dev-skills:research` | Investigates an idea, a feature, a problem, or an existing codebase before anything is planned. | `docs/00-research.md` |
+| `/dev-skills:research` | Thinks through an idea, a feature, or a problem before anything is planned. | `docs/00-research.md` |
+| `/dev-skills:research-codebase` | Answers a question about the existing code: where something is, how it works, why it behaves that way. | the chat; `docs/codebase/<topic>.md` when you ask |
 | `/dev-skills:plan` | Turns the research into a scoped plan, split into small phases with success criteria. | `docs/01-plan.md` |
 | `/dev-skills:implement` | Implements one phase of the plan, runs its checks, and pauses for your verification. | code |
 | `/dev-skills:architecture` | Optional. Documents, reviews, or proposes an architecture. | `docs/02-architecture.md` |
 | `/dev-skills:data-model` | Optional. Documents, reviews, or redesigns a data model. | `docs/03-data-model.md` |
 | `/dev-skills:pr` | Commits the change, pushes the branch, and opens or updates the pull request. | the pull request |
 
-The first five run only when you type the command. `pr` also starts when you ask
-for a pull request in plain words.
+All of them run only when you type the command, except `pr`, which also starts
+when you ask for a pull request in plain words.
 
 ## How to use it
 
 Run Claude Code inside your project:
 
 ```text
-/dev-skills:research <idea, feature, problem, or codebase area to research>
+/dev-skills:research <idea, feature, problem, or change to research>
 /dev-skills:plan <what should be planned>
 /dev-skills:implement
 /dev-skills:pr
@@ -96,6 +97,16 @@ Run Claude Code inside your project:
 `research` and `plan` never write code. `implement` does one phase of the plan,
 runs that phase's checks, and waits for you before it starts the next one. The
 step from planning to coding is always yours to take.
+
+To understand the existing code, ask about it at any point:
+
+```text
+/dev-skills:research-codebase <question about the code>
+```
+
+It answers in the chat with the files and lines to look at, and changes nothing.
+Add `save` to keep the answer in `docs/codebase/`, where `research` reads it
+later.
 
 `pr` describes the work in three parts — motivation, what was done, how to
 verify — and never credits an AI tool in the commits or in the pull request. It
