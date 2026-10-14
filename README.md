@@ -13,6 +13,18 @@ Each step is a command. `research` and `plan` write a document into your
 project's `docs/` folder, so you can read it, correct it, and decide when to move
 on. `implement` then builds the plan one phase at a time.
 
+## Requirements
+
+- **Claude Code.** The shell commands on this page and in the docs use the
+  `claude` command. If you have only the desktop app, `claude` is not on your
+  `PATH`; install it with
+  `curl -fsSL https://claude.ai/install.sh | bash`.
+- **The GitHub CLI, for `pr`.** The `pr` skill opens and updates pull requests
+  with [`gh`](https://cli.github.com), so it works with GitHub only. Install
+  `gh` and sign in with `gh auth login`. The other skills do not need it.
+- **`jq`, for the optional gate.** Only `phase-gate` uses it; see
+  [Optional: a hard gate](#optional-a-hard-gate).
+
 ## Install
 
 In a Claude Code session:
