@@ -183,7 +183,7 @@ Work comes with messages: questions to the product owner about a ticket, a
 status update upward, a handoff to the testers, a request to a colleague.
 
 ```text
-/dev-skills:draft-message Anna, product owner, Slack: the open questions from the research
+/dev-skills:draft-message <to whom: name, role, or relation>, <channel>: <what the message is about>
 ```
 
 Name the recipient (name and role, or how they relate to you), the channel, and

@@ -51,8 +51,8 @@ One case holds one problem, change, or question, with everything done about it.
   showing up in another service is the same case.
 - **Create** a case only when nothing in the index covers the subject. The slug
   is `<YYYY-MM-DD>-<ticket if any>-<short-kebab-subject>`, dated the day the
-  case is created, for example `2026-07-08-idm-groups-by-id-n1` or
-  `2026-06-25-PQI-1138-ecs-al2-to-al2023-ami`.
+  case is created, for example `2026-07-08-orders-by-id-n1` or
+  `2026-06-25-ABC-123-base-image-upgrade`.
 
 ## case.md
 
@@ -61,21 +61,21 @@ lines and put details in the other files.
 
 ```md
 ---
-title: GET /groups/{id} N+1 per member in idm-service
+title: GET /orders/{id} N+1 per line item in order-service
 kind: incident
 status: in-review
-summary: N+1 per group member made GET /groups/{id} time out callers; member conversion batched
-repos: [idm-service]
-services: [idm-service, education-user-content-service]
+summary: N+1 per line item made GET /orders/{id} time out callers; item loading batched
+repos: [order-service]
+services: [order-service, billing-service]
 tickets: []
-prs: [nese/idm-service#644]
+prs: [org/order-service#123]
 symptoms: ["Read timed out", "Broken pipe"]
-related: [cases/2026-06-30-idm-no-account-found-in-session]
+related: [cases/2026-06-30-order-service-session-lookup]
 created: 2026-07-08
 updated: 2026-07-08
 ---
 
-# GET /groups/{id} N+1 per member in idm-service
+# GET /orders/{id} N+1 per line item in order-service
 
 ## Problem
 What was observed, where, and how bad. Quote error texts exactly.
@@ -120,10 +120,10 @@ index:
 
 ```md
 ---
-title: Spring Boot 4.1 migration
+title: Web framework major upgrade
 kind: codebase
-repos: [mono, common-web]
-summary: what moving to Boot 4.1 touches in mono and the legacy repos, and in what order
+repos: [api, shared-lib]
+summary: what the framework's next major version touches in api and shared-lib, and in what order
 updated: 2026-10-15
 ---
 ```

@@ -166,7 +166,7 @@ index with `reindex.sh` as the reference describes.
 **Name.** `<topic>` is a short kebab-case name for the subject
 (`payment-retries`, `auth-flow`). In a folder that holds several repositories,
 start it with the repository's name when the subject belongs to one
-(`mono-auth-flow`).
+(`api-auth-flow`).
 
 **One subject, one file.** If a file on the same subject exists, update it
 instead of creating another one. A follow-up question on the same subject is
@@ -176,7 +176,7 @@ merge its findings into the sections, keeping what still holds.
 **Format.** Keep the headings below in English so other skills can find the
 sections; write the body in the user's language. Write sources as plain
 `path:line`, never as markdown links, and give every path from the folder the
-file lives in (`mono/pom.xml:12` when the file sits next to several
+file lives in (`api/pom.xml:12` when the file sits next to several
 repositories), so the file stays readable from anywhere.
 
 ```md

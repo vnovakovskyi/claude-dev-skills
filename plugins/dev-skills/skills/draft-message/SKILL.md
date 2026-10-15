@@ -71,7 +71,7 @@ That beats every default below.
 | Channel | Length | Shape |
 |---|---|---|
 | Email | Usually 60–200 words | A subject line that says what the email is about, in a few plain words. A greeting with the first name. The point or the ask in the first two sentences. Short paragraphs. Numbered questions when there are three or more. A short sign-off and the user's first name. |
-| Chat direct message | 1–6 lines, plus a short numbered list when you ask several questions | The ask in the first line. A greeting is optional and short ("Hi Anna,"). No sign-off, no subject. One message, not a letter. |
+| Chat direct message | 1–6 lines, plus a short numbered list when you ask several questions | The ask in the first line. A greeting is optional and short, with the first name. No sign-off, no subject. One message, not a letter. |
 | Chat thread or channel | 1–8 lines | Mention the person you need something from. One line of context, since others read it too. |
 | Ticket comment | As long as the facts need | Written for whoever reads the ticket later, not only the recipient. Mention the person you ask. A short list is fine. |
 | Pull request comment | 1–4 sentences | About the specific change. A question or a suggestion with its reason, not an order. |
@@ -80,9 +80,8 @@ That beats every default below.
 
 - **Product owner or product side.** Product words, not code: no class names,
   file paths, or endpoints unless they use them too. Make each question easy to
-  answer: offer the options, or say what you would do by default ("I'd show
-  only ready videos unless you want drafts there too"). Say what waits on the
-  answer.
+  answer: offer the options, or say what you would do by default. Say what
+  waits on the answer.
 - **Manager or someone higher up.** The shortest version. Lead with the status,
   the decision, or what you need from them, then stop. Offer details instead of
   writing them.
