@@ -177,11 +177,33 @@ force-pushes unless you ask, stages files by name, and stops at the open pull
 request without merging it. If the repository has its own pull request template,
 `pr` fills that template and makes sure the three questions are still answered.
 
+## Drafting a message
+
+Work comes with messages: questions to the product owner about a ticket, a
+status update upward, a handoff to the testers, a request to a colleague.
+
+```text
+/dev-skills:draft-message Anna, product owner, Slack: the open questions from the research
+```
+
+Name the recipient (name and role, or how they relate to you), the channel, and
+what the message is about. The skill takes the facts from the conversation, so
+it fits right after `research` or `research-codebase`. It shapes the length and
+tone to the channel and the person, and writes the text the way a person writes
+it in that language: no typography a keyboard does not produce, no template
+openers and closers, no headings or bold in a message to a person. The rules
+describe these habits by what they do, not as word lists, so they work in any
+language.
+
+The draft comes back in the chat. The skill never sends, posts, or saves it:
+sending is yours.
+
 ## Who starts a skill
 
 The workflow skills and `research-codebase` run only when you type the command. Claude never starts
 them on its own (`disable-model-invocation: true`). `pr` also starts when you ask
-for a pull request in plain words.
+for a pull request in plain words, and `draft-message` when you ask for a
+message, an email, or a comment to someone.
 
 Every command carries the plugin's name. Short names such as `plan` or
 `research` are easy to collide with, both with built-in commands and with other
