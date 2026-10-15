@@ -110,6 +110,7 @@ docs/
     plan.md                        the plan
     architecture.md                optional
     data-model.md                  optional
+    review.md                      a pull request review (review-pr)
 ```
 
 A **case** is one subject — a problem, a change, a question — with everything
@@ -178,6 +179,41 @@ force-pushes unless you ask, stages files by name, and stops at the open pull
 request without merging it. If the repository has its own pull request template,
 `pr` fills that template and makes sure the three questions are still answered.
 
+## Reviewing a pull request
+
+```text
+/dev-skills:review-pr <pull request link or number; optional: what to focus on>
+```
+
+`review-pr` reviews someone else's pull request. It reads every changed file in
+full, the callers and consumers of what changed (in other services too), the CI
+checks, and every comment already on the pull request, people's and bots'. It
+follows the repository's own review instructions when it has them. It checks
+the claims of the description against the code, rollout and recovery steps
+included, because the diff does not show when the new code makes one of them
+impossible.
+
+Each finding shows the code it is about, as a review comment on GitHub does:
+the lines with their numbers at the head commit, the changed ones marked with
+`+`, and whether an inline comment can sit on them.
+
+Each finding is verified before you see it: the lines it cites are reopened, the
+path to the failure is traced, and it is marked `CONFIRMED` or `PLAUSIBLE`.
+What does not hold is dropped. A point someone already raised is shown as theirs,
+with whether the skill agrees. Problems that were there before the pull request
+are listed apart and never posted against it.
+
+Nothing goes to the pull request first. You get the findings in the chat, sorted
+by severity, each with a draft comment in your voice, and saved as `review.md`
+in a case of the knowledge base, so you can re-read and check them. Then you say
+which ones to post. The skill posts them as a **pending** review that only you
+can see, and you submit it on GitHub with the verdict you choose. It never
+approves, requests changes, or resolves a thread.
+
+It reads the pull request's code with `git fetch` and `git show`, so your
+checkout stays as it is. Run it again on a later revision, and it compares with
+the previous round: fixed, still open, or answered.
+
 ## Drafting a message
 
 Work comes with messages: questions to the product owner about a ticket, a
@@ -203,8 +239,9 @@ sending is yours.
 
 The workflow skills and `research-codebase` run only when you type the command. Claude never starts
 them on its own (`disable-model-invocation: true`). `pr` also starts when you ask
-for a pull request in plain words, and `draft-message` when you ask for a
-message, an email, or a comment to someone.
+for a pull request in plain words, `review-pr` when you ask for a review of one,
+and `draft-message` when you ask for a message, an email, or a comment to
+someone.
 
 Every command carries the plugin's name. Short names such as `plan` or
 `research` are easy to collide with, both with built-in commands and with other

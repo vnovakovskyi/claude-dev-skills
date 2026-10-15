@@ -101,6 +101,11 @@ submitting:
   a scratch `docs/` with a few `cases/*/case.md` cards, including one without
   frontmatter, and check `INDEX.md` and the warnings.
 
+- **Review excerpts (`plugins/dev-skills/skills/review-pr/scripts/excerpt.sh`):**
+  run it on a pull request in any local clone, on a range of added lines and on a
+  range outside the diff, and check the `+` marks, the line numbers, and the
+  `inline:` line on stderr.
+
 - **`shellcheck`** is recommended if you have it installed.
 
 ## Conventions
@@ -159,7 +164,7 @@ A release is made by the maintainer:
 
 ```text
 .claude-plugin/marketplace.json     the marketplace: lists the two plugins
-plugins/dev-skills/                 the plugin with the eight skills
+plugins/dev-skills/                 the plugin with the nine skills
   .claude-plugin/plugin.json
   skills/<name>/SKILL.md
 plugins/phase-gate/                 the plugin with the optional hard gate

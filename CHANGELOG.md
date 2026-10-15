@@ -17,6 +17,33 @@ To see which version you have installed, run `claude plugin list`.
 
 ### Added
 
+- `review-pr` — reviews someone's pull request and shows the user every finding
+  before anything reaches it.
+  - It reads the changed files in full, the callers and consumers of what
+    changed, the CI checks, and the reviews and comments already on the pull
+    request, and follows the repository's own review instructions.
+  - It checks the description's claims against the code, rollout and recovery
+    steps included.
+  - Every finding is verified, cites a file and line, describes a concrete case
+    where the code goes wrong, and is marked `CONFIRMED` or `PLAUSIBLE`.
+  - Every finding shows its code the way a GitHub review comment does: the
+    lines with a few lines of context and their numbers at the head commit,
+    with the lines the pull request changed marked. `scripts/excerpt.sh` prints
+    them from git, says whether they can carry an inline comment, and stops
+    with an error on a range that is not in the file.
+  - Before it shows the findings, it checks the pull request's head and CI
+    again; when the head moved during the review, a force-push included, it
+    re-checks the findings against the new head and says what changed. Points
+    already raised are credited, not repeated; problems that predate the pull
+    request are listed apart.
+  - The findings come back in the chat with a draft comment each and are saved
+    as `review.md` in a knowledge-base case. A later round compares with the
+    previous one.
+  - It posts nothing until the user has read the findings and chosen what to
+    post, and then only as a pending review the user submits. It never
+    approves, requests changes, or resolves a thread, and it never touches the
+    user's checkout.
+
 - `draft-message` — drafts a work message for the user to send themselves:
   questions to a product owner, a status update to a manager, a test handoff,
   a request to a colleague. It takes the recipient (name, role, or relation)
