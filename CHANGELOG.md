@@ -58,6 +58,10 @@ To see which version you have installed, run `claude plugin list`.
 - `pr` commits, pushes, and opens a pull request only on the user's own
   request. A question it asked and the user has not answered is not
   permission.
+- `pr` never merges, not even when asked inside the skill: it may create a
+  working branch, commit, push, and open or update the pull request, and the
+  merge is left to the user. It also never enables auto-merge or a merge
+  queue.
 
 ## [1.0.0] - 2026-10-11
 
