@@ -103,9 +103,12 @@ Frontmatter rules, so that `reindex.sh` and `grep` can read it:
   or `question`.
 - `status`:
   - `open` — being researched or planned;
-  - `in-progress` — being implemented;
-  - `in-review` — a pull request is open;
-  - `solved` — the fix or change is merged or deployed;
+  - `in-progress` — being implemented; for a plan with phases, until the
+    last phase, even while earlier phases are in review or merged;
+  - `in-review` — a pull request is open, and for a plan with phases it is the
+    last phase's;
+  - `solved` — the fix or change is merged or deployed; for a plan with
+    phases, every phase;
   - `wont-fix` — decided not to act;
   - `abandoned` — stopped without a decision.
 - `summary`: one line, under about 250 characters, that says what the problem
@@ -114,6 +117,19 @@ Frontmatter rules, so that `reindex.sh` and `grep` can read it:
 - `symptoms`: exact error messages, log lines, or alert names, copied, not
   paraphrased. They are the best search key across services.
 - `updated` changes whenever the card does.
+
+When the case's plan has phases, `Outcome` holds one line per phase that has
+started, so a later run can tell what is done without trusting the plan's
+checkboxes alone:
+
+```text
+- Phase <N> (<date>): <state> — <pull request, or "no code"> (branch `<name>`). Left: <checks or actions still open>.
+```
+
+The states are `in progress`, `in review`, `merged`, `done` (the "before
+merge" checks are confirmed too), and `rolled out` (the "after rollout" checks
+are confirmed too). The line is written in the card's language; keep its
+shape.
 
 ## codebase/<topic>.md
 
@@ -143,7 +159,8 @@ Every skill starts here, before it reads code or writes anything:
    not enough.
 4. For a matching case in `in-review`, check its pull requests
    (`gh pr view <pr> --json state`). When they are merged, set the card to
-   `solved`, update `Outcome`, and reindex.
+   `solved`, update `Outcome`, and reindex. For a plan with phases, do this
+   only when every phase is merged; otherwise leave the status to `implement`.
 5. Say what you found in one place of your output, with paths, under "Prior
    work". Say "none found" when there is nothing.
 

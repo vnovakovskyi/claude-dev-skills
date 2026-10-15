@@ -76,7 +76,7 @@ Want a change before it is released? See
 | `/dev-skills:research` | Thinks through an idea, a feature, or a problem before anything is planned, starting from what earlier cases already found. | `research.md` and `case.md` in a case |
 | `/dev-skills:research-codebase` | Answers a question about the existing code: where something is, how it works, why it behaves that way. | the chat; `docs/codebase/<topic>.md` in the folder you started Claude in, when you ask |
 | `/dev-skills:plan` | Turns the research into a scoped plan, split into small phases with success criteria. | `plan.md` in the case |
-| `/dev-skills:implement` | Implements one phase of the plan, runs its checks, and pauses for your verification. | code |
+| `/dev-skills:implement` | Implements one phase of the plan on its own branch, runs its checks, hands off to `pr` when you agree, and pauses for your verification. | code |
 | `/dev-skills:architecture` | Optional. Documents, reviews, or proposes an architecture. | `architecture.md` in a case |
 | `/dev-skills:data-model` | Optional. Documents, reviews, or redesigns a data model. | `data-model.md` in a case |
 | `/dev-skills:pr` | Commits the change, pushes the branch, and opens or updates the pull request. It never merges; that is yours. | the pull request; the outcome in the case |

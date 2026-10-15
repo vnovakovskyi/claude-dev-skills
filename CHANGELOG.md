@@ -107,6 +107,28 @@ To see which version you have installed, run `claude plugin list`.
   phases' dependencies, reads checkboxes in phase tables, and treats a phase as
   done once its "before merge" checks pass, carrying the "after rollout" ones
   in every report until the user confirms them.
+- `implement` works through multi-phase plans the way they are done for real:
+  - Each phase that changes code starts on its own new branch, named for the
+    phase, from an up-to-date base in the plan's repository. A branch whose
+    pull request is merged or closed is never reused, and uncommitted work is
+    never stashed or discarded.
+  - A phase runs in a fixed order: implement, run the checks that need no pull
+    request, ask, hand off to `pr`, run the checks that need the open pull
+    request (CI, a label, an approval), then pause for manual verification.
+    The "after rollout" checks follow the merge.
+  - It reads plans in any language: it recognizes a phase's parts
+    (dependencies, automated and manual checks, common checks, phase tables)
+    by what they say, never by their labels in any language. A manual list
+    that does not say whether it is for before the merge or after the rollout
+    counts as before the merge.
+  - Before it picks a phase, it compares the plan's checkboxes, the card's
+    `Outcome`, and the phases' pull requests, and asks when they disagree, so
+    work done outside the skill is not redone.
+- The card's `Outcome` keeps one line per phase of a plan with phases, and such
+  a case stays `in-progress` until the last phase: `pr` sets `in-review` only
+  for the last phase's pull request, and `solved` waits for every phase.
+- `plan` keeps one wording per phase label throughout a plan, names the base
+  branch in the header, and marks the checks that need an open pull request.
 - **Breaking:** the skills no longer write `docs/00-research.md`,
   `docs/01-plan.md`, `docs/02-architecture.md`, or `docs/03-data-model.md` into
   the project. They write `research.md`, `plan.md`, `architecture.md`, and

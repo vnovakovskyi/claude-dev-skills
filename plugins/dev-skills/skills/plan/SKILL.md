@@ -53,6 +53,10 @@ created, and why. Below, "the case" means `docs/cases/<that slug>/`.
 - **Write in the language the user asked in**, the headings included. Use the
   same language in every file you write in this run, `case.md` included; keep
   the frontmatter keys and values as the reference defines them.
+- **Keep the phase structure `implement` reads.** Every phase keeps the parts
+  of the template, in its order. Word each label one way and use that wording
+  in every phase: `implement` recognizes the parts by what they say, not by
+  their labels, and one wording per part leaves nothing to guess.
 - **Every fact has a source**: a file and line, a command, or a URL. Mark a
   fact you could not verify as such.
 - **The rules bind subagents too.** A subagent does not see this skill. Every
@@ -129,7 +133,7 @@ variant that fits, or leave the section out when it would add nothing.
 # Plan: <subject>
 
 **Date:** <YYYY-MM-DD>
-**Repos:** <repo> `<branch>` `<short commit>` (one per repository)
+**Repos:** <repo> `<base branch>` `<short commit>` (one per repository; `implement` starts each phase's branch from that base)
 **Inputs:** <research files, codebase notes, related cases>
 
 ## 0. Prior work
@@ -228,8 +232,12 @@ asks the user before each one. "None" when there are none.
 and needs time to prove itself, such as a day in production)
 - [ ] <what to watch, and for how long>
 
-> After this phase passes automated checks, **pause** and let the user confirm
-> manual verification before starting the next phase.
+A check that needs an open pull request (CI on it, a label or a preview
+environment, a reviewer's approval) says so: `implement` runs it after the
+pull request is opened.
+
+> After the automated checks pass and the pull request is open, **pause** and
+> let the user confirm manual verification before starting the next phase.
 
 ### Repeated phases
 

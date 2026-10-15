@@ -165,9 +165,15 @@ Already run: <check → result>. Not run: <check, and why>.
 
 When the work belongs to a knowledge-base case, update its `case.md`:
 
-- add the pull request to `prs`, and set `status: in-review`;
+- add the pull request to `prs`;
+- set the status:
+  - when the case's plan has phases, keep `in-progress` while any other phase
+    is not merged yet, and set `in-review` only when this pull request is for
+    the last open phase;
+  - otherwise set `in-review`;
 - write `Outcome`: what was done, where (the pull request link), and what is
-  left;
+  left. When the plan has phases, write or update this phase's own line as the
+  reference describes, and leave the other phases' lines alone;
 - write `Lessons`: how to recognize this problem next time, and what worked or
   did not;
 - tighten `summary` so it says how the case ended, set `updated`, and rebuild
@@ -175,7 +181,7 @@ When the work belongs to a knowledge-base case, update its `case.md`:
 
 The card is the user's knowledge base, outside the repository: it never goes
 into a commit. A later skill that finds the pull request merged sets the card
-to `solved`.
+to `solved` — for a plan with phases, only once every phase is merged.
 
 ## Before you send — self-check
 
@@ -185,7 +191,7 @@ to `solved`.
 - [ ] Every check reported as run was run.
 - [ ] Nothing unrelated and nothing secret is in the commits.
 - [ ] No work was pushed to the default branch or to the base, nothing was force-pushed, and nothing was merged or set to auto-merge: the merge is left to the user.
-- [ ] When there is a case, its card has the pull request, `Outcome`, `Lessons`, and status `in-review`, and the index is rebuilt.
+- [ ] When there is a case, its card has the pull request, `Outcome`, `Lessons`, and the status from Step 5 (`in-progress` while other phases of its plan are not merged, else `in-review`), and the index is rebuilt.
 
 ## Completion criteria
 
