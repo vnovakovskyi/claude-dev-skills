@@ -9,7 +9,7 @@ research → plan → implement → pr
 The workflow uses a **soft, conversational gate** — no hook, no marker files in
 the normal flow. The discipline lives in the skills themselves:
 
-- `plan` produces a **phased plan** in `docs/01-plan.md`. Each phase has its own
+- `plan` produces a **phased plan** in the active case's `plan.md`. Each phase has its own
   **Automated** and **Manual** success-criteria checkboxes, plus an explicit
   "Out of Scope". `plan` never writes code — it ends by asking you to review and
   then run `/dev-skills:implement`.
@@ -21,7 +21,7 @@ the normal flow. The discipline lives in the skills themselves:
 So approval is a normal conversational act (you choose to run
 `/dev-skills:implement`, and you confirm between phases) — there is no approval
 file to create, forget, or delete. Progress is tracked by the checkboxes inside
-`docs/01-plan.md`, so work is resumable: re-running `/dev-skills:implement`
+the plan, so work is resumable: re-running `/dev-skills:implement`
 picks up at the first unchecked phase.
 
 > If you also want **hard** enforcement — where Claude is *physically* blocked
@@ -37,7 +37,7 @@ Run Claude Code inside your project and start with:
 /dev-skills:plan <what should be planned>
 ```
 
-Review the plan in `docs/01-plan.md`, then implement it phase by phase:
+Review the plan in the case folder, then implement it phase by phase:
 
 ```text
 /dev-skills:implement <optional: a specific phase from the plan>
@@ -62,16 +62,20 @@ outside it.
 It is read-only. It answers in the chat, backs every statement with a file and
 line, and says what it could not confirm. It describes the code without
 suggesting changes unless you ask for them; where the code contradicts itself,
-it lists both sides.
+it lists both sides. Ask it how big a change would be, or in what order to do
+it, and it gives that judgement in a section of its own, apart from the facts.
 
 When the folder holds several repositories, it names the ones it searched. A
 narrow question it answers itself; a broad one it splits between subagents and
 checks every line they report before it answers.
 
 Add `save` to the question, or ask after the answer, and it writes
-`docs/codebase/<topic>.md` with the commit it looked at, so a later reader can
-tell how old the description is. `research` reads that folder as context for a
-task.
+`docs/codebase/<topic>.md` with the commits it looked at, so a later reader can
+tell how old the description is. The file goes into the folder you started
+Claude in, not into the repository you asked about, so it never shows up in a
+diff. When that folder is itself a repository, the skill adds `docs/`
+to the repository's local `.git/info/exclude`, which is personal and never
+committed. `research` reads that folder as context for a task.
 
 ## The optional skills
 
@@ -87,31 +91,48 @@ Use them whenever they help:
 - Inside an existing service, to review or redesign its data model.
 - Before a migration or a refactoring.
 
-## Generated docs
+## The knowledge base
 
-The skills write these files into the project you run them in:
-
-```text
-docs/00-research.md
-docs/01-plan.md
-docs/02-architecture.md
-docs/03-data-model.md
-docs/codebase/<topic>.md
-```
-
-`docs/codebase/` is written only when you ask `research-codebase` to save an
-answer.
-
-`architecture` and `data-model` are optional. The main line only requires:
+All skills share one knowledge base: the `docs/` folder of the folder you start
+Claude in, never a folder inside your repositories. Start Claude in the folder
+that holds your repositories, and the knowledge base covers all of them, so
+what was learned in one service is found when you work on another.
 
 ```text
-docs/00-research.md
-docs/01-plan.md
+docs/
+  INDEX.md                         one line per case and note, generated
+  .active                          the case in progress
+  codebase/<topic>.md              how existing code works (research-codebase)
+  cases/<YYYY-MM-DD>-<slug>/
+    case.md                        the card: problem, findings, decision, outcome, lessons
+    research.md                    research
+    plan.md                        the plan
+    architecture.md                optional
+    data-model.md                  optional
 ```
 
-> The numbers (`00`–`03`) indicate **document type**, not execution order. You can
-> run `architecture` or `data-model` after research and before planning even
-> though their files are numbered after `01-plan.md`.
+A **case** is one subject — a problem, a change, a question — with everything
+done about it. It is not a ticket: when the same error turns up in another
+service, the work continues in the same case.
+
+- Every skill starts by searching the knowledge base: it reads `INDEX.md` and
+  greps the cards for the request's error texts, services, and tickets, and
+  reports what it found as "Prior work".
+- `research` picks the case, continuing a matching one or creating a new one,
+  and writes `docs/.active`.
+- `plan`, `architecture`, and `data-model` write into the active case;
+  `implement` marks it `in-progress`; `pr` records the pull request, the
+  outcome, and the lessons, and marks it `in-review`. A later skill that finds
+  the pull request merged marks it `solved`.
+- `INDEX.md` is rebuilt from the cards by `plugins/dev-skills/scripts/reindex.sh`
+  after every change, so it never drifts from them.
+
+When the folder you start Claude in is itself a repository, the skills list
+`docs/` in that repository's personal `.git/info/exclude`, so the knowledge base
+never shows up in its changes. They never edit a `.gitignore`.
+
+The full format — the card's fields, statuses, and the search steps — is in
+[plugins/dev-skills/references/knowledge-base.md](../plugins/dev-skills/references/knowledge-base.md).
 
 ## Opening a pull request
 

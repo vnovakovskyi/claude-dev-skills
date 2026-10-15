@@ -1,6 +1,6 @@
 ---
 name: research
-description: Main workflow phase 1. Research an idea, feature, problem, or technical change before planning or coding. Produces docs/00-research.md. No implementation.
+description: Main workflow phase 1. Research an idea, feature, problem, or technical change before planning or coding. Starts from what the knowledge base already knows, and writes the research into a case under docs/cases/ of the folder Claude was started in. No implementation.
 argument-hint: <idea, feature, problem, or change to research>
 disable-model-invocation: true
 ---
@@ -37,35 +37,57 @@ the request is only a question about the code, tell the user that
 - Do **not** jump into architecture unless the architecture is only being observed as part of research.
 - Do **not** create the MVP plan yet.
 - You may inspect the repository.
-- You may create or update files under `docs/`.
-- Main output must be `docs/00-research.md`.
+- You may create or update files only in the knowledge base: `docs/` of the
+  folder Claude was started in, never inside a repository's tracked files.
+- Main output is `research.md` in the case folder, plus the case's `case.md`.
+
+## The knowledge base
+
+Read `../../references/knowledge-base.md` (from this skill's base directory)
+before anything else. It defines where the knowledge base lives, what a case
+is, the `case.md` card, how to search it, and how to rebuild the index.
 
 ## Working process
 
 1. Clarify the target of research from `$ARGUMENTS`.
-2. Gather the information the task needs: the request, the project's docs, and
+2. **Search the knowledge base first**, as the reference describes: the index,
+   then the cards and codebase notes that match the request's error texts,
+   services, repositories, tickets, and libraries. What was already found or
+   fixed elsewhere is the starting point, not a footnote.
+3. **Pick the case.** Continue the matching case when the subject is the same
+   (the same error in another service counts); otherwise create a new one.
+   Write its slug to `docs/.active`. Tell the user which case you continue or
+   created, and why.
+4. Gather the information the task needs: the request, the project's docs, and
    outside sources such as documentation, standards, and comparable solutions
-   when your environment can reach them.
-3. In an existing project, read `docs/codebase/` first if it exists: it holds
-   earlier code investigations. Look at the code only as far as the task needs
-   it (the affected modules, integration points, constraints). If the task
-   depends on code nobody has investigated yet, recommend
+   when your environment can reach them. Look at the code only as far as the
+   task needs it (the affected modules, integration points, constraints). If
+   the task depends on code nobody has investigated yet, recommend
    `/dev-skills:research-codebase` for it.
-4. Identify the problem, context, constraints, assumptions, and risks.
-5. Separate facts from assumptions.
-6. Identify unknowns and open questions.
-7. Recommend whether the work should move to planning.
+5. Identify the problem, context, constraints, assumptions, and risks.
+6. Separate facts from assumptions.
+7. Identify unknowns and open questions.
+8. Recommend whether the work should move to planning.
+9. Write `research.md` (a later round in an existing case:
+   `research-<YYYY-MM-DD>-<subject>.md`, the subject in a few kebab-case
+   words), create or update `case.md` — `Problem`, `Findings`, `symptoms`,
+   `services`, `repos`, `tickets`, `summary`, status `open` — and run
+   `reindex.sh`.
 
 ## Output file
 
-Create or update:
+Create or update `docs/cases/<case>/research.md`, and the case's `case.md`
+(see the reference).
 
-`docs/00-research.md`
-
-Use this structure:
+Use this structure for `research.md`:
 
 ```md
 # Research
+
+## 0. Prior work
+
+Cases and codebase notes from the knowledge base that bear on this request,
+each with its path and what it tells us. "None found" when there is nothing.
 
 ## 1. Request
 
@@ -137,7 +159,9 @@ Specific next command or action the user should run.
 
 Research is complete only when:
 
-- `docs/00-research.md` exists.
+- The knowledge base was searched, and "Prior work" says what it found.
+- `research.md` and `case.md` exist in the case folder, `docs/.active` names
+  the case, and the index was rebuilt.
 - Facts and assumptions are clearly separated.
 - Risks and unknowns are listed.
 - A clear recommendation is given for the next phase.
@@ -145,5 +169,5 @@ Research is complete only when:
 At the end of your response, summarize:
 
 1. What you found.
-2. What document you created/updated.
+2. Which case you created or continued, and the prior work you found.
 3. What the next recommended phase is.

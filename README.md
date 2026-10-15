@@ -72,13 +72,13 @@ Want a change before it is released? See
 
 | Command | What it does | Writes |
 |---|---|---|
-| `/dev-skills:research` | Thinks through an idea, a feature, or a problem before anything is planned. | `docs/00-research.md` |
-| `/dev-skills:research-codebase` | Answers a question about the existing code: where something is, how it works, why it behaves that way. | the chat; `docs/codebase/<topic>.md` when you ask |
-| `/dev-skills:plan` | Turns the research into a scoped plan, split into small phases with success criteria. | `docs/01-plan.md` |
+| `/dev-skills:research` | Thinks through an idea, a feature, or a problem before anything is planned, starting from what earlier cases already found. | `research.md` and `case.md` in a case |
+| `/dev-skills:research-codebase` | Answers a question about the existing code: where something is, how it works, why it behaves that way. | the chat; `docs/codebase/<topic>.md` in the folder you started Claude in, when you ask |
+| `/dev-skills:plan` | Turns the research into a scoped plan, split into small phases with success criteria. | `plan.md` in the case |
 | `/dev-skills:implement` | Implements one phase of the plan, runs its checks, and pauses for your verification. | code |
-| `/dev-skills:architecture` | Optional. Documents, reviews, or proposes an architecture. | `docs/02-architecture.md` |
-| `/dev-skills:data-model` | Optional. Documents, reviews, or redesigns a data model. | `docs/03-data-model.md` |
-| `/dev-skills:pr` | Commits the change, pushes the branch, and opens or updates the pull request. | the pull request |
+| `/dev-skills:architecture` | Optional. Documents, reviews, or proposes an architecture. | `architecture.md` in a case |
+| `/dev-skills:data-model` | Optional. Documents, reviews, or redesigns a data model. | `data-model.md` in a case |
+| `/dev-skills:pr` | Commits the change, pushes the branch, and opens or updates the pull request. | the pull request; the outcome in the case |
 
 All of them run only when you type the command, except `pr`, which also starts
 when you ask for a pull request in plain words.
@@ -105,8 +105,10 @@ To understand the existing code, ask about it at any point:
 ```
 
 It answers in the chat with the files and lines to look at, and changes nothing.
-Add `save` to keep the answer in `docs/codebase/`, where `research` reads it
-later.
+Add `save` to keep the answer in `docs/codebase/` of the folder you started
+Claude in, where `research` reads it later. It never lands in the repository's
+changes: when that folder is a repository, the skill lists `docs/` in its
+personal `.git/info/exclude`.
 
 `pr` describes the work in three parts — motivation, what was done, how to
 verify — and never credits an AI tool in the commits or in the pull request. It

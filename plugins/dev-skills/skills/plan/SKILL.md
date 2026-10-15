@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Main workflow phase 2. Turn research into a concrete product/technical plan and MVP delivery sequence. Produces docs/01-plan.md. No implementation.
+description: Main workflow phase 2. Turn research into a concrete product/technical plan and MVP delivery sequence. Writes plan.md into the active case of the knowledge base. No implementation.
 argument-hint: <what should be planned>
 disable-model-invocation: true
 ---
@@ -24,7 +24,13 @@ Optional supporting phases may exist:
 - `architecture` — if architecture decisions are needed.
 - `data-model` — if domain model, persistence, schema, or data flow decisions are important.
 
-If `docs/02-architecture.md` or `docs/03-data-model.md` exists, read and incorporate them. Do not require them unless the research shows they are necessary.
+If the case holds `architecture.md` or `data-model.md`, read and incorporate them. Do not require them unless the research shows they are necessary.
+
+## The knowledge base
+
+Read `../../references/knowledge-base.md` (from this skill's base directory)
+first. The case to plan is the one named in `$ARGUMENTS`, or else the one in
+`docs/.active`. Below, "the case" means `docs/cases/<that slug>/`.
 
 ## Hard rules
 
@@ -32,21 +38,27 @@ If `docs/02-architecture.md` or `docs/03-data-model.md` exists, read and incorpo
 - Do **not** create database migrations.
 - Do **not** modify production files.
 - Do **not** expand the scope beyond what research supports.
-- You may create or update files under `docs/`.
-- Main output must be `docs/01-plan.md`.
+- You may create or update files only in the knowledge base, never inside a
+  repository's tracked files.
+- Main output is `plan.md` in the case folder.
 
 ## Required inputs
 
 Before planning, check whether these files exist:
 
-- `docs/00-research.md` — required for serious planning.
-- `docs/02-architecture.md` — optional.
-- `docs/03-data-model.md` — optional.
+- the case's `case.md` and its latest `research*.md` — required for serious
+  planning;
+- the case's `architecture.md` — optional;
+- the case's `data-model.md` — optional;
+- other cases the card lists under `related`, and any case the index shows for
+  the same services: a plan that already failed or succeeded there is input.
 
-If `docs/00-research.md` is missing, do one of these:
+If there is no active case or it has no research, do one of these:
 
 1. Ask the user to run `/dev-skills:research` first, or
 2. Create a lightweight research section inside the plan only if the user explicitly wants a fast/rough plan.
+   Search the knowledge base anyway, and create the case and its `case.md` as
+   the reference describes, so the plan has a home.
 
 ## Planning principles
 
@@ -61,9 +73,9 @@ The plan must be:
 
 ## Output file
 
-Create or update:
-
-`docs/01-plan.md`
+Create or update `plan.md` in the case folder. When a plan already exists
+and the user asks for a new one rather than a revision, write
+`plan-<YYYY-MM-DD>-<subject>.md` and keep the old one.
 
 Use this structure:
 
@@ -163,7 +175,9 @@ a final plan should not carry unresolved blocking questions.
 
 Planning is complete only when:
 
-- `docs/01-plan.md` exists.
+- `plan.md` exists in the case folder.
+- `case.md` has a `Decision` section that says what was chosen, its `updated`
+  is today, and the index was rebuilt.
 - Scope is explicit (including an explicit "Out of Scope").
 - Work is broken into phases, each with automated and manual success criteria.
 - The next implementation step is obvious.
@@ -171,8 +185,16 @@ Planning is complete only when:
 ## Do not implement
 
 This phase produces a plan only. Do **not** write code. End by asking the user
-to review `docs/01-plan.md` and, when satisfied, to run `/dev-skills:implement` for the
+to review the plan and, when satisfied, to run `/dev-skills:implement` for the
 first phase. Implementation begins only when the user explicitly invokes it.
+
+When the folder Claude was started in has a `.claude-phase-gate` file, the
+`phase-gate` plugin blocks code edits until the user approves. Give them the
+command to run themselves, and never run it or write the file for them:
+
+```bash
+echo <case slug> > docs/.approved
+```
 
 At the end of your response, summarize:
 

@@ -23,6 +23,11 @@ was made with.
 
 ## Hard rules
 
+- **Only on the user's own request.** Commit, push, and open or update a pull
+  request only when the user asked for it in their own message: by running
+  this skill, or in plain words. A question you asked — "commit and open a
+  PR?" — that the user has not answered yet is not permission. Wait for the
+  answer; never act on the answer you expect.
 - **No tool attribution, anywhere.** Commit messages, the pull request title, and
   the pull request body describe the change and nothing else. Never add:
   - a `Co-Authored-By:` trailer, or any other trailer, that names an AI model,
@@ -70,8 +75,11 @@ Before changing anything, find out:
   (language, tense, prefixes), a pull request template
   (`.github/PULL_REQUEST_TEMPLATE.md` and its usual variants), and what
   `CONTRIBUTING.md` asks of a pull request;
-- the reason for the work: the conversation, `docs/00-research.md` and
-  `docs/01-plan.md` if they exist, and the issue being closed.
+- the reason for the work: the conversation, the issue being closed, and the
+  knowledge-base case if there is one — the one in `docs/.active` of the folder
+  Claude was started in, or one whose card names this branch's repository and
+  work (see `../../references/knowledge-base.md` from this skill's base
+  directory). Read its `case.md`, `research*.md`, and `plan*.md`.
 
 If there is nothing to commit and no commit ahead of the base, say so and stop.
 
@@ -146,6 +154,22 @@ Already run: <check → result>. Not run: <check, and why>.
 6. Without `gh`: push, then give the user the title, the body, and the link the
    remote printed for opening the pull request by hand.
 
+## Step 5 — Record the outcome
+
+When the work belongs to a knowledge-base case, update its `case.md`:
+
+- add the pull request to `prs`, and set `status: in-review`;
+- write `Outcome`: what was done, where (the pull request link), and what is
+  left;
+- write `Lessons`: how to recognize this problem next time, and what worked or
+  did not;
+- tighten `summary` so it says how the case ended, set `updated`, and rebuild
+  the index with `reindex.sh`.
+
+The card is the user's knowledge base, outside the repository: it never goes
+into a commit. A later skill that finds the pull request merged sets the card
+to `solved`.
+
 ## Before you send — self-check
 
 - [ ] The commit messages (`git log <base>..HEAD --format=%B`), the title, and the body credit no AI tool, agent, or assistant: no `Co-Authored-By` for one, no "Generated with", no robot emoji.
@@ -154,6 +178,7 @@ Already run: <check → result>. Not run: <check, and why>.
 - [ ] Every check reported as run was run.
 - [ ] Nothing unrelated and nothing secret is in the commits.
 - [ ] No work was pushed to the default branch or to the base, and nothing was force-pushed or merged.
+- [ ] When there is a case, its card has the pull request, `Outcome`, `Lessons`, and status `in-review`, and the index is rebuilt.
 
 ## Completion criteria
 
@@ -170,3 +195,4 @@ At the end of your response, report:
    branch. Say so if you created that branch.
 2. Which checks you ran and which you did not.
 3. Anything you left uncommitted, and why.
+4. The case you updated, if any.

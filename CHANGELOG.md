@@ -22,12 +22,42 @@ To see which version you have installed, run `claude plugin list`.
   `docs/codebase/<topic>.md` when asked. It works across several repositories,
   starts from what `docs/codebase/` already holds, and splits a broad question
   between subagents with a shared brief that keeps their areas apart.
+  - Saved answers go into the folder Claude was started in, never into the
+    researched repository's tracked files; inside a repository the folder is
+    listed in the personal `.git/info/exclude`, never in `.gitignore`.
+  - Estimates, risks, and recommended order are given only when asked, in an
+    "Assessment" section apart from the facts.
+  - Facts from outside the code carry a URL or are marked as unverified general
+    knowledge; counts are re-run or labelled as a subagent's.
+  - It says which branch and commit it read, and compares with the default
+    branch when they differ.
+  - A follow-up question on the same subject is merged into the same saved file.
+
+- A shared knowledge base. All skills read and write the `docs/` folder of the
+  folder Claude was started in, organized in cases: one folder per subject
+  under `docs/cases/`, with a short `case.md` card (status, services, exact
+  error texts, outcome, lessons) next to the research and the plan.
+  `scripts/reindex.sh` rebuilds `docs/INDEX.md` from the cards. Every skill
+  starts by searching it and reports "Prior work", so a problem solved in one
+  service is found when it turns up in another.
 
 ### Changed
 
-- `research` is about the task now, not about explaining the code: it reads
-  `docs/codebase/` for context and points to `research-codebase` for questions
-  about how the code works.
+- **Breaking:** the skills no longer write `docs/00-research.md`,
+  `docs/01-plan.md`, `docs/02-architecture.md`, or `docs/03-data-model.md` into
+  the project. They write `research.md`, `plan.md`, `architecture.md`, and
+  `data-model.md` into a case of the knowledge base, outside any repository's
+  tracked files. `implement` reads the active case's plan; `pr` records the
+  pull request, outcome, and lessons in the card.
+- **Breaking:** `phase-gate` approves per case. Approval is
+  `echo <case slug> > docs/.approved`, checked against `docs/.active` and the
+  case's research and plan; `.claude-phase-approved` is no longer read. Claude
+  is blocked from writing `docs/.approved` at all times, also after approval.
+- `research` is about the task now, not about explaining the code: it points
+  to `research-codebase` for questions about how the code works.
+- `pr` commits, pushes, and opens a pull request only on the user's own
+  request. A question it asked and the user has not answered is not
+  permission.
 
 ## [1.0.0] - 2026-10-11
 
