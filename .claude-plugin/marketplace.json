@@ -9,7 +9,7 @@
     {
       "name": "dev-skills",
       "source": "./plugins/dev-skills",
-      "description": "Skills that make Claude research and plan before it codes, and a skill that turns finished work into a pull request.",
+      "description": "Skills that make Claude research and plan before it codes, turn finished work into a pull request, and draft the messages around the work.",
       "category": "development"
     },
     {

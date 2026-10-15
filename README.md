@@ -79,9 +79,11 @@ Want a change before it is released? See
 | `/dev-skills:architecture` | Optional. Documents, reviews, or proposes an architecture. | `architecture.md` in a case |
 | `/dev-skills:data-model` | Optional. Documents, reviews, or redesigns a data model. | `data-model.md` in a case |
 | `/dev-skills:pr` | Commits the change, pushes the branch, and opens or updates the pull request. It never merges; that is yours. | the pull request; the outcome in the case |
+| `/dev-skills:draft-message` | Drafts a message to a colleague, a product owner, a manager, or testers, in the channel you name, written the way a person writes. It never sends it. | the chat |
 
-All of them run only when you type the command, except `pr`, which also starts
-when you ask for a pull request in plain words.
+All of them run only when you type the command, except `pr` and
+`draft-message`, which also start when you ask for a pull request or a message
+in plain words.
 
 ## How to use it
 

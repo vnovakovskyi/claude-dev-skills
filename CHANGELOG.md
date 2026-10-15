@@ -17,6 +17,22 @@ To see which version you have installed, run `claude plugin list`.
 
 ### Added
 
+- `draft-message` — drafts a work message for the user to send themselves:
+  questions to a product owner, a status update to a manager, a test handoff,
+  a request to a colleague. It takes the recipient (name, role, or relation)
+  and the channel (email, chat, ticket or pull request comment) and shapes the
+  length and tone to both.
+  - It returns the text in the chat and never sends, posts, or saves it, not
+    even when asked inside the skill.
+  - The text is written to read as the user's own. The skill describes the
+    habits that give machine-written text away (typography, empty openers and
+    closers, inflated words, sentence patterns, document layout) by what they
+    do rather than as word lists, so the rules hold in any language, and every
+    draft goes through a check against them.
+  - It uses only facts from the conversation and the sources the user points
+    to, and names the gaps instead of inventing them.
+  - It also starts when the user asks for a message in plain words.
+
 - `research-codebase` — answers a question about the existing code in the chat,
   with file and line references, and saves the answer to
   `docs/codebase/<topic>.md` when asked. It works across several repositories,
