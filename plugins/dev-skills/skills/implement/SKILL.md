@@ -35,6 +35,9 @@ Below, "the plan" means that file.
 - Do not add extra features because they seem useful.
 - Update documentation if implementation differs from the plan.
 - Run the phase's automated checks, or explain why they cannot be run.
+- **Ask before every outward action** the phase lists (closing or commenting on
+  a pull request, a production release, a message, a shared setting), and
+  before any other action others would see. Wait for the user's yes for each.
 - **Pause after each phase** and wait for the user before starting the next one.
 
 ## Required pre-flight check
@@ -50,8 +53,15 @@ rebuild the index.
 
 Then determine **which phase to implement**:
 
-- Read the phase checkboxes in the plan. Trust completed items (`- [x]`).
-- Pick up at the first phase whose criteria are not yet checked off.
+- Read the phase checkboxes in the plan. Trust completed items (`[x]`).
+  Phases in a "Repeated phases" table keep their checkboxes in the row's
+  cells; the recipe above the table and the "Common checks" say what those
+  checkboxes stand for.
+- A phase counts as done when its Automated and "Manual, before merge"
+  criteria are checked. Its "Manual, after rollout" criteria may still be open;
+  list them in every report until the user confirms them.
+- Pick up at the first phase that is not done and whose "Depends on" phases
+  are done.
 - If the user named a specific phase, use that one.
 
 ## Implementation process
@@ -77,7 +87,10 @@ Phase N complete — ready for manual verification.
 Automated checks: <what you ran and the result>
 
 Please verify manually:
-- <manual success-criteria items from the plan for this phase>
+- <"Manual, before merge" items from the plan for this phase>
+
+After rollout, still open:
+- <"Manual, after rollout" items of this and earlier phases, if any>
 
 Tell me when manual testing passes and I'll continue to Phase N+1.
 ```

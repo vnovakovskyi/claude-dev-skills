@@ -59,6 +59,27 @@ To see which version you have installed, run `claude plugin list`.
 
 ### Changed
 
+- `plan` takes research from `docs/codebase/` notes and from the conversation,
+  not only from a case's `research.md`, and writes it into the case. It picks
+  or creates the case on its own when none is active.
+  - The plan is written in the user's language, and every file of the run
+    (`case.md` included) uses the same one.
+  - The template fits upgrades and migrations as well as features: use cases
+    and requirements have a variant per kind of work, overlapping sections were
+    merged, and the plan opens with a header (date, repositories, commits,
+    inputs), "Prior work", and ends with "Next Step".
+  - Each phase states its dependencies, size, outward actions, and rollback,
+    and splits manual checks into "before merge" and "after rollout". Checks
+    that repeat are written once under "Common checks", and phases that follow
+    one recipe go into a table.
+  - Open questions say who answers them and which phase they block; none may
+    block Phase 1, and anything a search can answer is looked up instead.
+  - Before handing over, the plan's cited lines are re-checked and the cheap,
+    read-only commands in its criteria are run once.
+- `implement` asks before every outward action a phase lists, follows the
+  phases' dependencies, reads checkboxes in phase tables, and treats a phase as
+  done once its "before merge" checks pass, carrying the "after rollout" ones
+  in every report until the user confirms them.
 - **Breaking:** the skills no longer write `docs/00-research.md`,
   `docs/01-plan.md`, `docs/02-architecture.md`, or `docs/03-data-model.md` into
   the project. They write `research.md`, `plan.md`, `architecture.md`, and

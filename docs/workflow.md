@@ -10,9 +10,10 @@ The workflow uses a **soft, conversational gate** — no hook, no marker files i
 the normal flow. The discipline lives in the skills themselves:
 
 - `plan` produces a **phased plan** in the active case's `plan.md`. Each phase has its own
-  **Automated** and **Manual** success-criteria checkboxes, plus an explicit
-  "Out of Scope". `plan` never writes code — it ends by asking you to review and
-  then run `/dev-skills:implement`.
+  **Automated** and **Manual** success-criteria checkboxes (manual ones split
+  into "before merge" and "after rollout"), its dependencies, its outward
+  actions, and a rollback, plus an explicit "Out of Scope". `plan` never writes
+  code — it ends by asking you to review and then run `/dev-skills:implement`.
 - `implement` does **one phase at a time**. It implements the phase, runs that
   phase's automated checks, ticks the `- [x]` boxes in the plan, and then
   **pauses and waits for you** to confirm manual verification before the next
