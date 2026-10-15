@@ -121,6 +121,11 @@ wording changes from language to language:
   vocabulary where a person would use a plain word. If the language has a plain
   and a formal word for the same thing, a message to a colleague takes the
   plain one.
+- **Correct but not idiomatic.** A phrase that is grammatical but not what a
+  native speaker says in this situation, often because it spells out what the
+  context already makes clear, such as when the work will start or why you are
+  asking. Use the most ordinary everyday phrasing, and drop words that only
+  restate the obvious.
 - **Sentence patterns.** "Not X but Y" framing, things in threes, a trailing
   clause that adds a vague effect, a question the text answers itself,
   signposts like "here is what I found", hedging on every claim, apology and
@@ -156,7 +161,8 @@ a word for its synonym; rewrite the sentence.
 2. **First and last lines.** Does the first sentence carry the point? Is there
    a generic opener or closer left?
 3. **Words.** Any filler transition, announcing phrase, or word from a higher
-   register than the situation?
+   register than the situation? Any phrase a native speaker would say
+   differently, or that states what the context already makes clear?
 4. **Shape.** Any of the sentence patterns above? Any layout that belongs in a
    document?
 5. **Length.** Within the channel's range in Step 2?
