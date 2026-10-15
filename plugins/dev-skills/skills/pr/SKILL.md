@@ -23,6 +23,11 @@ was made with.
 
 ## Hard rules
 
+- **Only on the user's own request.** Commit, push, and open or update a pull
+  request only when the user asked for it in their own message: by running
+  this skill, or in plain words. A question you asked — "commit and open a
+  PR?" — that the user has not answered yet is not permission. Wait for the
+  answer; never act on the answer you expect.
 - **No tool attribution, anywhere.** Commit messages, the pull request title, and
   the pull request body describe the change and nothing else. Never add:
   - a `Co-Authored-By:` trailer, or any other trailer, that names an AI model,

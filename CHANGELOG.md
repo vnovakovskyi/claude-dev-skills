@@ -55,6 +55,9 @@ To see which version you have installed, run `claude plugin list`.
   is blocked from writing `docs/.approved` at all times, also after approval.
 - `research` is about the task now, not about explaining the code: it points
   to `research-codebase` for questions about how the code works.
+- `pr` commits, pushes, and opens a pull request only on the user's own
+  request. A question it asked and the user has not answered is not
+  permission.
 
 ## [1.0.0] - 2026-10-11
 
