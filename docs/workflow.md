@@ -14,16 +14,20 @@ the normal flow. The discipline lives in the skills themselves:
   into "before merge" and "after rollout"), its dependencies, its outward
   actions, and a rollback, plus an explicit "Out of Scope". `plan` never writes
   code — it ends by asking you to review and then run `/dev-skills:implement`.
-- `implement` does **one phase at a time**. It implements the phase, runs that
-  phase's automated checks, ticks the `- [x]` boxes in the plan, and then
+- `implement` does **one phase at a time**, each on its own new branch from an
+  up-to-date base. It implements the phase, runs the automated checks that need
+  no pull request, ticks the `- [x]` boxes in the plan, asks you before handing
+  off to `pr`, runs the checks that need the open pull request, and then
   **pauses and waits for you** to confirm manual verification before the next
-  phase.
+  phase. It reads plans in any language: it finds a phase's parts by meaning,
+  not by English labels.
 
 So approval is a normal conversational act (you choose to run
 `/dev-skills:implement`, and you confirm between phases) — there is no approval
 file to create, forget, or delete. Progress is tracked by the checkboxes inside
-the plan, so work is resumable: re-running `/dev-skills:implement`
-picks up at the first unchecked phase.
+the plan, one `Outcome` line per phase in the case's card, and the phases' pull
+requests. Before it picks a phase, `implement` compares the three and asks when
+they disagree, so work done by hand or in another session is not redone.
 
 > If you also want **hard** enforcement — where Claude is *physically* blocked
 > from editing code until you approve — there is an optional second plugin. See
@@ -44,9 +48,10 @@ Review the plan in the case folder, then implement it phase by phase:
 /dev-skills:implement <optional: a specific phase from the plan>
 ```
 
-`implement` implements one phase, runs its checks, ticks its boxes, and pauses
-for your manual verification. Tell it to continue when you are ready for the
-next phase.
+`implement` implements one phase on a new branch, runs its checks, ticks its
+boxes, opens the pull request through `pr` when you say yes, and pauses for
+your manual verification. Merge the pull request, then tell it to continue when
+you are ready for the next phase.
 
 ## Questions about the code
 
@@ -125,7 +130,9 @@ service, the work continues in the same case.
 - `plan`, `architecture`, and `data-model` write into the active case;
   `implement` marks it `in-progress`; `pr` records the pull request, the
   outcome, and the lessons, and marks it `in-review`. A later skill that finds
-  the pull request merged marks it `solved`.
+  the pull request merged marks it `solved`. A case whose plan has several
+  phases stays `in-progress` until the last phase: it becomes `in-review` with
+  the last phase's pull request and `solved` when that one is merged.
 - `INDEX.md` is rebuilt from the cards by `plugins/dev-skills/scripts/reindex.sh`
   after every change, so it never drifts from them.
 
