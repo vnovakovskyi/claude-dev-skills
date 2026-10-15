@@ -52,25 +52,27 @@ Below, "the plan" means that file, and "the card" means the case's `case.md`.
 
 ## Reading the plan
 
-Plans are written in the user's language (see `/dev-skills:plan`), headings and
-labels included. Find each part of a phase by **what it means**, never by
-matching English words. A plan in Russian, for example, says "Зависит от" for
-"Depends on" and "Ручные, до мержа" for "Manual, before merge".
+A plan follows the structure of the `/dev-skills:plan` template, but it can be
+written in any language, and its headings and labels can use any wording.
+Never look for a part by its label, in English or in any other language.
+Recognize each part by what it says and where it sits in the phase. The names
+below are this skill's own names for the parts. They are not words to search
+for.
 
-| Part | What it is | Typical labels |
-|---|---|---|
-| Depends on | The phases that must be done before this one | "Depends on", "Зависит от" |
-| Can run in parallel with | Phases that may be worked on at the same time | "Can run in parallel with", "Можно параллельно с" |
-| Outward actions | Actions others see; you ask before each one | "Outward actions", "Внешние действия" |
-| Rollback | How to undo the phase | "Rollback", "Откат" |
-| Automated criteria | Checks a command can decide | "Automated", "Автоматические" |
-| Manual, before merge | Checks a person confirms before the pull request is merged | "Manual, before merge", "Ручные, до мержа" |
-| Manual, after rollout | Checks a person confirms after the change is deployed | "Manual, after rollout", "Ручные, после выкатки" |
-| Common checks | Checks several phases share, often with short ids (A1, M2, R1) that phases refer to | "Common checks", "Общие проверки" |
-| Repeated phases | A recipe written once and a table with one row per phase | "Repeated phases", a table under a "Phases N–M" heading |
+| Part | How to recognize it |
+|---|---|
+| Dependencies | Names other phases by number that must be done before this one |
+| Parallel phases | Names other phases that may be worked on at the same time |
+| Outward actions | Actions other people see: pull requests, releases, messages, shared settings |
+| Rollback | Says how to undo the phase |
+| Automated criteria | Checkboxes whose result a command decides |
+| Manual, before merge | Checkboxes a person confirms while the change is not merged yet |
+| Manual, after rollout | Checkboxes a person confirms once the change is deployed, often after some time |
+| Common checks | A block outside any single phase that lists checks, often with short ids, which phases refer to |
+| Repeated phases | A recipe written once, followed by a table with one row per phase number |
 
-- A list of manual checks with no "before merge" or "after rollout" qualifier
-  counts as "before merge".
+- A list of manual checks that does not say whether it is for before the merge
+  or after the rollout counts as before the merge.
 - When a phase refers to common checks by id, the phase uses those checks with
   the phase's own target filled in.
 - In a table of repeated phases, each row is a phase with its own number and

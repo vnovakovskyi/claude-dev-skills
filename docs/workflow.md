@@ -19,8 +19,8 @@ the normal flow. The discipline lives in the skills themselves:
   no pull request, ticks the `- [x]` boxes in the plan, asks you before handing
   off to `pr`, runs the checks that need the open pull request, and then
   **pauses and waits for you** to confirm manual verification before the next
-  phase. It reads plans in any language: it finds a phase's parts by meaning,
-  not by English labels.
+  phase. It reads plans in any language: it recognizes a phase's parts by what
+  they say, not by their labels.
 
 So approval is a normal conversational act (you choose to run
 `/dev-skills:implement`, and you confirm between phases) — there is no approval

@@ -116,10 +116,11 @@ To see which version you have installed, run `claude plugin list`.
     request, ask, hand off to `pr`, run the checks that need the open pull
     request (CI, a label, an approval), then pause for manual verification.
     The "after rollout" checks follow the merge.
-  - It reads plans in any language: it finds a phase's parts (dependencies,
-    automated and manual checks, common checks, phase tables) by meaning, not
-    by English labels. A manual list without "before merge" or "after rollout"
-    counts as "before merge".
+  - It reads plans in any language: it recognizes a phase's parts
+    (dependencies, automated and manual checks, common checks, phase tables)
+    by what they say, never by their labels in any language. A manual list
+    that does not say whether it is for before the merge or after the rollout
+    counts as before the merge.
   - Before it picks a phase, it compares the plan's checkboxes, the card's
     `Outcome`, and the phases' pull requests, and asks when they disagree, so
     work done outside the skill is not redone.
