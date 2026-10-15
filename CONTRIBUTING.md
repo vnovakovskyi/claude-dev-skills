@@ -84,13 +84,22 @@ submitting:
   bash -n plugins/phase-gate/scripts/gate.sh
   G="$(mktemp -d)" && touch "$G/.claude-phase-gate"
   echo "{\"cwd\":\"$G\",\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"npm test 2>&1\"}}" | bash plugins/phase-gate/scripts/gate.sh; echo "exit=$?"
-  echo "{\"cwd\":\"$G\",\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$G/docs/01-plan.md\"}}" | bash plugins/phase-gate/scripts/gate.sh; echo "exit=$?"
+  echo "{\"cwd\":\"$G\",\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$G/docs/cases/c1/plan.md\"}}" | bash plugins/phase-gate/scripts/gate.sh; echo "exit=$?"
   echo "{\"cwd\":\"$G\",\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$G/src/App.java\"}}" | bash plugins/phase-gate/scripts/gate.sh; echo "exit=$?"
+  echo "{\"cwd\":\"$G\",\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$G/docs/.approved\"}}" | bash plugins/phase-gate/scripts/gate.sh; echo "exit=$?"
   ```
 
-  The first two print `exit=0` and the third `exit=2`: read-only commands
+  The first two print `exit=0` and the last two `exit=2`: read-only commands
   (`2>&1`, `/dev/null`, interpreters) and edits under `docs/` pass, while
-  file-writing commands and source edits are blocked until approval.
+  file-writing commands and source edits are blocked until approval, and
+  `docs/.approved` is blocked always. To check the approved path, create
+  `docs/.active` and `docs/.approved` holding `c1`, plus
+  `docs/cases/c1/research.md` and `docs/cases/c1/plan.md`, and the source edit
+  passes.
+
+- **Knowledge-base index (`plugins/dev-skills/scripts/reindex.sh`):** run it on
+  a scratch `docs/` with a few `cases/*/case.md` cards, including one without
+  frontmatter, and check `INDEX.md` and the warnings.
 
 - **`shellcheck`** is recommended if you have it installed.
 
@@ -108,7 +117,10 @@ submitting:
     (phased plans + human pauses), with the gate as optional hard enforcement.
 - **The gate stays opt-in twice:** it is a separate plugin, and it does nothing
   in a project without the `.claude-phase-gate` marker.
-- **Docs numbering** (`docs/00`–`03`) indicates document *type*, not order.
+- **The knowledge base format** lives in one place,
+  `plugins/dev-skills/references/knowledge-base.md`. Skills point to it instead
+  of restating it; change the format there, and in `scripts/reindex.sh` when it
+  touches the frontmatter.
 - **Markdown:** plain GitHub-flavored Markdown, English, wrap reasonably.
 - **Keep the README short.** It says what the project is, how to install it, and
   how to stay up to date. Details go in `docs/`.

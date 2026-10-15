@@ -19,28 +19,41 @@ allows everything and enforces nothing. On macOS: `brew install jq`.
 
 ## Turn it on for a project
 
-The gate is **opt-in per project** via a marker file. In a project's root:
+The gate is **opt-in per folder** via a marker file in the folder you start
+Claude in — the same folder whose `docs/` holds the knowledge base:
 
 ```bash
-touch .claude-phase-gate          # enable the gate for this project
+touch .claude-phase-gate          # enable the gate for this folder
 ```
 
-In a project without the marker, the hook does nothing.
+In a folder without the marker, the hook does nothing.
 
 While the gate is active and implementation is **not** approved, Claude may edit
-docs/planning files but source-code edits are blocked. To approve:
+the knowledge base and planning files, but source-code edits are blocked.
+Approval is per case. When the plan of the active case looks right, approve it
+yourself:
 
 ```bash
-touch .claude-phase-approved      # approve implementation (run this yourself)
+echo <case slug> > docs/.approved
 ```
 
-Approval requires `docs/00-research.md` and `docs/01-plan.md` to exist plus the
-`.claude-phase-approved` file. Do **not** let Claude create `.claude-phase-approved`
-itself — that would defeat the gate (the gate blocks Claude from creating it).
+Implementation is approved when all of this holds:
+
+- `docs/.active` names a case;
+- that case's folder, `docs/cases/<slug>/`, has a `research*.md` and a
+  `plan*.md`;
+- `docs/.approved` holds the same slug.
+
+When `/dev-skills:research` moves on to another case, `docs/.active` changes and
+the old approval no longer applies, so each case needs its own.
+
+Claude is blocked from writing `docs/.approved` at all times, before and after
+approval, through the edit tools and through obvious shell writes.
 
 ## Gate behavior
 
-Allowed before approval: `docs/**`, `CLAUDE.md`, `.claude/**`, `README.*`.
+Allowed before approval: `docs/**` (except `docs/.approved`), `CLAUDE.md`,
+`.claude/**`, `README.*`.
 
 Blocked before approval: source/config/build/migration file edits, and
 file-mutating shell commands. The Bash check is a **soft backstop** (not a full
@@ -51,36 +64,23 @@ shell parser):
 - Allows: read-only redirections (`2>&1`, `2>/dev/null`) and interpreters/build
   tools (`python`, `node`, `npm`, `make`, …), so research isn't obstructed.
 
-If it ever blocks something harmless, approve implementation or temporarily
+If it ever blocks something harmless, approve the case or temporarily
 `rm .claude-phase-gate`.
 
-## Caveat: approval is a persistent flag
+## Caveat: approval lasts until the case changes
 
-`.claude-phase-approved` stays until you remove it, so if you re-run
-`/dev-skills:plan` after approving, the *old* approval is still in effect. With
-the gate, remove the file (`rm .claude-phase-approved`) when you re-plan. The
-soft (default) workflow avoids this entirely because it has no approval file.
+`docs/.approved` stays until you change it, so if you re-plan the same case
+after approving, the old approval still applies. Remove it
+(`rm docs/.approved`) when you re-plan.
 
-## Version control of the marker files
+## Version control
 
-The marker files live in each working project, so committing them is a
-per-project decision (made in that project's `.gitignore`):
-
-- **`.claude-phase-approved` — recommended to gitignore.** It is transient, local,
-  per-developer state. If committed, every clone is permanently "approved".
-- **`.claude-phase-gate` — your choice:** commit it to share the gate with the
-  team, or gitignore it to keep the gate personal. For anyone without the plugin
-  installed, the marker is an inert empty file and changes nothing.
-
-Suggested per-project `.gitignore`:
-
-```gitignore
-# Local implementation approval — never commit (would disable the gate on clone)
-.claude-phase-approved
-
-# Phase-gate opt-in: uncomment to keep it personal/local instead of shared.
-# .claude-phase-gate
-```
+Nothing the gate reads lives in a repository's tracked files: `docs/` is the
+knowledge base of the folder you start Claude in, kept out of version control as
+the skills describe. `.claude-phase-gate` sits in that same folder; when that
+folder is a repository, keep the marker personal by listing it in
+`.git/info/exclude`, or commit it to share the gate with the team. For anyone
+without the plugin installed, the marker is an inert empty file.
 
 ## Turn it off
 

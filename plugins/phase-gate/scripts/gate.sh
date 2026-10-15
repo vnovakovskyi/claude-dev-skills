@@ -7,14 +7,16 @@
 #
 #   .claude-phase-gate
 #
-# While the gate is active and implementation is not approved, Claude may edit docs,
-# but source-code edits are blocked.
+# While the gate is active and implementation is not approved, Claude may edit the
+# knowledge base under docs/, but source-code edits are blocked.
 #
-# To approve implementation manually from your terminal, run:
+# Implementation is approved for the case named in docs/.active when that case has
+# research and a plan, and docs/.approved holds the same slug. Approve it yourself,
+# from your terminal:
 #
-#   touch .claude-phase-approved
+#   echo <case slug> > docs/.approved
 #
-# Do not ask Claude to create the approval file for you if you want a real gate.
+# Claude is never allowed to write docs/.approved, approved or not.
 
 set -euo pipefail
 
@@ -40,8 +42,41 @@ TOOL_NAME="$(printf '%s' "$INPUT" | jq -r '.tool_name // ""')"
 FILE_PATH="$(printf '%s' "$INPUT" | jq -r '.tool_input.file_path // .tool_input.path // .tool_input.notebook_path // ""')"
 COMMAND="$(printf '%s' "$INPUT" | jq -r '.tool_input.command // ""')"
 
+first_line() {
+  [[ -f "$1" ]] || return 0
+  head -n 1 "$1" | tr -d '[:space:]'
+}
+
 approved() {
-  [[ -f "docs/00-research.md" && -f "docs/01-plan.md" && -f ".claude-phase-approved" ]]
+  local active approved_slug case_dir
+  active="$(first_line docs/.active)"
+  approved_slug="$(first_line docs/.approved)"
+  [[ -n "$active" && "$active" == "$approved_slug" ]] || return 1
+  case "$active" in
+    */*|*..*) return 1 ;;
+  esac
+  case_dir="docs/cases/$active"
+  compgen -G "$case_dir/research*.md" >/dev/null || return 1
+  compgen -G "$case_dir/plan*.md" >/dev/null || return 1
+}
+
+relative_path() {
+  local path="$1"
+  # Claude Code sends absolute paths. Make a path inside the project relative to
+  # the project root (we already cd'ed there), so the patterns below match it.
+  path="${path#"$PWD"/}"
+  path="${path#"$(pwd -P)"/}"
+  printf '%s' "${path#./}"
+}
+
+# The approval file belongs to the user. Writing it is blocked at all times.
+is_approval_path() {
+  local path
+  path="$(relative_path "$1")"
+  case "$path" in
+    docs/.approved|*/docs/.approved) return 0 ;;
+    *) return 1 ;;
+  esac
 }
 
 is_allowed_planning_path() {
@@ -50,13 +85,7 @@ is_allowed_planning_path() {
   # Empty path means this tool call is not file-specific.
   [[ -z "$path" ]] && return 1
 
-  # Claude Code sends absolute paths. Make a path inside the project relative to
-  # the project root (we already cd'ed there), so the patterns below match it.
-  path="${path#"$PWD"/}"
-  path="${path#"$(pwd -P)"/}"
-
-  # Normalize leading ./
-  path="${path#./}"
+  path="$(relative_path "$path")"
 
   # docs/../src/App.java is not a docs path.
   case "/$path/" in
@@ -108,6 +137,23 @@ looks_like_writing_bash() {
   return 1
 }
 
+case "$TOOL_NAME" in
+  Write|Edit|MultiEdit|NotebookEdit)
+    if [[ -n "$FILE_PATH" ]] && is_approval_path "$FILE_PATH"; then
+      echo "Phase gate: docs/.approved is written by the user only." >&2
+      echo "Ask the user to run: echo <case slug> > docs/.approved" >&2
+      exit 2
+    fi
+    ;;
+  Bash)
+    if [[ "$COMMAND" == *".approved"* ]] && looks_like_writing_bash "$COMMAND"; then
+      echo "Phase gate: docs/.approved is written by the user only." >&2
+      echo "Ask the user to run: echo <case slug> > docs/.approved" >&2
+      exit 2
+    fi
+    ;;
+esac
+
 if approved; then
   exit 0
 fi
@@ -119,11 +165,11 @@ case "$TOOL_NAME" in
     fi
 
     echo "Phase gate blocked a source-code edit before implementation approval." >&2
-    echo "Current phase allows docs/planning changes only." >&2
+    echo "Current phase allows knowledge-base (docs/) changes only." >&2
     echo "Required before coding:" >&2
-    echo "  1. docs/00-research.md must exist" >&2
-    echo "  2. docs/01-plan.md must exist" >&2
-    echo "  3. User must manually run: touch .claude-phase-approved" >&2
+    echo "  1. docs/.active names the case" >&2
+    echo "  2. docs/cases/<case>/ has research*.md and plan*.md" >&2
+    echo "  3. The user runs: echo <case slug> > docs/.approved" >&2
     echo "Blocked path: ${FILE_PATH:-unknown}" >&2
     exit 2
     ;;
@@ -131,8 +177,8 @@ case "$TOOL_NAME" in
   Bash)
     if looks_like_writing_bash "$COMMAND"; then
       echo "Phase gate blocked a shell command that may modify files before implementation approval." >&2
-      echo "Before coding or file-changing shell commands are allowed, complete research + plan and manually run:" >&2
-      echo "  touch .claude-phase-approved" >&2
+      echo "Before coding or file-changing shell commands are allowed, complete research + plan, and the user runs:" >&2
+      echo "  echo <case slug> > docs/.approved" >&2
       echo "Blocked command: $COMMAND" >&2
       exit 2
     fi

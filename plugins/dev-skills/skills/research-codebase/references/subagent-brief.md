@@ -6,7 +6,8 @@ conversation, not the other subagents.
 
 ```md
 Read-only research. Do not change files, run installs, generators, migrations,
-or formatters. Reading, searching, git log/blame/show are fine.
+formatters, or build tools that refresh a cache (nx graph, mvn, gradle).
+Reading, searching, git log/blame/show/diff, and read-only gh calls are fine.
 
 Question: <the sub-question, in one sentence>
 
@@ -24,11 +25,18 @@ Rules:
   the repository.
 - Mark each claim OBSERVED (you read the line) or INFERRED (you reasoned it from
   something else, and say from what).
+- For every count (files, imports, usages), give the command that produced it,
+  so it can be re-run.
+- Report only what answers the question. Keep the report under about 150 lines:
+  a few examples per pattern, not every hit.
 
 Report in this shape, nothing else:
 
 ## Claims
 - <claim> — <repo>/<path:line> — OBSERVED | INFERRED (<from what>)
+
+## Counts
+- <what was counted>: <number> — `<command>`
 
 ## Inconsistencies
 - <side A> — <path:line>; <side B> — <path:line>

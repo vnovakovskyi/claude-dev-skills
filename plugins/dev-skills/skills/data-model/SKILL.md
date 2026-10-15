@@ -1,6 +1,6 @@
 ---
 name: data-model
-description: Optional workflow phase. Analyze, document, review, or redesign domain/data model, schemas, persistence, indexes, migrations, and data flows. Produces docs/03-data-model.md. No implementation by default.
+description: Optional workflow phase. Analyze, document, review, or redesign domain/data model, schemas, persistence, indexes, migrations, and data flows. Writes data-model.md into a case of the knowledge base. No implementation by default.
 argument-hint: <data model to analyze or design>
 disable-model-invocation: true
 ---
@@ -27,13 +27,23 @@ This skill can be used for:
 - Event/data flow design.
 - Data consistency and integrity review.
 
+## The knowledge base
+
+Read `../../references/knowledge-base.md` (from this skill's base directory)
+first, and search the knowledge base as it describes: an earlier review or
+design of the same service is the starting point. The output belongs to a case:
+the one named in `$ARGUMENTS`, else the one in `docs/.active` when the request
+is part of it, else a new case (kind `review` for documenting or reviewing an
+existing model). Below, "the case" means `docs/cases/<slug>/`.
+
 ## Hard rules
 
 - Do **not** create migrations by default.
 - Do **not** change entity classes, repositories, SQL, Terraform, or production code by default.
 - Do **not** assume the database engine if it is not visible.
 - Separate conceptual/domain model from physical persistence model.
-- Main output must be `docs/03-data-model.md`.
+- Main output is `data-model.md` in the case folder; update the card's
+  `Findings` or `Decision` with the gist, set `updated`, and rebuild the index.
 
 ## Working process
 
@@ -43,9 +53,7 @@ This skill can be used for:
    - Data model review,
    - Migration/redesign proposal.
 2. Read relevant docs:
-   - `docs/00-research.md`, if present.
-   - `docs/01-plan.md`, if present.
-   - `docs/02-architecture.md`, if present.
+   - the case's `case.md`, `research*.md`, `plan*.md`, and `architecture.md`, if present.
 3. Inspect source code, schema files, migrations, ORM entities, repositories, queries, DTOs, and API contracts if present.
 4. Identify key entities, relationships, lifecycle rules, constraints, and invariants.
 5. Identify risks: duplication, missing constraints, bad indexes, unclear ownership, leaky abstractions, migration risk, data loss risk.
@@ -55,7 +63,7 @@ This skill can be used for:
 
 Create or update:
 
-`docs/03-data-model.md`
+`data-model.md` in the case folder
 
 Use this structure:
 
@@ -151,7 +159,7 @@ Prioritized recommendations.
 
 ## 14. Impact on Architecture / Plan
 
-What should change in `docs/02-architecture.md` or `docs/01-plan.md`, if anything.
+What should change in the case's `architecture.md` or plan, if anything.
 ````
 
 ## Completion criteria

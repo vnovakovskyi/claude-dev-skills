@@ -1,6 +1,6 @@
 ---
 name: architecture
-description: Optional workflow phase. Analyze, document, review, or propose architecture for a new idea or existing service. Produces docs/02-architecture.md. No implementation by default.
+description: Optional workflow phase. Analyze, document, review, or propose architecture for a new idea or existing service. Writes architecture.md into a case of the knowledge base. No implementation by default.
 argument-hint: <architecture to analyze or design>
 disable-model-invocation: true
 ---
@@ -20,10 +20,19 @@ Analyze or design architecture without immediately coding.
 This skill can be used in two modes:
 
 1. **New idea / after research**  
-   Create a proposed architecture based on `docs/00-research.md`.
+   Create a proposed architecture based on the case's research.
 
 2. **Existing service / existing codebase**  
    Reverse-engineer, document, review, and improve the current architecture.
+
+## The knowledge base
+
+Read `../../references/knowledge-base.md` (from this skill's base directory)
+first, and search the knowledge base as it describes: an earlier review or
+design of the same service is the starting point. The output belongs to a case:
+the one named in `$ARGUMENTS`, else the one in `docs/.active` when the request
+is part of it, else a new case (kind `review` for documenting or reviewing an
+existing service). Below, "the case" means `docs/cases/<slug>/`.
 
 ## Hard rules
 
@@ -31,7 +40,8 @@ This skill can be used in two modes:
 - Do **not** create infrastructure files, migrations, or application code unless the user explicitly asks after the analysis.
 - Do **not** invent architecture that is not supported by the repository or research.
 - Prefer concrete trade-offs over vague “best practices”.
-- Main output must be `docs/02-architecture.md`.
+- Main output is `architecture.md` in the case folder; update the card's
+  `Findings` or `Decision` with the gist, set `updated`, and rebuild the index.
 
 ## Working process
 
@@ -39,8 +49,7 @@ This skill can be used in two modes:
    - New architecture design, or
    - Existing architecture review.
 2. Read relevant docs:
-   - `docs/00-research.md`, if present.
-   - `docs/01-plan.md`, if present.
+   - the case's `case.md`, `research*.md`, and `plan*.md`, if present.
    - Existing README/docs.
 3. Inspect source code and infrastructure if this is an existing service.
 4. Identify modules, boundaries, dependencies, external systems, data flows, and runtime/deployment model.
@@ -51,7 +60,7 @@ This skill can be used in two modes:
 
 Create or update:
 
-`docs/02-architecture.md`
+`architecture.md` in the case folder
 
 Use this structure:
 
@@ -139,7 +148,7 @@ Prioritized recommendations.
 
 ## 13. Impact on Plan
 
-What should be changed in `docs/01-plan.md`, if anything.
+What should be changed in the case's plan, if anything.
 ````
 
 ## Completion criteria
