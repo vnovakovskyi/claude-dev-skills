@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Finish a piece of work as a pull request. Commits what belongs to the change, pushes the branch, and opens the pull request — or updates the one that already exists — with a description in three parts (motivation, what was done, how to verify). Commit messages and the pull request describe the work only and never credit an AI tool or agent. Use when the user asks to create, open, raise, or update a pull request.
+description: Finish a piece of work as a pull request. Commits what belongs to the change, pushes the branch, and opens the pull request — or updates the one that already exists — with a description in three parts (motivation, what was done, how to verify). It never merges: merging is left to the user. Commit messages and the pull request describe the work only and never credit an AI tool or agent. Use when the user asks to create, open, raise, or update a pull request.
 argument-hint: '<optional: base branch, then "draft", an issue to link, or what to emphasize>'
 allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(git ls-remote:*), Bash(gh pr view:*), Bash(gh pr list:*)
 ---
@@ -52,8 +52,15 @@ was made with.
   cause or report it.
 - **Claim only what is true.** "How to verify" lists steps a reviewer can run. A
   check you did not run is reported as not run.
-- **Stop at the open pull request.** Don't merge it, don't enable auto-merge, and
-  don't add reviewers, labels, or assignees unless the user asks.
+- **What this skill may do, and nothing more:** create a working branch,
+  commit to it, push it, and open or update its pull request.
+- **Never merge. Only the user merges.** Don't merge the pull request, don't
+  enable auto-merge, don't add it to a merge queue, and don't merge or push the
+  branch into the base or the default branch by any other route. This holds
+  even when the user asks for it inside this skill: give them the pull request
+  link and leave the merge to them.
+- **Stop at the open pull request.** Don't add reviewers, labels, or assignees
+  unless the user asks.
 
 ## Step 1 — Read the state
 
@@ -177,7 +184,7 @@ to `solved`.
 - [ ] Someone who was not here can follow "How to verify".
 - [ ] Every check reported as run was run.
 - [ ] Nothing unrelated and nothing secret is in the commits.
-- [ ] No work was pushed to the default branch or to the base, and nothing was force-pushed or merged.
+- [ ] No work was pushed to the default branch or to the base, nothing was force-pushed, and nothing was merged or set to auto-merge: the merge is left to the user.
 - [ ] When there is a case, its card has the pull request, `Outcome`, `Lessons`, and status `in-review`, and the index is rebuilt.
 
 ## Completion criteria
@@ -188,6 +195,7 @@ The skill is complete only when:
   existing one is updated.
 - Its description says why, what, and how to verify.
 - The commits and the pull request carry no tool attribution.
+- The pull request is left open for the user to merge.
 
 At the end of your response, report:
 

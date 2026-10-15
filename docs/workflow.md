@@ -144,6 +144,10 @@ The full format — the card's fields, statuses, and the search steps — is in
 change, pushes the branch, and opens the pull request. If the branch already has
 one, it rewrites the description so that it covers the new commits too.
 
+It works only on a working branch and stops at the open pull request. It never
+merges, never enables auto-merge, and never pushes into the base: the merge is
+always yours.
+
 The base is the branch the pull request goes into. Without arguments it is the
 repository's default branch. Name a branch first to target that one instead:
 

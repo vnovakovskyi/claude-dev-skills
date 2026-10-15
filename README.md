@@ -78,7 +78,7 @@ Want a change before it is released? See
 | `/dev-skills:implement` | Implements one phase of the plan, runs its checks, and pauses for your verification. | code |
 | `/dev-skills:architecture` | Optional. Documents, reviews, or proposes an architecture. | `architecture.md` in a case |
 | `/dev-skills:data-model` | Optional. Documents, reviews, or redesigns a data model. | `data-model.md` in a case |
-| `/dev-skills:pr` | Commits the change, pushes the branch, and opens or updates the pull request. | the pull request; the outcome in the case |
+| `/dev-skills:pr` | Commits the change, pushes the branch, and opens or updates the pull request. It never merges; that is yours. | the pull request; the outcome in the case |
 
 All of them run only when you type the command, except `pr`, which also starts
 when you ask for a pull request in plain words.
