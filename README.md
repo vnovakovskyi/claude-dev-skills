@@ -19,8 +19,9 @@ on. `implement` then builds the plan one phase at a time.
   `claude` command. If you have only the desktop app, `claude` is not on your
   `PATH`; install it with
   `curl -fsSL https://claude.ai/install.sh | bash`.
-- **The GitHub CLI, for `pr`.** The `pr` skill opens and updates pull requests
-  with [`gh`](https://cli.github.com), so it works with GitHub only. Install
+- **The GitHub CLI, for `pr` and `review-pr`.** They open, update, and read
+  pull requests with [`gh`](https://cli.github.com), so they work with GitHub
+  only. Install
   `gh` and sign in with `gh auth login`. The other skills do not need it.
 - **`jq`, for the optional gate.** Only `phase-gate` uses it; see
   [Optional: a hard gate](#optional-a-hard-gate).
@@ -79,11 +80,12 @@ Want a change before it is released? See
 | `/dev-skills:architecture` | Optional. Documents, reviews, or proposes an architecture. | `architecture.md` in a case |
 | `/dev-skills:data-model` | Optional. Documents, reviews, or redesigns a data model. | `data-model.md` in a case |
 | `/dev-skills:pr` | Commits the change, pushes the branch, and opens or updates the pull request. It never merges; that is yours. | the pull request; the outcome in the case |
+| `/dev-skills:review-pr` | Reviews someone's pull request: the whole change, its consumers, and the description's claims. Shows you every verified finding with a draft comment, and posts only what you choose, as a pending review you submit yourself. | the chat; `review.md` in a case |
 | `/dev-skills:draft-message` | Drafts a message to a colleague, a product owner, a manager, or testers, in the channel you name, written the way a person writes. It never sends it. | the chat |
 
-All of them run only when you type the command, except `pr` and
-`draft-message`, which also start when you ask for a pull request or a message
-in plain words.
+All of them run only when you type the command, except `pr`, `review-pr`, and
+`draft-message`, which also start when you ask for a pull request, a review, or
+a message in plain words.
 
 ## How to use it
 

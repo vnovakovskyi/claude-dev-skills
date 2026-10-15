@@ -37,6 +37,8 @@ docs/
     plan-<YYYY-MM-DD>-<subject>.md       a later plan
     architecture.md               optional
     data-model.md                 optional
+    review.md                     a pull request review (review-pr)
+    review-<YYYY-MM-DD>-<subject>.md     a later review round
     handoff-<YYYY-MM-DD>-<subject>.md    optional, state for a later session
     <anything else>               queries, logs, samples the case needs
 ```
