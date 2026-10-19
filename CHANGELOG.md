@@ -17,11 +17,23 @@ To see which version you have installed, run `claude plugin list`.
 
 ### Added
 
-- `review-pr` — reviews someone's pull request and shows the user every finding
+- `review-pr` — reviews a pull request and shows the user every finding
   before anything reaches it.
-  - It reads the changed files in full, the callers and consumers of what
+  - It reads the changed files of logic in full and fixtures, generated code,
+    and lockfiles by size and search, the callers and consumers of what
     changed, the CI checks, and the reviews and comments already on the pull
-    request, and follows the repository's own review instructions.
+    request, and follows the repository's own review instructions. It checks
+    what the base branch gained since the merge base and whether the pull
+    request still merges cleanly, and runs the tests on the merge result,
+    without a commit, when the base changed the same modules or the build
+    files they inherit.
+  - It checks the tests against the task, not against CI: each requirement is
+    mapped to the test that proves it, expected values must come from the task
+    rather than the code's own output, tests bent to pass (assertions that
+    always hold, mocks that return what is asserted, skipped tests, raised
+    timeouts, unexplained changes to existing expectations) are findings, and
+    the core requirement is broken in a temporary worktree, where the pull
+    request wires it in, to see the tests fail.
   - It checks the description's claims against the code, rollout and recovery
     steps included.
   - Every finding is verified, cites a file and line, describes a concrete case
@@ -30,15 +42,26 @@ To see which version you have installed, run `claude plugin list`.
     lines with a few lines of context and their numbers at the head commit,
     with the lines the pull request changed marked. `scripts/excerpt.sh` prints
     them from git, says whether they can carry an inline comment, and stops
-    with an error on a range that is not in the file.
+    with an error on a range that is not in the file. An excerpt is never
+    edited or cut; it is kept short by choosing the range.
   - Before it shows the findings, it checks the pull request's head and CI
     again; when the head moved during the review, a force-push included, it
     re-checks the findings against the new head and says what changed. Points
     already raised are credited, not repeated; problems that predate the pull
     request are listed apart.
-  - The findings come back in the chat with a draft comment each and are saved
-    as `review.md` in a knowledge-base case. A later round compares with the
-    previous one.
+  - The findings come back in the chat, in English unless the user names
+    another language, with a draft comment each, and are saved as
+    `review-pr-<n>.md` in a knowledge-base case, so one case can hold the
+    reviews of several pull requests. Each review file starts with a fixed
+    line naming the pull request, the round, the head, and the merge base.
+  - A later round reviews only what changed since the previous one, re-checks
+    each earlier finding as fixed, still open, answered, or obsolete, and is
+    saved as `review-pr-<n>-round-<k>.md`; the case card keeps only the latest
+    state. A merged or closed pull request is reviewed only when the user
+    confirms.
+  - On the user's own pull request each finding carries a fix instead of a
+    draft comment, nothing is posted, and fixing is left to `pr` on the user's
+    word.
   - It posts nothing until the user has read the findings and chosen what to
     post, and then only as a pending review the user submits. It never
     approves, requests changes, or resolves a thread, and it never touches the
@@ -82,7 +105,8 @@ To see which version you have installed, run `claude plugin list`.
   error texts, outcome, lessons) next to the research and the plan.
   `scripts/reindex.sh` rebuilds `docs/INDEX.md` from the cards. Every skill
   starts by searching it and reports "Prior work", so a problem solved in one
-  service is found when it turns up in another.
+  service is found when it turns up in another. The index is searched first
+  and read in full only when the search finds nothing or it is short.
 
 ### Changed
 

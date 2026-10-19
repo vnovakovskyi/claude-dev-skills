@@ -115,14 +115,16 @@ docs/
     plan.md                        the plan
     architecture.md                optional
     data-model.md                  optional
-    review.md                      a pull request review (review-pr)
+    review-pr-<n>.md               a review of pull request <n> (review-pr)
+    review-pr-<n>-round-<k>.md     a later round of the same review
 ```
 
 A **case** is one subject — a problem, a change, a question — with everything
 done about it. It is not a ticket: when the same error turns up in another
 service, the work continues in the same case.
 
-- Every skill starts by searching the knowledge base: it reads `INDEX.md` and
+- Every skill starts by searching the knowledge base: it searches `INDEX.md`,
+  reading it in full only when the search finds nothing or the index is short,
   greps the cards for the request's error texts, services, and tickets, and
   reports what it found as "Prior work".
 - `research` picks the case, continuing a matching one or creating a new one,
@@ -192,13 +194,20 @@ request without merging it. If the repository has its own pull request template,
 /dev-skills:review-pr <pull request link or number; optional: what to focus on>
 ```
 
-`review-pr` reviews someone else's pull request. It reads every changed file in
+`review-pr` reviews a pull request. It reads every changed file of logic in
 full, the callers and consumers of what changed (in other services too), the CI
 checks, and every comment already on the pull request, people's and bots'. It
-follows the repository's own review instructions when it has them. It checks
-the claims of the description against the code, rollout and recovery steps
-included, because the diff does not show when the new code makes one of them
-impossible.
+checks what the base branch gained since the pull request branched off and
+whether it still merges cleanly. It follows the repository's own review
+instructions when it has them. It checks the claims of the description against
+the code, rollout and recovery steps included, because the diff does not show
+when the new code makes one of them impossible.
+
+It checks the tests against the task, not against CI: every requirement is
+traced to the test that proves it, the expected values must come from the task
+rather than from the code's own output, tests bent to pass are called out, and
+the core requirement is broken in a temporary worktree, where the pull request
+wires it in, to see the tests fail.
 
 Each finding shows the code it is about, as a review comment on GitHub does:
 the lines with their numbers at the head commit, the changed ones marked with
@@ -210,16 +219,26 @@ What does not hold is dropped. A point someone already raised is shown as theirs
 with whether the skill agrees. Problems that were there before the pull request
 are listed apart and never posted against it.
 
-Nothing goes to the pull request first. You get the findings in the chat, sorted
-by severity, each with a draft comment in your voice, and saved as `review.md`
+The review is written in English unless you name another language. Nothing
+goes to the pull request first. You get the findings in the chat, sorted
+by severity, each with a draft comment in your voice, and saved as `review-pr-<n>.md`
 in a case of the knowledge base, so you can re-read and check them. Then you say
 which ones to post. The skill posts them as a **pending** review that only you
 can see, and you submit it on GitHub with the verdict you choose. It never
 approves, requests changes, or resolves a thread.
 
+On your own pull request it reviews just as strictly, but each finding comes
+with a fix instead of a draft comment, nothing is posted, and fixing is left to
+`/dev-skills:pr` when you say so.
+
 It reads the pull request's code with `git fetch` and `git show`, so your
-checkout stays as it is. Run it again on a later revision, and it compares with
-the previous round: fixed, still open, or answered.
+checkout stays as it is. Run it again on a later revision, and it reviews only
+what changed since the previous round, re-checks every earlier finding (fixed,
+still open, answered, or obsolete), and saves the round as
+`review-pr-<n>-round-<k>.md`. Every review file starts with a fixed line naming
+the pull request, the round, and the commits it reviewed, so the next round
+knows where to start. It asks before reviewing a pull request that is already
+merged or closed.
 
 ## Drafting a message
 

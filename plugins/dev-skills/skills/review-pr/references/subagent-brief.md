@@ -24,6 +24,12 @@ retries, broken callers or consumers of anything changed (search the whole
 repository for them), data and migration risks, security gaps, and claims of the
 description that the code does not keep. Skip formatting and naming.
 
+For tests in your area, say which requirement each one proves, and report
+signs of a test bent to pass: assertions that always hold, a mock that returns
+what the test then asserts or returns null, skipped tests, raised timeouts or
+retries, a test that bypasses the part it claims to check, and expected values
+changed without a changed requirement. Do not run the tests.
+
 Rules:
 - Report only problems the pull request adds or makes worse. Put problems that
   were there before under "Outside".
