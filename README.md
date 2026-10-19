@@ -80,7 +80,7 @@ Want a change before it is released? See
 | `/dev-skills:architecture` | Optional. Documents, reviews, or proposes an architecture. | `architecture.md` in a case |
 | `/dev-skills:data-model` | Optional. Documents, reviews, or redesigns a data model. | `data-model.md` in a case |
 | `/dev-skills:pr` | Commits the change, pushes the branch, and opens or updates the pull request. It never merges; that is yours. | the pull request; the outcome in the case |
-| `/dev-skills:review-pr` | Reviews someone's pull request: the whole change, its consumers, and the description's claims. Shows you every verified finding with a draft comment, and posts only what you choose, as a pending review you submit yourself. | the chat; `review.md` in a case |
+| `/dev-skills:review-pr` | Reviews a pull request: the whole change, its consumers, the description's claims, and whether the tests prove the task. Shows you every verified finding with a draft comment (a fix on your own pull request), and posts only what you choose, as a pending review you submit yourself. A later round reviews only what changed. | the chat; `review.md` in a case |
 | `/dev-skills:draft-message` | Drafts a message to a colleague, a product owner, a manager, or testers, in the channel you name, written the way a person writes. It never sends it. | the chat |
 
 All of them run only when you type the command, except `pr`, `review-pr`, and

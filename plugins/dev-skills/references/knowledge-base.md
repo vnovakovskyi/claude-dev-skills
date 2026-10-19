@@ -150,8 +150,12 @@ updated: 2026-10-15
 
 Every skill starts here, before it reads code or writes anything:
 
-1. Read `docs/INDEX.md` in full. It is one line per entry. If it is missing but
-   `docs/cases/` or `docs/codebase/` exists, run `reindex.sh` first.
+1. Search `docs/INDEX.md` for the request's keys first (`grep -iE` on the
+   service and repository names, ticket ids, pull request numbers, library
+   names); it is one line per entry. Read it in full only when the search finds
+   nothing or the index is short (about 40 lines or fewer), so that a subject
+   named differently is not missed. If it is missing but `docs/cases/` or
+   `docs/codebase/` exists, run `reindex.sh` first.
 2. Search the cards and notes for the request's keys: exact error texts,
    service and repository names, ticket ids, library names. For example:
    `grep -rliF "<error text>" docs/cases/*/case.md docs/codebase/`.
