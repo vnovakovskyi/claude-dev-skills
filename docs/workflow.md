@@ -115,8 +115,8 @@ docs/
     plan.md                        the plan
     architecture.md                optional
     data-model.md                  optional
-    review.md                      a pull request review (review-pr)
-    review-<date>-round-<n>.md     a later round of the same review
+    review-pr-<n>.md               a review of pull request <n> (review-pr)
+    review-pr-<n>-round-<k>.md     a later round of the same review
 ```
 
 A **case** is one subject — a problem, a change, a question — with everything
@@ -206,7 +206,8 @@ when the new code makes one of them impossible.
 It checks the tests against the task, not against CI: every requirement is
 traced to the test that proves it, the expected values must come from the task
 rather than from the code's own output, tests bent to pass are called out, and
-the core requirement is broken in a temporary worktree to see the tests fail.
+the core requirement is broken in a temporary worktree, where the pull request
+wires it in, to see the tests fail.
 
 Each finding shows the code it is about, as a review comment on GitHub does:
 the lines with their numbers at the head commit, the changed ones marked with
@@ -220,7 +221,7 @@ are listed apart and never posted against it.
 
 The review is written in English unless you name another language. Nothing
 goes to the pull request first. You get the findings in the chat, sorted
-by severity, each with a draft comment in your voice, and saved as `review.md`
+by severity, each with a draft comment in your voice, and saved as `review-pr-<n>.md`
 in a case of the knowledge base, so you can re-read and check them. Then you say
 which ones to post. The skill posts them as a **pending** review that only you
 can see, and you submit it on GitHub with the verdict you choose. It never
@@ -234,7 +235,10 @@ It reads the pull request's code with `git fetch` and `git show`, so your
 checkout stays as it is. Run it again on a later revision, and it reviews only
 what changed since the previous round, re-checks every earlier finding (fixed,
 still open, answered, or obsolete), and saves the round as
-`review-<date>-round-<n>.md`.
+`review-pr-<n>-round-<k>.md`. Every review file starts with a fixed line naming
+the pull request, the round, and the commits it reviewed, so the next round
+knows where to start. It asks before reviewing a pull request that is already
+merged or closed.
 
 ## Drafting a message
 

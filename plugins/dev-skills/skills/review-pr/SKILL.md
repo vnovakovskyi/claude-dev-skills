@@ -2,7 +2,7 @@
 name: review-pr
 description: Review a pull request, someone else's or the user's own, and show the user every finding before anything reaches it. Reads the whole change, the code around it, its consumers in other services, the CI checks, the comments already on it, and what changed on the base branch since; checks the description's claims against the code and the tests against the task, not against CI; verifies each finding and drops the ones that do not hold. A later round on the same pull request reviews only what changed since the previous one. Returns the findings in the chat and saves them to the knowledge base, each with a draft comment, or with a fix when the pull request is the user's own. Posts nothing until the user has read them and chosen what to post, and then only as a pending review that the user submits. Use when the user asks to review a pull request.
 argument-hint: '<pull request link or number; optional: what to focus on>'
-allowed-tools: Read, Grep, Glob, Bash(gh pr view:*), Bash(gh pr diff:*), Bash(gh pr checks:*), Bash(gh api user:*), Bash(git fetch:*), Bash(git show:*), Bash(git diff:*), Bash(git log:*), Bash(git grep:*), Bash(git blame:*), Bash(git rev-parse:*), Bash(git merge-base:*), Bash(git merge-tree:*), Bash(git range-diff:*), Bash(git ls-tree:*)
+allowed-tools: Read, Grep, Glob, Bash(gh pr view:*), Bash(gh pr diff:*), Bash(gh pr checks:*), Bash(gh api user:*), Bash(git fetch:*), Bash(git show:*), Bash(git diff:*), Bash(git log:*), Bash(git grep:*), Bash(git blame:*), Bash(git rev-parse:*), Bash(git merge-base:*), Bash(git merge-tree:*), Bash(git range-diff:*), Bash(git ls-tree:*), Bash(git worktree add:*), Bash(git worktree remove:*), Bash(git worktree prune:*)
 ---
 
 # Review a pull request
@@ -80,10 +80,11 @@ for the repository in the current folder. If there is none, ask for it.
 
 Collect, with read-only `gh` calls:
 
-- title, author, base and head branches, head commit, draft state, size, labels,
-  and the description (`gh pr view <n> --json ...`);
+- title, author, state, base and head branches, head commit, draft state,
+  size, labels, and the description (`gh pr view <n> --json ...`);
 - the commits (`git log <base>..<head>`), and the ticket they and the
-  description link to. Read the ticket when the user has a way to open it;
+  description link to. Read the ticket when this session has a tool for the
+  tracker; otherwise say in the result that the ticket was not read;
 - the changed files (`gh pr diff <n> --name-only`, and `git diff --stat`);
 - the CI checks (`gh pr checks <n>`): what ran, what passed, what was skipped;
 - every review and comment: `gh pr view <n> --json reviews,comments` and the
@@ -95,6 +96,9 @@ the ticket, and the error texts the pull request mentions. A plan or research
 that the pull request implements is the best source of its requirements
 (Step 4).
 
+When the pull request is already merged or closed, say so and ask the user
+whether to review it anyway before you go on.
+
 Then settle three things before you read any code:
 
 - **Whose pull request it is.** When its author is the user
@@ -104,7 +108,9 @@ Then settle three things before you read any code:
   pull request, this is a later round: follow "A later round" below, which
   replaces a full pass with a review of what changed.
 - **The language.** Write the review in English, unless the user names another
-  language for it. Draft comments are in the pull request's language.
+  language for it. The language the user writes in, and the language of
+  earlier rounds, do not change this. Draft comments are in the pull request's
+  language.
 
 ## Step 2 — Get the code
 
@@ -126,9 +132,11 @@ result which commit you reviewed.
 
 **Read what matters in full, and the rest by size and search:**
 
-- Read every changed file that holds logic in full at the head commit, not only
-  the hunks. Read one file per call, or a few small ones: an output too large
-  for one reply is stored aside and has to be read a second time.
+- Read every changed file that holds logic at the head commit, not only the
+  hunks: in full when it has up to about 400 lines; in a longer one, the
+  changed methods whole, the fields and constructors, and the methods they
+  call. Read one file per call, or a few small ones: an output too large for
+  one reply is stored aside and has to be read a second time.
 - Fixtures, snapshots, generated code, lockfiles, and translations: look at
   `git diff --stat` and their first lines. Open one in full when a finding or a
   test check depends on its content.
@@ -141,22 +149,33 @@ result which commit you reviewed.
 is now, not as it was at the merge base:
 
 ```bash
-git -C <repo> log --oneline <merge base>..origin/<base> -- <folders of the changed files>
+git -C <repo> log --oneline <merge base>..origin/<base> -- <modules of the changed files> <build files they inherit>
 git -C <repo> merge-tree --write-tree origin/<base> <head sha>
 ```
 
-Read the base's commits that touch the same folders or the same build files.
-A conflict, or a base change that the pull request's code or tests now depend
-on, belongs in the review (CI, or a finding when it breaks something). When the
-base changed the modules under test, run the tests on the merge result in a
-temporary worktree (Step 7).
+A module is the unit the changed files are built in (the folder with their
+build file), not only the folders the diff touches; a parent or root build file
+they inherit counts too. Read the base's commits that touch them. A conflict,
+or a base change that the pull request's code or tests now depend on, belongs
+in the review (CI, or a finding when it breaks something). When the base
+changed the modules under test, run the tests on the merge result, without a
+commit:
+
+```bash
+git -C <repo> worktree add --detach <tmp> origin/<base>
+git -C <tmp> merge --no-commit --no-ff <head sha>
+# run the tests in <tmp>
+git -C <tmp> merge --abort
+git -C <repo> worktree remove --force <tmp>
+```
 
 ## Step 3 — Read the repository's rules
 
-Look for review instructions and conventions in the repository:
-`.github/copilot-instructions.md`, `.github/instructions/*.md`, `CLAUDE.md`,
-`AGENTS.md`, `REVIEW.md`, `CONTRIBUTING.md`, and the README of the changed
-service. Take from them the checklist, the severity levels and how they are
+Look for review instructions and conventions in the repository, read at the
+tip of the base branch: `.github/copilot-instructions.md`,
+`.github/instructions/*.md`, `CLAUDE.md`, `AGENTS.md`, `REVIEW.md`,
+`CONTRIBUTING.md`, and the README of the changed service. When the pull request
+changes them, say so, and review against the base's version. Take from them the checklist, the severity levels and how they are
 named, the output format, and what not to flag. Without such rules, use the
 levels in Step 8.
 
@@ -256,7 +275,10 @@ if the task were done wrong.
    change.
 5. **The tests fail when the task is undone.** For the core requirement, break
    it in a temporary worktree and run the tests: revert the fix, flip the
-   condition, or change the expected value in a fixture. Report what you
+   condition, or change the expected value in a fixture. Break it where the
+   pull request wires it into the code that uses it, not only in a helper that
+   a test calls directly: a helper's own test can pass while nothing checks
+   that the helper is used. Report what you
    changed and how the test failed. A test that stays green is a finding.
    When you cannot run it here, say why, and the finding about it can be
    `PLAUSIBLE` at most.
@@ -339,7 +361,7 @@ Use this shape:
 - **Evidence:** the lines and the trace that show it.
 - **Suggestion:** the smallest change that fixes it; options when there are several.
 - **Already raised:** by whom, and whether you agree — or "no".
-- **Draft comment:**
+- **Draft comment:** (on the user's own pull request: **Fix:** — the change to make)
   > The text to post, in the user's voice.
 
 ### Tests against the task
@@ -394,9 +416,13 @@ later round can compare with it:
   it. Otherwise create a case with `kind: review`, the slug
   `<YYYY-MM-DD>-<ticket if any>-<repo>-pr-<number>`, `status: in-review`, and
   the pull request in `prs`.
-- Write the first round to `review.md` in the case, and a later round to
-  `review-<YYYY-MM-DD>-round-<n>.md`. Each file names the head commit it
-  reviewed in its first line; the next round starts from it.
+- Write the first round to `review-pr-<number>.md` in the case, and a later
+  round to `review-pr-<number>-round-<n>.md`, so that one case can hold the
+  reviews of several pull requests. Older cases may hold `review.md` or
+  `review-<YYYY-MM-DD>-...md`; find them by the pull request link inside.
+- The first line of every review file is, exactly:
+  `<!-- review-pr: <owner>/<repo>#<number> round <n> head <sha> base <sha> -->`
+  with the full head commit and merge base. The next round starts from it.
 - The card holds only the latest state: the pull request, the latest verdict,
   and the open findings' titles. In a case about a larger subject, keep one
   line for the review in `Outcome` and replace it on every round instead of
@@ -426,7 +452,8 @@ else wrote them. What changes is the outcome:
 When the knowledge base already holds a review of this pull request, review what
 changed since it instead of the whole pull request again:
 
-1. Take the head commit the latest review file names. When it is no longer an
+1. Take the head commit from the first line of the latest review file (for an
+   older file without that line, the commit its header names). When it is no longer an
    ancestor of the head (a force-push or a rebase), compare the two versions
    with `git range-diff <old base>..<old head> <new base>..<new head>`; when
    that is unreadable, do a full pass.

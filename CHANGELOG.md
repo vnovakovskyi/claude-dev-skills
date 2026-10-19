@@ -24,15 +24,16 @@ To see which version you have installed, run `claude plugin list`.
     changed, the CI checks, and the reviews and comments already on the pull
     request, and follows the repository's own review instructions. It checks
     what the base branch gained since the merge base and whether the pull
-    request still merges cleanly, and runs the tests on the merge result when
-    the base changed the same modules.
+    request still merges cleanly, and runs the tests on the merge result,
+    without a commit, when the base changed the same modules or the build
+    files they inherit.
   - It checks the tests against the task, not against CI: each requirement is
     mapped to the test that proves it, expected values must come from the task
     rather than the code's own output, tests bent to pass (assertions that
     always hold, mocks that return what is asserted, skipped tests, raised
     timeouts, unexplained changes to existing expectations) are findings, and
-    the core requirement is broken in a temporary worktree to see the tests
-    fail.
+    the core requirement is broken in a temporary worktree, where the pull
+    request wires it in, to see the tests fail.
   - It checks the description's claims against the code, rollout and recovery
     steps included.
   - Every finding is verified, cites a file and line, describes a concrete case
@@ -49,12 +50,15 @@ To see which version you have installed, run `claude plugin list`.
     already raised are credited, not repeated; problems that predate the pull
     request are listed apart.
   - The findings come back in the chat, in English unless the user names
-    another language, with a draft comment each, and are saved as `review.md`
-    in a knowledge-base case.
+    another language, with a draft comment each, and are saved as
+    `review-pr-<n>.md` in a knowledge-base case, so one case can hold the
+    reviews of several pull requests. Each review file starts with a fixed
+    line naming the pull request, the round, the head, and the merge base.
   - A later round reviews only what changed since the previous one, re-checks
     each earlier finding as fixed, still open, answered, or obsolete, and is
-    saved as `review-<date>-round-<n>.md`; the case card keeps only the latest
-    state.
+    saved as `review-pr-<n>-round-<k>.md`; the case card keeps only the latest
+    state. A merged or closed pull request is reviewed only when the user
+    confirms.
   - On the user's own pull request each finding carries a fix instead of a
     draft comment, nothing is posted, and fixing is left to `pr` on the user's
     word.
