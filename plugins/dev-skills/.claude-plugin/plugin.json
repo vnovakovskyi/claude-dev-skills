@@ -1,0 +1,13 @@
+{
+  "name": "dev-skills",
+  "version": "1.0.0",
+  "description": "Skills that make Claude research and plan before it codes, turn finished work into a pull request, review other people's pull requests, and draft the messages around the work.",
+  "author": {
+    "name": "Vadym Novakovskyi",
+    "url": "https://github.com/vnovakovskyi"
+  },
+  "homepage": "https://github.com/vnovakovskyi/claude-dev-skills",
+  "repository": "https://github.com/vnovakovskyi/claude-dev-skills",
+  "license": "MIT",
+  "keywords": ["workflow", "research", "codebase", "planning", "architecture", "data-model", "pull-request", "code-review", "messages"]
+}
