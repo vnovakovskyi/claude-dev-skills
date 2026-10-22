@@ -51,7 +51,7 @@ To see which version you have installed, run `claude plugin list`.
     request are listed apart.
   - The findings come back in the chat in the language of the user's request,
     headings and labels included, with a draft comment each in the pull
-    request's language, and are saved, in the same language as the chat, as
+    request's language, and are saved in English as
     `review-pr-<n>.md` in a knowledge-base case, so one case can hold the
     reviews of several pull requests. Each review file starts with a fixed
     line naming the pull request, the round, the head, and the merge base.
