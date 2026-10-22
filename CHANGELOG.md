@@ -49,8 +49,9 @@ To see which version you have installed, run `claude plugin list`.
     re-checks the findings against the new head and says what changed. Points
     already raised are credited, not repeated; problems that predate the pull
     request are listed apart.
-  - The findings come back in the chat, in English unless the user names
-    another language, with a draft comment each, and are saved as
+  - The findings come back in the chat in the language of the user's request,
+    headings and labels included, with a draft comment each in the pull
+    request's language, and are saved in English as
     `review-pr-<n>.md` in a knowledge-base case, so one case can hold the
     reviews of several pull requests. Each review file starts with a fixed
     line naming the pull request, the round, the head, and the merge base.

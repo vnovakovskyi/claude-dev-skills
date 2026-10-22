@@ -107,10 +107,16 @@ Then settle three things before you read any code:
 - **Which round it is.** When the knowledge base already holds a review of this
   pull request, this is a later round: follow "A later round" below, which
   replaces a full pass with a review of what changed.
-- **The language.** Write the review in English, unless the user names another
-  language for it. The language the user writes in, and the language of
-  earlier rounds, do not change this. Draft comments are in the pull request's
-  language.
+- **The language.** Talk to the user in the language of their request: the
+  language they named, or else the language their request is written in. When
+  the request is only a link or a number, use the language of the user's other
+  messages in the conversation, and English when there are none. Each round
+  follows its own request, whatever language earlier rounds used. This chat
+  language covers everything the user reads in the chat: the review in the
+  shape of Step 8, its headings and labels, and the closing question. The
+  review file saved to the knowledge base is in English, whatever the chat
+  language. Draft comments are in the pull request's language, the language of
+  its title, description, and discussion, in the chat and in the file alike.
 
 ## Step 2 — Get the code
 
@@ -330,7 +336,13 @@ when it has them; otherwise:
   were done wrong, a misleading log or error.
 - **Minor** — worth saying, fine to skip.
 
-Use this shape:
+Use this shape. In the chat, write it in the chat language (Step 1) and
+translate its headings and labels too (**What it does**, **Problem**,
+**Draft comment**, and the rest), the way a native speaker of that language
+would write them; the saved file uses it in English. Keep as they are in both:
+code, excerpts, paths, identifiers, commands, quoted text, draft comments, the
+severity names (the repository's own, or Blocking, Important, Minor), and the
+verdicts CONFIRMED and PLAUSIBLE.
 
 ```md
 **Pull request:** <link> — <title>, by <author>. Reviewed at `<short sha>` (merge base `<short sha>`).
@@ -362,7 +374,7 @@ Use this shape:
 - **Suggestion:** the smallest change that fixes it; options when there are several.
 - **Already raised:** by whom, and whether you agree — or "no".
 - **Draft comment:** (on the user's own pull request: **Fix:** — the change to make)
-  > The text to post, in the user's voice.
+  > The text to post, in the user's voice and the pull request's language.
 
 ### Tests against the task
 | Requirement | Test | Proves it |
@@ -423,11 +435,13 @@ later round can compare with it:
 - The first line of every review file is, exactly:
   `<!-- review-pr: <owner>/<repo>#<number> round <n> head <sha> base <sha> -->`
   with the full head commit and merge base. The next round starts from it.
+  The rest of the file is the same review in English: the same findings,
+  excerpts, and draft comments as the chat, whatever language the chat is in.
 - The card holds only the latest state: the pull request, the latest verdict,
-  and the open findings' titles. In a case about a larger subject, keep one
-  line for the review in `Outcome` and replace it on every round instead of
-  appending to it; the history lives in the review files. Rebuild the index as
-  the reference describes.
+  and the open findings' titles, written in English like the review file. In
+  a case about a larger subject, keep one line for the review in `Outcome`
+  and replace it on every round instead of appending to it; the history lives
+  in the review files. Rebuild the index as the reference describes.
 
 **Then stop.** End with the path to the saved review, and ask the user which
 findings to post, if any — or, on the user's own pull request, which to fix. Do
@@ -488,6 +502,7 @@ since the previous round in its first lines.
 - [ ] Every claim of the description is checked or listed as not checked, including its rollout and recovery steps.
 - [ ] Problems that predate the pull request are in "Outside this pull request", not in the findings.
 - [ ] Draft comments read as the user's own and mention no tool; on the user's own pull request, findings carry a fix instead.
+- [ ] Everything in the chat (the review, its headings and labels, the closing question) is in the chat language; the review file is in English; draft comments are in the pull request's language.
 - [ ] A later round reports every finding of the previous round as fixed, still open, answered, or obsolete.
 - [ ] The review is saved in the knowledge base and the index is rebuilt.
 
@@ -495,8 +510,8 @@ since the previous round in its first lines.
 
 The skill is complete only when:
 
-- The user has the findings in the chat, sorted by severity and verified, with
-  draft comments or fixes, the tests checked against the task, and the path to
-  the saved review.
+- The user has the findings in the chat, in the chat language, sorted by
+  severity and verified, with draft comments or fixes, the tests checked
+  against the task, and the path to the saved review.
 - Nothing reached the pull request unless the user chose it afterwards, and
   then only as a pending review they submit themselves.

@@ -26,7 +26,9 @@ Only with the wording the user approved:
    Attach each comment to the same lines its excerpt shows; drop `start_line`
    for a single line. An inline comment works only on lines inside the diff
    (`inline: yes`). A finding about lines outside it goes into the review body
-   with a link to the lines.
+   with a link to the lines. The body and every comment are in the pull
+   request's language, like the draft comments, whatever language you and the
+   user talk in.
    Write the JSON to a temporary file outside the repository.
 5. Give the user the pull request link and tell them the review is pending:
    they open "Files changed", read it there, and submit it with the verdict they
