@@ -66,6 +66,9 @@ review is theirs. This skill prepares it.
 - **Code is shown whole.** An excerpt is printed by `scripts/excerpt.sh` and
   never edited: no lines cut out, none retyped. Keep it short by choosing the
   range, never by dropping lines from it.
+- **Suggested code has minimal comments.** Code in a suggestion or a fix
+  follows `../../references/code-comments.md`: no comment that restates the
+  code or tells the story of the change.
 - **Comments sound like the user.** Draft comments are written in the user's
   voice, in the pull request's language, as questions or suggestions to a
   colleague. They never mention an AI, an assistant, or a tool, and they carry

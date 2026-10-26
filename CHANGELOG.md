@@ -15,6 +15,13 @@ To see which version you have installed, run `claude plugin list`.
 
 ## [Unreleased]
 
+### Changed
+
+- `implement`, `pr`, and `review-pr` keep comments in the code they write or
+  suggest to a minimum: the code explains itself, and a comment says only what
+  the code cannot, such as why the obvious way is wrong. The rule lives in
+  `plugins/dev-skills/references/code-comments.md`.
+
 ## [1.0.0] - 2026-10-22
 
 First release.
