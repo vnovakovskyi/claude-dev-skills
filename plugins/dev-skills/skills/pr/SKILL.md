@@ -95,7 +95,10 @@ If there is nothing to commit and no commit ahead of the base, say so and stop.
 1. On the default branch, or on the base itself, create a branch first: a short,
    descriptive name in the style the repository already uses.
 2. Commit the uncommitted work that belongs to the change. One commit is fine;
-   split only where the parts are clearly separate.
+   split only where the parts are clearly separate. Code you wrote for the
+   change, such as a fix from a review, keeps its comments minimal, as
+   `../../references/code-comments.md` describes; comments the user wrote stay
+   as they are.
 3. Write the message in the repository's style: a short subject that says what
    the commit does, and a body that says why when the subject does not. No
    attribution lines (see Hard rules).
@@ -190,6 +193,7 @@ to `solved` — for a plan with phases, only once every phase is merged.
 - [ ] Someone who was not here can follow "How to verify".
 - [ ] Every check reported as run was run.
 - [ ] Nothing unrelated and nothing secret is in the commits.
+- [ ] Code you wrote has no comment that restates the code or tells the story of the change.
 - [ ] No work was pushed to the default branch or to the base, nothing was force-pushed, and nothing was merged or set to auto-merge: the merge is left to the user.
 - [ ] When there is a case, its card has the pull request, `Outcome`, `Lessons`, and the status from Step 5 (`in-progress` while other phases of its plan are not merged, else `in-review`), and the index is rebuilt.
 

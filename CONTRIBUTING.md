@@ -126,6 +126,9 @@ submitting:
   `plugins/dev-skills/references/knowledge-base.md`. Skills point to it instead
   of restating it; change the format there, and in `scripts/reindex.sh` when it
   touches the frontmatter.
+- **Comments in code** that skills write follow
+  `plugins/dev-skills/references/code-comments.md`: as few as possible. Skills
+  that write or suggest code point to it.
 - **Markdown:** plain GitHub-flavored Markdown, English, wrap reasonably.
 - **Keep the README short.** It says what the project is, how to install it, and
   how to stay up to date. Details go in `docs/`.

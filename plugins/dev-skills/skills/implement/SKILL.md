@@ -41,6 +41,8 @@ Below, "the plan" means that file, and "the card" means the case's `case.md`.
   <file>`, `git clean`, or force-push unless the user asks for that command.
 - Do not silently redesign the architecture.
 - Do not add extra features because they seem useful.
+- **Minimal comments.** The code explains itself; write a comment only for what
+  it cannot say, as `../../references/code-comments.md` describes.
 - Update documentation if implementation differs from the plan.
 - Run the phase's automated checks, or explain why they cannot be run.
 - **Ask before every outward action**: pushing a branch, opening a pull
@@ -183,7 +185,9 @@ needs no branch: do its outward actions, asking before each one.
 
 1. State the phase you are about to implement and why it is next.
 2. List the files likely to change.
-3. Make the smallest useful change to satisfy that phase.
+3. Make the smallest useful change to satisfy that phase. Then read the
+   comments in your diff against `../../references/code-comments.md`, and
+   remove each one that restates the code or tells the story of the change.
 4. Add or update tests.
 5. Run the phase's checks that work **before the pull request**. Check off the
    automated `- [x]` items you verified, directly in the plan.
@@ -308,5 +312,6 @@ A run is done only when:
 - The card's `Outcome` has the phase's line, its status follows "Record the
   phase", and the index is current.
 - Documentation is not stale.
+- The code's comments follow `../../references/code-comments.md`.
 - No extra unplanned scope was added.
 - You have paused and asked the user to verify before the next phase.
