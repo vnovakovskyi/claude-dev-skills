@@ -44,6 +44,16 @@ To see which version you have installed, run `claude plugin list`.
   merged or extended drafts included — before it posts it.
 - A later `review-pr` round on an unchanged pull request goes deeper instead of
   reporting an empty delta.
+- `review-pr` writes the full review only to the knowledge base and gives a
+  short summary in the chat: the verdict, one line per finding, the tests, and
+  the path to the file. Details come from the file when you ask, and the exact
+  text of every comment is shown before it is posted.
+- `review-pr` loads less on every run: the later round, the user's own pull
+  request, the merge-result test recipe, and splitting work across subagents
+  moved to `references/`, and its description is shorter.
+- `review-pr` pre-approves the read-only commands its steps use, `git -C`
+  forms, the excerpt script, and the index script included, so a review asks
+  for fewer permissions. Deny and ask rules in your settings still apply.
 
 ## [1.0.0] - 2026-10-22
 

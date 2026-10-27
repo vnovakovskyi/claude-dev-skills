@@ -230,13 +230,16 @@ the session can reach it, and otherwise says which measurement would settle it. 
 with whether the skill agrees. Problems that were there before the pull request
 are listed apart and never posted against it.
 
-The review is written in English unless you name another language. Nothing
-goes to the pull request first. You get the findings in the chat, sorted
-by severity, each with a draft comment in your voice, and saved as `review-pr-<n>.md`
-in a case of the knowledge base, so you can re-read and check them. Then you say
-which ones to post. The skill posts them as a **pending** review that only you
-can see, and you submit it on GitHub with the verdict you choose. It never
-approves, requests changes, or resolves a thread.
+Nothing goes to the pull request first. The full review — every finding with
+its code, evidence, and a draft comment in your voice — is saved in English as
+`review-pr-<n>.md` in a case of the knowledge base, so you can re-read and check
+it. The chat gets a short summary in the language you asked in: the verdict,
+one line per finding sorted by severity, the state of the tests, and the path
+to the file. Ask about any finding and the skill shows its details from the
+file. Then you say which ones to post; the skill shows you the exact text of
+each comment, posts them as a **pending** review that only you can see, and you
+submit it on GitHub with the verdict you choose. It never approves, requests
+changes, or resolves a thread.
 
 On your own pull request it reviews just as strictly, but each finding comes
 with a fix instead of a draft comment, nothing is posted, and fixing is left to

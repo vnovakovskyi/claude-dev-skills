@@ -1,8 +1,8 @@
 ---
 name: review-pr
-description: Review a pull request, someone else's or the user's own, and show the user every finding before anything reaches it. Works out how the change works before looking for faults, reads the whole change, the code around it, its consumers in other services, the CI checks, the comments already on it, and what changed on the base branch since; checks the description's claims against the code and the tests against the task, not against CI; verifies each finding and drops the ones that do not hold. A later round on the same pull request reviews only what changed since the previous one. Returns the findings in the chat and saves them to the knowledge base, each with a draft comment, or with a fix when the pull request is the user's own. Posts nothing until the user has read them and chosen what to post, and then only as a pending review that the user submits. Use when the user asks to review a pull request.
+description: Review a pull request, someone else's or the user's own. Works out how the change works, reads the whole change, its callers and consumers, CI, and the comments already on it, checks the description's claims and whether the tests prove the task, and verifies every finding. Gives a short summary in the chat and saves the full review, with draft comments (fixes on the user's own pull request), to the knowledge base. Posts only what the user picks, as a pending review they submit. Use when the user asks to review a pull request.
 argument-hint: '<pull request link or number; optional: what to focus on>'
-allowed-tools: Read, Grep, Glob, Bash(gh pr view:*), Bash(gh pr diff:*), Bash(gh pr checks:*), Bash(gh api user:*), Bash(git fetch:*), Bash(git show:*), Bash(git diff:*), Bash(git log:*), Bash(git grep:*), Bash(git blame:*), Bash(git rev-parse:*), Bash(git merge-base:*), Bash(git merge-tree:*), Bash(git range-diff:*), Bash(git ls-tree:*), Bash(git worktree add:*), Bash(git worktree remove:*), Bash(git worktree prune:*)
+allowed-tools: Read, Grep, Glob, Bash(gh pr view *), Bash(gh pr diff *), Bash(gh pr checks *), Bash(gh api user *), Bash(git fetch *), Bash(git show *), Bash(git diff *), Bash(git log *), Bash(git grep *), Bash(git blame *), Bash(git rev-parse *), Bash(git merge-base *), Bash(git merge-tree *), Bash(git range-diff *), Bash(git ls-tree *), Bash(git worktree add *), Bash(git worktree remove *), Bash(git worktree prune *), Bash(git -C * fetch *), Bash(git -C * show *), Bash(git -C * diff *), Bash(git -C * log *), Bash(git -C * grep *), Bash(git -C * blame *), Bash(git -C * rev-parse *), Bash(git -C * merge-base *), Bash(git -C * merge-tree *), Bash(git -C * range-diff *), Bash(git -C * ls-tree *), Bash(git -C * worktree add *), Bash(git -C * worktree remove *), Bash(git -C * worktree prune *), Bash(git -C * merge --no-commit *), Bash(git -C * merge --abort), Bash(bash ${CLAUDE_SKILL_DIR}/scripts/excerpt.sh *), Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/reindex.sh *)
 ---
 
 # Review a pull request
@@ -16,65 +16,56 @@ User request:
 ## Purpose
 
 Find what is wrong with a pull request before it is merged, and hand the user a
-list they can check for themselves: every finding with the lines it is about, a
-concrete case where it goes wrong, and how sure you are.
-
-The user reads the list, checks it, and decides what goes to the author. The
-review is theirs. This skill prepares it.
+result they can check for themselves: every finding with the lines it is about,
+a concrete case where it goes wrong, and how sure you are. The user decides what
+goes to the author. The review is theirs; this skill prepares it.
 
 ## Hard rules
 
 - **Nothing goes to the pull request before the user has seen all findings.**
-  The review ends with the findings in the chat and in the knowledge base. Do not
-  post a review, a comment, a reply, a reaction, or a suggestion before the user
-  has read the list and told you, in their own message, which findings to post.
-  A question you asked ("post these?") that the user has not answered is not
-  permission. This holds even when the arguments say "post" or "comment": show
-  the findings first.
-- **Post only as a pending review, and never decide the verdict.** When the user
-  picks findings to post, create a pending review that only they can see until
-  they submit it on GitHub (`references/posting.md`). Never approve, request
-  changes, or submit a review, never resolve or edit a thread, and never touch a
-  comment that is not yours. A reply to an existing thread is published at once
-  on GitHub; post one only after the user agreed to that reply in particular.
+  Do not post a review, a comment, a reply, a reaction, or a suggestion before
+  the user has read the result and told you, in their own message, which
+  findings to post. A question you asked ("post these?") that the user has not
+  answered is not permission. This holds even when the arguments say "post" or
+  "comment".
+- **Post only as a pending review, and never decide the verdict.** Posting
+  follows `references/posting.md`. Never approve, request changes, or submit a
+  review, never resolve or edit a thread, and never touch a comment that is not
+  yours. A reply to an existing thread is published at once; post one only
+  after the user agreed to that reply in particular.
 - **Leave the user's checkout alone.** Do not check out, reset, stash, commit,
-  or push in the user's working tree. Read the pull request's code with
-  `git fetch` and `git show <sha>:<path>`. When a test has to run, run it in a
-  temporary `git worktree` outside the repository and remove the worktree
-  afterwards. This skill never commits, not even on the user's own pull request.
+  or push in it; read the code with `git fetch` and `git show <sha>:<path>`, and
+  run tests in a temporary `git worktree` outside the repository that you
+  remove afterwards. This skill never commits, not even on the user's own pull
+  request.
 - **Every finding is verified and has a source.** A finding names the file and
   line, describes a concrete case where the code goes wrong (input or state →
-  wrong result), and carries a verdict: `CONFIRMED` (you traced it in the code or
-  reproduced it) or `PLAUSIBLE` (the reasoning holds, but you could not close
-  every step, and you say which). Anything weaker is dropped.
+  wrong result), and carries a verdict: `CONFIRMED` (traced in the code or
+  reproduced) or `PLAUSIBLE` (the reasoning holds, but a step could not be
+  closed, and you say which). Anything weaker is dropped.
 - **Tests answer to the task, not to CI.** A green check proves only that the
-  tests pass. Whether they prove what the pull request is for is checked
-  separately, every time (Step 6).
+  tests pass; whether they prove what the pull request is for is checked in
+  Step 6, every time.
 - **Review the change, not the whole service.** A finding is about what the
-  pull request adds or changes, or about something it makes worse. A problem
-  that was there before goes to a separate section, "Outside this pull request",
-  and is never posted as a finding against it.
-- **Do not repeat what is already said.** Read every review and comment on the
-  pull request, from people and bots. A point that is already raised is not a
-  new finding: say who raised it and whether you agree, with your evidence.
-- **The repository's review rules come first.** When the repository has review
-  instructions (Step 3), use their checklist and their severity levels, and
-  skip what they say CI already enforces.
+  pull request adds or changes, or makes worse. A problem that was there before
+  goes to "Outside this pull request" and is never posted against it.
+- **Do not repeat what is already said.** Read every review and comment, from
+  people and bots. A point already raised is not a new finding: say who raised
+  it and whether you agree, with your evidence.
+- **The repository's review rules come first** (Step 3): their checklist, their
+  severity levels, and what they say CI already enforces.
 - **No style noise.** No findings about formatting, import order, or naming
-  taste unless the repository's rules ask for them. A finding has to matter to
-  someone who runs or maintains the code.
+  taste unless the repository's rules ask for them.
 - **Code is shown whole.** An excerpt is printed by `scripts/excerpt.sh` and
-  never edited: no lines cut out, none retyped. Keep it short by choosing the
-  range, never by dropping lines from it.
-- **Suggested code has minimal comments.** Code in a suggestion or a fix
-  follows `../../references/code-comments.md`: no comment that restates the
-  code or tells the story of the change.
-- **Comments sound like the user.** Draft comments are written in the user's
-  voice, in the pull request's language, as questions or suggestions to a
-  colleague. They never mention an AI, an assistant, or a tool, and they carry
-  no severity emoji or label the user did not ask for.
-- **The rules bind subagents too.** A subagent does not see this skill. Every
-  brief you give one carries these rules (see `references/subagent-brief.md`).
+  never edited: keep it short by choosing the range, never by dropping lines.
+- **Suggested code has minimal comments**, as
+  `../../references/code-comments.md` describes.
+- **Comments sound like the user.** Draft comments are in the user's voice and
+  the pull request's language, as questions or suggestions to a colleague. They
+  never mention an AI, an assistant, or a tool, and carry no severity emoji or
+  label the user did not ask for.
+- **The rules bind subagents too:** every brief carries them
+  (`references/subagent-brief.md`).
 
 ## Step 1 — Read the pull request
 
@@ -87,7 +78,7 @@ Collect, with read-only `gh` calls:
   size, labels, and the description (`gh pr view <n> --json ...`);
 - the commits (`git log <base>..<head>`), and the ticket they and the
   description link to. Read the ticket when this session has a tool for the
-  tracker; otherwise say in the result that the ticket was not read;
+  tracker; otherwise say in the result that it was not read;
 - the changed files (`gh pr diff <n> --name-only`, and `git diff --stat`);
 - the CI checks (`gh pr checks <n>`): what ran, what passed, what was skipped;
 - every review and comment: `gh pr view <n> --json reviews,comments` and the
@@ -105,21 +96,14 @@ whether to review it anyway before you go on.
 Then settle three things before you read any code:
 
 - **Whose pull request it is.** When its author is the user
-  (`gh api user --jq .login`), follow "The user's own pull request" below as
-  well.
+  (`gh api user --jq .login`), follow `references/own-pr.md` as well.
 - **Which round it is.** When the knowledge base already holds a review of this
-  pull request, this is a later round: follow "A later round" below, which
-  replaces a full pass with a review of what changed.
-- **The language.** Talk to the user in the language of their request: the
-  language they named, or else the language their request is written in. When
-  the request is only a link or a number, use the language of the user's other
-  messages in the conversation, and English when there are none. Each round
-  follows its own request, whatever language earlier rounds used. This chat
-  language covers everything the user reads in the chat: the review in the
-  shape of Step 8, its headings and labels, and the closing question. The
-  review file saved to the knowledge base is in English, whatever the chat
-  language. Draft comments are in the pull request's language, the language of
-  its title, description, and discussion, in the chat and in the file alike.
+  pull request, follow `references/later-round.md`.
+- **The language.** The chat is in the language the user named, else the
+  language of their request; for a bare link or number, the language of their
+  other messages, else English. Each round follows its own request. The review
+  file is always in English. Draft comments are in the pull request's language
+  (its title, description, and discussion), in the file and in anything posted.
 
 ## Step 2 — Get the code
 
@@ -133,8 +117,8 @@ git -C <repo> show "${head_sha}:<path>"
 
 For a pull request from a fork, fetch `pull/<n>/head` instead. Without a local
 clone, read the files with `gh api repos/<owner>/<repo>/contents/<path>?ref=<sha>`.
-In zsh, write a variable followed by a colon as `${sha}:path`: `$sha:path`
-applies a modifier and reads a different path.
+In zsh, write a variable followed by a colon as `"${sha}:<path>"`, as above:
+`$sha:path` applies a modifier and reads a different path.
 
 Note the merge base (`git merge-base origin/<base> <head sha>`) and say in the
 result which commit you reviewed.
@@ -166,17 +150,8 @@ A module is the unit the changed files are built in (the folder with their
 build file), not only the folders the diff touches; a parent or root build file
 they inherit counts too. Read the base's commits that touch them. A conflict,
 or a base change that the pull request's code or tests now depend on, belongs
-in the review (CI, or a finding when it breaks something). When the base
-changed the modules under test, run the tests on the merge result, without a
-commit:
-
-```bash
-git -C <repo> worktree add --detach <tmp> origin/<base>
-git -C <tmp> merge --no-commit --no-ff <head sha>
-# run the tests in <tmp>
-git -C <tmp> merge --abort
-git -C <repo> worktree remove --force <tmp>
-```
+in the review. When the base changed the modules under test, run the tests on
+the merge result as `references/merge-result.md` describes.
 
 ## Step 3 — Read the repository's rules
 
@@ -184,9 +159,9 @@ Look for review instructions and conventions in the repository, read at the
 tip of the base branch: `.github/copilot-instructions.md`,
 `.github/instructions/*.md`, `CLAUDE.md`, `AGENTS.md`, `REVIEW.md`,
 `CONTRIBUTING.md`, and the README of the changed service. When the pull request
-changes them, say so, and review against the base's version. Take from them the checklist, the severity levels and how they are
-named, the output format, and what not to flag. Without such rules, use the
-levels in Step 8.
+changes them, say so, and review against the base's version. Take from them the
+checklist, the severity levels and how they are named, the output format, and
+what not to flag. Without such rules, use the levels in Step 8.
 
 Find out how the repository runs its tests before you need to: the knowledge
 base (`docs/codebase/`, the lessons of earlier cases) first, then the
@@ -263,13 +238,9 @@ message producer or consumer, an endpoint, or a call to an external service, go
 through its list in `references/checklists.md` as well, against the paths and
 inputs from Step 4.
 
-**Size the work.** Count the changed lines of logic, not of fixtures,
-snapshots, generated code, or lockfiles. A pull request you can read in one
-pass: review it yourself. A large one (many services, many hundreds of lines of
-logic): split it into 2–4 areas that do not overlap, by service or layer, and
-give each to a subagent with the brief in `references/subagent-brief.md`. Tell
-the user in one line how you split it. While subagents run, do not review their
-areas yourself. Step 6 stays with you.
+**Size the work.** A pull request you can read in one pass: review it yourself.
+A large one: split it across subagents as `references/subagent-brief.md`
+describes.
 
 Write down every candidate finding with its file and line as you go. Do not
 filter yet.
@@ -314,10 +285,10 @@ if the task were done wrong.
    condition, or change the expected value in a fixture. Break it where the
    pull request wires it into the code that uses it, not only in a helper that
    a test calls directly: a helper's own test can pass while nothing checks
-   that the helper is used. Report what you
-   changed and how the test failed. A test that stays green is a finding.
-   When you cannot run it here, say why, and the finding about it can be
-   `PLAUSIBLE` at most.
+   that the helper is used. Report what you changed and how the test failed. A
+   test that stays green is a finding. When you cannot run it here, say why,
+   and the finding about it can be `PLAUSIBLE` at most. Several builds can run
+   at the same time in separate worktrees (`references/merge-result.md`).
 6. **The test runs the path production runs.** Compare what the test sets up
    with production: properties and profiles, the beans or modules actually
    wired, the serializer and client actually used, deployment settings such as
@@ -341,8 +312,8 @@ For each candidate, try to prove it wrong before you keep it:
   configuration, the consumer on the other side. Look for a guard elsewhere that
   already prevents it.
 - Check whether a test or a CI check already covers the case.
-- When one cheap, targeted test would settle it, run it in a temporary worktree
-  (see Hard rules). Report what you ran.
+- When one cheap, targeted test would settle it, run it in a temporary worktree.
+  Report what you ran.
 - When a finding rests on a number from a running system (a size, a rate, a
   share of traffic), measure it read-only instead of estimating it, as
   `references/measuring.md` describes.
@@ -352,14 +323,14 @@ For each candidate, try to prove it wrong before you keep it:
 Do the same with every point already raised on the pull request: agree,
 disagree, or add what it missed, each with evidence.
 
-## Step 8 — Show the findings
+## Step 8 — Save the review, and give a short summary
 
 **First check the head again** (`gh pr view <n> --json headRefOid`) and the CI
 checks. When the head moved while you reviewed, a force-push included, read the
 difference between the commit you reviewed and the new head, re-check every
 finding and claim it touches, print the excerpts again at the new head, and say
-in the result that the head changed and what the difference was. When the
-user asks for the results later, check the head again before you give them.
+that the head changed and what the difference was. When the user asks for the
+results later, check the head again before you give them.
 
 Sort the findings by severity, most severe first. Use the repository's levels
 when it has them; otherwise:
@@ -372,13 +343,7 @@ when it has them; otherwise:
   were done wrong, a misleading log or error.
 - **Minor** — worth saying, fine to skip.
 
-Use this shape. In the chat, write it in the chat language (Step 1) and
-translate its headings and labels too (**What it does**, **How it works**, **Problem**,
-**Draft comment**, and the rest), the way a native speaker of that language
-would write them; the saved file uses it in English. Keep as they are in both:
-code, excerpts, paths, identifiers, commands, quoted text, draft comments, the
-severity names (the repository's own, or Blocking, Important, Minor), and the
-verdicts CONFIRMED and PLAUSIBLE.
+**The review file** holds the whole review, in English, in this shape:
 
 ```md
 **Pull request:** <link> — <title>, by <author>. Reviewed at `<short sha>` (merge base `<short sha>`).
@@ -400,9 +365,7 @@ verdicts CONFIRMED and PLAUSIBLE.
 
 ```diff
      37 │         unchanged context line
-     38 │         unchanged context line
 +    40 │         line the pull request added or changed
-+    41 │         line the pull request added or changed
      42 │         unchanged line the finding is also about
 ```
 
@@ -429,136 +392,88 @@ verdicts CONFIRMED and PLAUSIBLE.
 - Problems that were there before, one line each.
 
 ### Checked and fine
-- What you looked at and found correct, one line each, so the user knows it was covered.
+- What you looked at and found correct, one line each.
 
 **Prior work:** cases from the knowledge base, or "none found".
 ```
 
-**Show the code of every finding**, the way a review comment on GitHub shows
-it: the lines the finding is about, with a few lines of context above, each with
-its line number at the head commit. Print it with the script next to this skill:
+Print the code of every finding with the script next to this skill:
 
 ```bash
-bash <skill dir>/scripts/excerpt.sh <repo> <merge base> <head sha> <path> <start> [end] [context, default 3]
+bash ${CLAUDE_SKILL_DIR}/scripts/excerpt.sh <repo> <merge base> <head sha> <path> <start> [end] [context, default 3]
 ```
 
-It marks the lines the pull request added or changed with `+`, so a `diff`
-block colours them, and prints on stderr whether the range sits inside the
-diff (`inline: yes`) — only then can it carry an inline comment. Pick the range
-the comment would be attached to: the line where the problem is and the lines
-the reader needs to see it, not the whole method. When a finding rests on a
-second place (the transaction boundary, the consumer, the caught exception),
-give that place an excerpt of its own under **Evidence** instead of widening
-the first one. Never cut lines out of the script's output: when the lines that
-matter are many, show them all. A finding about something that is not code
-(commits, the description) has no excerpt; say where it is instead.
+It marks the lines the pull request added or changed with `+` and prints on
+stderr whether the range sits inside the diff (`inline: yes`) — only then can
+it carry an inline comment. A range that mixes changed and unchanged lines can
+come out `inline: no`; narrow it to the changed lines to get an anchor. Pick the
+range a comment would be attached to: the line where the problem is and the
+lines the reader needs to see it. Give a second place a finding rests on (the
+transaction boundary, the consumer) an excerpt of its own under **Evidence**. A
+finding about something that is not code (commits, the description) has no
+excerpt; say where it is instead. Link sources to the head commit on the host
+(`https://github.com/<owner>/<repo>/blob/<head sha>/<path>#L42`), and name the
+repository for a file in another one.
 
-Link a source to the head commit on the host
-(`https://github.com/<owner>/<repo>/blob/<head sha>/<path>#L42`): the local
-checkout is usually on another branch, so a local link would open other code.
-Use `path:line` where links do not render. Name the repository for a file in
-another one.
-
-**Save the review** to the knowledge base, so the user can re-read it and a
-later round can compare with it:
+**Save it** to the knowledge base:
 
 - When a case already covers the subject of the pull request, add the review to
   it. Otherwise create a case with `kind: review`, the slug
   `<YYYY-MM-DD>-<ticket if any>-<repo>-pr-<number>`, `status: in-review`, and
   the pull request in `prs`.
 - Write the first round to `review-pr-<number>.md` in the case, and a later
-  round to `review-pr-<number>-round-<n>.md`, so that one case can hold the
-  reviews of several pull requests. Older cases may hold `review.md` or
-  `review-<YYYY-MM-DD>-...md`; find them by the pull request link inside.
+  round to `review-pr-<number>-round-<n>.md`. Older cases may hold `review.md`
+  or `review-<YYYY-MM-DD>-...md`; find them by the pull request link inside.
 - The first line of every review file is, exactly:
   `<!-- review-pr: <owner>/<repo>#<number> round <n> head <sha> base <sha> -->`
   with the full head commit and merge base. The next round starts from it.
-  The rest of the file is the same review in English: the same findings,
-  excerpts, and draft comments as the chat, whatever language the chat is in.
 - The card holds only the latest state: the pull request, the latest verdict,
-  and the open findings' titles, written in English like the review file. In
-  a case about a larger subject, keep one line for the review in `Outcome`
-  and replace it on every round instead of appending to it; the history lives
-  in the review files. Rebuild the index as the reference describes.
+  and the open findings' titles, in English. In a case about a larger subject,
+  keep one line for the review in `Outcome` and replace it on every round. Then
+  rebuild the index with `bash ${CLAUDE_PLUGIN_ROOT}/scripts/reindex.sh <docs root>`.
 
-**Then stop.** End with the path to the saved review, and ask the user which
-findings to post, if any — or, on the user's own pull request, which to fix. Do
-not post anything in this step.
+**The chat gets a short summary**, in the chat language (Step 1), with its
+labels translated the way a native speaker would write them. Keep code, paths,
+identifiers, severity names, and the verdicts CONFIRMED and PLAUSIBLE as they
+are. No excerpts and no draft comments in the chat: they are in the file.
 
-## The user's own pull request
+```md
+**Pull request:** <link> — <title>. Reviewed at `<short sha>`<; the head moved: what changed>.
 
-When the user wrote the pull request, review it with the same rules and the
-same rigor: the description's claims and the tests are checked as if someone
-else wrote them. What changes is the outcome:
+**Verdict:** one line.
 
-- No draft comments: a finding ends with **Fix:** — the concrete change, in the
-  file and lines it touches — in place of **Draft comment**.
-- Nothing is posted, not even a pending review.
-- The review ends by asking which findings to fix. Fixing is a separate step,
-  done only on the user's word: commit on the pull request's branch through
-  `/dev-skills:pr`, which also updates the description when the change makes it
-  wrong (counts, claims, how to verify). This skill itself never commits.
+**How it works:** one or two lines, only what the findings rest on.
 
-## A later round
+**Findings:**
+1. <Severity> · <short title> — CONFIRMED | PLAUSIBLE — `path:line` — <what goes wrong, one line><; already raised by X>
+2. …
 
-When the knowledge base already holds a review of this pull request, review what
-changed since it instead of the whole pull request again:
+**Tests:** one line — what proves the core requirement, what you broke to check it, what is missing.
 
-1. Take the head commit from the first line of the latest review file (for an
-   older file without that line, the commit its header names). When it is no longer an
-   ancestor of the head (a force-push or a rebase), compare the two versions
-   with `git range-diff <old base>..<old head> <new base>..<new head>`; when
-   that is unreadable, do a full pass.
-2. Read the delta: `git diff <previous head> <head>`, and in full only the files
-   it changes. Reviews, comments, and description edits since the previous
-   round count as part of it.
-3. Check the base branch again (Step 2): what came in since the previous round,
-   and whether it still merges cleanly.
-4. Re-check every finding of the previous round at the new head: **fixed**,
-   **still open**, **answered** (with who answered and whether the answer
-   holds), or **obsolete**. A fix is checked like any new code, its tests by
-   Step 6.
-5. Review the delta by Steps 5–7. Re-check the claims the delta or the new
-   description touches, and say that the rest are unchanged.
-6. Run the tests the delta touches, and on the merge result when the base
-   changed the same modules.
+**Worth knowing:** at most three lines — a false claim in the description, a risk to rollout, a base-branch conflict, a ticket not read. Leave it out when there is nothing.
 
-Do a full pass instead when the delta touches most of the pull request, or the
-user asks for one.
+**Full review:** <path to the review file> — excerpts, evidence, and draft comments (fixes on the user's own pull request).
+```
 
-With no delta (same head, nothing new said), a request to review again means
-going deeper: Step 4 again in full, then Steps 5–7 on what the previous round
-covered least — paths, inputs, real data shapes, numbers from the running
-system.
+When the user asks about a finding, answer from the file: show its excerpt,
+evidence, or draft comment then.
 
-The result keeps the shape of Step 8, with a section
-"Findings of the previous round" before the new findings, and says what changed
-since the previous round in its first lines.
+**Then stop.** Ask the user which findings to post, if any — or, on the user's
+own pull request, which to fix. Do not post anything in this step.
 
 ## Before you send — self-check
 
-- [ ] Nothing was posted to the pull request before the user chose what to post, and nothing was submitted, approved, or resolved.
-- [ ] The user's working tree is as it was; any temporary worktree is removed.
-- [ ] The result says how the change works (Step 4), and every path that reaches the changed code was checked; when a checklist in `references/checklists.md` matches the change, it was gone through.
-- [ ] Every finding that rests on a number from a running system was measured read-only, or says which measurement would settle it; downloaded personal data is deleted.
-- [ ] Every finding has a file and line, a concrete failure case, and a verdict, and its cited lines were reopened at the head commit.
-- [ ] Every finding about code shows its lines as an excerpt printed by `scripts/excerpt.sh`, unedited, with whether it can be an inline comment.
-- [ ] Every requirement is mapped to a test, the source of the expected values is named, and the core requirement was broken to see the tests fail — or the result says why not.
-- [ ] The head commit in the result is the pull request's head right now, the CI status is current, and the base branch was checked.
-- [ ] Points already raised on the pull request are marked as such, not presented as new.
-- [ ] Every claim of the description is checked or listed as not checked, including its rollout and recovery steps.
-- [ ] Problems that predate the pull request are in "Outside this pull request", not in the findings.
-- [ ] Draft comments read as the user's own and mention no tool; on the user's own pull request, findings carry a fix instead.
-- [ ] Everything in the chat (the review, its headings and labels, the closing question) is in the chat language; the review file is in English; draft comments are in the pull request's language.
-- [ ] A later round reports every finding of the previous round as fixed, still open, answered, or obsolete.
-- [ ] The review is saved in the knowledge base and the index is rebuilt.
+- [ ] Nothing was posted, submitted, approved, or resolved; the user's working tree is as it was, and every temporary worktree is removed.
+- [ ] The file says how the change works (Step 4), every path to the changed code was checked, and when a checklist in `references/checklists.md` matches the change, it was gone through.
+- [ ] Every finding has a file and line, a concrete failure case, and a verdict; its cited lines were reopened at the current head, and its excerpt in the file comes unedited from `scripts/excerpt.sh`.
+- [ ] Every requirement is mapped to a test, and the core requirement was broken to see the tests fail — or the file says why not.
+- [ ] Every claim of the description, rollout and recovery included, is checked or listed as not checked; points already raised are marked as such; problems that predate the pull request are outside the findings.
+- [ ] A number from a running system was measured read-only, or the finding names the measurement that would settle it.
+- [ ] The review file is in English and saved, the card updated, and the index rebuilt; the chat has only the short summary, in the chat language; draft comments are in the pull request's language and mention no tool.
 
 ## Completion criteria
 
-The skill is complete only when:
-
-- The user has the findings in the chat, in the chat language, sorted by
-  severity and verified, with draft comments or fixes, the tests checked
-  against the task, and the path to the saved review.
-- Nothing reached the pull request unless the user chose it afterwards, and
-  then only as a pending review they submit themselves.
+The skill is complete only when the full review is saved in the knowledge base,
+the user has the short summary in the chat with the path to it, and nothing
+reached the pull request except what the user chose afterwards, as a pending
+review they submit themselves.
