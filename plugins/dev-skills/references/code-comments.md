@@ -35,7 +35,7 @@ explanation for the commit message, the pull request, or the documentation.
   `// returns the user`, `// call the service`.
 - The story of the change: `// changed to HeadBucket`, `// new in Boot 4`,
   `// fixed the bug with X`. The commit message and the pull request hold that.
-- References to tickets or issues: `// see ABC-123`, `// per FS-1324`. The
+- References to tickets or issues: `// see ABC-123`, `// per JIRA-456`. The
   ticket belongs in the commit message; in the code it goes stale as soon as the
   ticket is closed or the code moves on.
 - Doc comments (Javadoc, KDoc, JSDoc, docstrings) on members whose name and
