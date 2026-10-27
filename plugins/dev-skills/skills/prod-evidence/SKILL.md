@@ -138,6 +138,8 @@ Answer in the chat in the language of the request:
 **To repeat:** <the commands, ready to run>
 
 **Cleaned up:** <what was downloaded and deleted, or "nothing downloaded">
+
+**Prior work:** <cases, notes, or past values found in the knowledge base, or "none found">
 ```
 
 ## Saving

@@ -258,12 +258,10 @@ Go through the change along these lines. Skip the ones that do not apply.
 7. **Description against code.** Each claim from Step 4: true, false, or not
    checkable from here.
 
-**Checklists by kind of change.** When the change adds or alters one of the
-kinds in `references/checklists.md` — a cache, a schema or data migration, a
-message producer or consumer, an endpoint or its authorization, a call to an
-external service — go through that list as well. It holds the questions that
-kind of change gets wrong most often, and the paths and inputs from Step 4 are
-what you check them against.
+**Checklists by kind of change.** When the change is a cache, a migration, a
+message producer or consumer, an endpoint, or a call to an external service, go
+through its list in `references/checklists.md` as well, against the paths and
+inputs from Step 4.
 
 **Size the work.** Count the changed lines of logic, not of fixtures,
 snapshots, generated code, or lockfiles. A pull request you can read in one
@@ -345,19 +343,9 @@ For each candidate, try to prove it wrong before you keep it:
 - Check whether a test or a CI check already covers the case.
 - When one cheap, targeted test would settle it, run it in a temporary worktree
   (see Hard rules). Report what you ran.
-- When a finding rests on a number from a running system — a size, a rate, the
-  count of distinct values, a share of the traffic, a memory or connection
-  limit — measure it instead of estimating, when this session can read that
-  system: its metrics, access logs, a sample of real data, a read-only query to
-  a public endpoint. Only read; never write to a production system to get a
-  number. Keep aggregates only, delete downloaded data that holds personal data
-  (addresses, user ids) as soon as you have counted, and say where each number
-  came from. `/dev-skills:prod-evidence` describes the sources and their traps.
-  When you cannot measure it, the finding stays `PLAUSIBLE` and says which
-  measurement would settle it, as a command the user can run.
-- When a measurement needs access only the user can give (a sign-in, a VPN, a
-  token), say so as soon as you know it, not at the end: getting access can
-  take them a while, and the review goes on meanwhile.
+- When a finding rests on a number from a running system (a size, a rate, a
+  share of traffic), measure it read-only instead of estimating it, as
+  `references/measuring.md` describes.
 - Decide: `CONFIRMED`, `PLAUSIBLE` (say which step you could not close), or
   drop it.
 
@@ -538,11 +526,10 @@ changed since it instead of the whole pull request again:
 Do a full pass instead when the delta touches most of the pull request, or the
 user asks for one.
 
-When the head has not moved and nothing was said since the previous round,
-there is no delta. A request to review again is then a request to go deeper: do
-Step 4 again in full, and review by Steps 5–7 what the previous round covered
-least — every path to the changed code, the inputs the result depends on, the
-shapes real data has, and the numbers from the running system.
+With no delta (same head, nothing new said), a request to review again means
+going deeper: Step 4 again in full, then Steps 5–7 on what the previous round
+covered least — paths, inputs, real data shapes, numbers from the running
+system.
 
 The result keeps the shape of Step 8, with a section
 "Findings of the previous round" before the new findings, and says what changed
@@ -552,7 +539,7 @@ since the previous round in its first lines.
 
 - [ ] Nothing was posted to the pull request before the user chose what to post, and nothing was submitted, approved, or resolved.
 - [ ] The user's working tree is as it was; any temporary worktree is removed.
-- [ ] The result says how the change works (Step 4), and every path that reaches the changed code was checked; a matching checklist in `references/checklists.md` was gone through.
+- [ ] The result says how the change works (Step 4), and every path that reaches the changed code was checked; when a checklist in `references/checklists.md` matches the change, it was gone through.
 - [ ] Every finding that rests on a number from a running system was measured read-only, or says which measurement would settle it; downloaded personal data is deleted.
 - [ ] Every finding has a file and line, a concrete failure case, and a verdict, and its cited lines were reopened at the head commit.
 - [ ] Every finding about code shows its lines as an excerpt printed by `scripts/excerpt.sh`, unedited, with whether it can be an inline comment.
