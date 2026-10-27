@@ -1,8 +1,13 @@
 # Subagent brief
 
-Use this brief for each area of a large pull request that you hand to a
-subagent. Fill in every placeholder. A subagent sees nothing but the brief: not
-the skill, not the conversation, not the other subagents.
+Step 5 of the skill sends you here for a large pull request: many services, or
+many hundreds of changed lines of logic (fixtures, snapshots, generated code,
+and lockfiles do not count). Split it into 2–4 areas that do not overlap, by
+service or layer, and tell the user in one line how you split it. While
+subagents run, do not review their areas yourself. Step 6 stays with you.
+
+Use this brief for each area. Fill in every placeholder. A subagent sees nothing
+but the brief: not the skill, not the conversation, not the other subagents.
 
 ```md
 Read-only review of part of a pull request. Do not post anything to the pull

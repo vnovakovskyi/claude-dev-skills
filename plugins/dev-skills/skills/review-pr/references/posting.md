@@ -6,12 +6,14 @@ posted there.
 
 Only with the wording the user approved:
 
-1. Show the final text of every comment once more, and wait for their yes, when
-   the user changed anything, or when a comment is not word for word a draft
-   the user has already seen: two drafts merged into one, a draft extended with
-   a point that had no draft, or a comment written now for a finding that had
-   none. Choosing a finding approves its draft as shown, not new text written
-   for it later.
+1. Show the final text of every comment to be posted, in the chat, and wait for
+   their yes. The chat summary does not show draft comments, so the user has
+   seen them only if they opened the review file or asked; show them anyway
+   unless you showed exactly this text earlier in the conversation. Text that
+   is not word for word a draft from the file — two drafts merged into one, a
+   draft extended with a point, a comment written now for a finding that had
+   none — is always shown. Choosing a finding approves its draft as shown, not
+   new text written for it later.
 2. Check that the user has no pending review on this pull request already
    (`gh api repos/<owner>/<repo>/pulls/<n>/reviews` and look for `PENDING`).
    GitHub allows one; if there is one, stop and tell the user.
