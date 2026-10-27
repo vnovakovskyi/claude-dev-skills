@@ -117,6 +117,7 @@ docs/
     data-model.md                  optional
     review-pr-<n>.md               a review of pull request <n> (review-pr)
     review-pr-<n>-round-<k>.md     a later round of the same review
+    evidence-<YYYY-MM-DD>-<subject>.md   a measurement from the running system (prod-evidence)
 ```
 
 A **case** is one subject — a problem, a change, a question — with everything
@@ -194,7 +195,15 @@ request without merging it. If the repository has its own pull request template,
 /dev-skills:review-pr <pull request link or number; optional: what to focus on>
 ```
 
-`review-pr` reviews a pull request. It reads every changed file of logic in
+`review-pr` reviews a pull request. Before it looks for faults, it works out how
+the change works — what the result depends on, where it comes from, every path
+that reaches the changed code, and the life of the data — and shows you that
+first, under **How it works**. Most bugs sit where a change meets the mechanism
+it wraps. For a cache, a migration, a message producer or consumer, an endpoint,
+or a call to an external service, it also goes through a checklist of what that
+kind of change usually gets wrong.
+
+It reads every changed file of logic in
 full, the callers and consumers of what changed (in other services too), the CI
 checks, and every comment already on the pull request, people's and bots'. It
 checks what the base branch gained since the pull request branched off and
@@ -215,7 +224,9 @@ the lines with their numbers at the head commit, the changed ones marked with
 
 Each finding is verified before you see it: the lines it cites are reopened, the
 path to the failure is traced, and it is marked `CONFIRMED` or `PLAUSIBLE`.
-What does not hold is dropped. A point someone already raised is shown as theirs,
+What does not hold is dropped. A finding that rests on a number — a size, a
+rate, a share of traffic — is measured read-only from the running system when
+the session can reach it, and otherwise says which measurement would settle it. A point someone already raised is shown as theirs,
 with whether the skill agrees. Problems that were there before the pull request
 are listed apart and never posted against it.
 
@@ -261,13 +272,37 @@ language.
 The draft comes back in the chat. The skill never sends, posts, or saves it:
 sending is yours.
 
+## Measuring in the running system
+
+A review finding, a capacity question, or a design choice often rests on one
+number: how big a value is, how many distinct keys a day brings, what share of
+the traffic is bots, how full a store already is.
+
+```text
+/dev-skills:prod-evidence <the number or question to measure; optional: the system and the time window>
+```
+
+`prod-evidence` gets that number from the running system instead of estimating
+it: from existing metrics, traces, application and load-balancer logs, the
+store's own statistics, or a few read requests to a public endpoint. It only
+reads, keeps the load light, and never writes to a production system. When a
+source needs a sign-in, it tells you the exact command as soon as it knows and
+goes on with what it can reach. Raw logs are reduced to counts and deleted, so
+no personal data is kept.
+
+The answer names the source, query, and time window of every value, shows the
+arithmetic of what it derived, lists the caveats (bots, sampling, one-day
+windows), and ends with the commands to repeat it. When a case covers the
+subject, it is saved as `evidence-<YYYY-MM-DD>-<subject>.md` in that case.
+
 ## Who starts a skill
 
 The workflow skills and `research-codebase` run only when you type the command. Claude never starts
 them on its own (`disable-model-invocation: true`). `pr` also starts when you ask
 for a pull request in plain words, `review-pr` when you ask for a review of one,
-and `draft-message` when you ask for a message, an email, or a comment to
-someone.
+`draft-message` when you ask for a message, an email, or a comment to
+someone, and `prod-evidence` when a question depends on a number from the
+running system or you ask to measure something in production.
 
 Every command carries the plugin's name. Short names such as `plan` or
 `research` are easy to collide with, both with built-in commands and with other

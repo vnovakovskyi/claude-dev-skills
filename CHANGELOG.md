@@ -15,12 +15,35 @@ To see which version you have installed, run `claude plugin list`.
 
 ## [Unreleased]
 
+### Added
+
+- `prod-evidence` measures a number in the running system instead of
+  estimating it — a size, a rate, a count of distinct pages, a share of bot
+  traffic, how full a store is — read-only, from metrics, traces, logs, the
+  store's own statistics, or a few read requests. Every value names its source,
+  query, and time window; downloaded logs are reduced to counts and deleted.
+  `review-pr` uses it for findings that rest on such a number.
+
 ### Changed
 
 - `implement`, `pr`, and `review-pr` keep comments in the code they write or
   suggest to a minimum: the code explains itself, and a comment says only what
   the code cannot, such as why the obvious way is wrong. The rule lives in
   `plugins/dev-skills/references/code-comments.md`.
+- `review-pr` works out how the change works before it looks for faults: what
+  the result depends on, where it comes from, every path that reaches the
+  changed code, and the life of the data. The result gets a **How it works**
+  section.
+- `review-pr` goes through a checklist for the kind of change it reviews — a
+  cache, a migration, a message producer or consumer, an endpoint, a call to an
+  external service — from `skills/review-pr/references/checklists.md`.
+- `review-pr` measures a number a finding rests on (a size, a rate, a share of
+  traffic) read-only from the running system when it can, instead of
+  estimating it, and asks for access early when only the user can give it.
+- `review-pr` shows any comment text the user has not seen word for word —
+  merged or extended drafts included — before it posts it.
+- A later `review-pr` round on an unchanged pull request goes deeper instead of
+  reporting an empty delta.
 
 ## [1.0.0] - 2026-10-22
 

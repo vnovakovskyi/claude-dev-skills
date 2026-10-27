@@ -9,5 +9,5 @@
   "homepage": "https://github.com/vnovakovskyi/claude-dev-skills",
   "repository": "https://github.com/vnovakovskyi/claude-dev-skills",
   "license": "MIT",
-  "keywords": ["workflow", "research", "codebase", "planning", "architecture", "data-model", "pull-request", "code-review", "messages"]
+  "keywords": ["workflow", "research", "codebase", "planning", "architecture", "data-model", "pull-request", "code-review", "messages", "metrics", "observability"]
 }

@@ -1,6 +1,6 @@
 ---
 name: review-pr
-description: Review a pull request, someone else's or the user's own, and show the user every finding before anything reaches it. Reads the whole change, the code around it, its consumers in other services, the CI checks, the comments already on it, and what changed on the base branch since; checks the description's claims against the code and the tests against the task, not against CI; verifies each finding and drops the ones that do not hold. A later round on the same pull request reviews only what changed since the previous one. Returns the findings in the chat and saves them to the knowledge base, each with a draft comment, or with a fix when the pull request is the user's own. Posts nothing until the user has read them and chosen what to post, and then only as a pending review that the user submits. Use when the user asks to review a pull request.
+description: Review a pull request, someone else's or the user's own, and show the user every finding before anything reaches it. Works out how the change works before looking for faults, reads the whole change, the code around it, its consumers in other services, the CI checks, the comments already on it, and what changed on the base branch since; checks the description's claims against the code and the tests against the task, not against CI; verifies each finding and drops the ones that do not hold. A later round on the same pull request reviews only what changed since the previous one. Returns the findings in the chat and saves them to the knowledge base, each with a draft comment, or with a fix when the pull request is the user's own. Posts nothing until the user has read them and chosen what to post, and then only as a pending review that the user submits. Use when the user asks to review a pull request.
 argument-hint: '<pull request link or number; optional: what to focus on>'
 allowed-tools: Read, Grep, Glob, Bash(gh pr view:*), Bash(gh pr diff:*), Bash(gh pr checks:*), Bash(gh api user:*), Bash(git fetch:*), Bash(git show:*), Bash(git diff:*), Bash(git log:*), Bash(git grep:*), Bash(git blame:*), Bash(git rev-parse:*), Bash(git merge-base:*), Bash(git merge-tree:*), Bash(git range-diff:*), Bash(git ls-tree:*), Bash(git worktree add:*), Bash(git worktree remove:*), Bash(git worktree prune:*)
 ---
@@ -192,9 +192,31 @@ Find out how the repository runs its tests before you need to: the knowledge
 base (`docs/codebase/`, the lessons of earlier cases) first, then the
 repository's own docs and CI workflow.
 
-## Step 4 — Understand the intent
+## Step 4 — Understand the intent and how the change works
 
 Restate in two or three lines what the pull request is meant to do and why.
+
+Then work out **how the change works**, before you look for what is wrong with
+it. A change usually wraps a mechanism that already exists — a query, a job, a
+cache, a message flow — and its bugs sit where the two meet. Write down, in a
+few lines:
+
+- **what the result depends on:** every input — arguments, the fields of the
+  objects passed in, configuration, the tenant, the user, the time — not only
+  the ones the change mentions;
+- **where the result comes from:** the computation or the system behind it,
+  followed to its source, not stopped at the call;
+- **every path that reaches the changed code:** all callers and entry points,
+  including test-only, admin, internal, and deprecated ones that can still be
+  called, and what each of them passes in;
+- **the life of the data:** when it is written, read, updated, expired,
+  invalidated, or deleted, and by whom.
+
+This goes into the result as **How it works** (Step 8). When you cannot fill
+those lines in, you have not read enough to review the change: read on before
+Step 5. A question from the user about how the change works is a sign this part
+was too thin: answer it, and review again what the answer brings up.
+
 Then list the **requirements** — what the change must do, from the ticket, its
 acceptance criteria, the plan, and the description — because Step 6 traces
 every one of them to a test.
@@ -235,6 +257,11 @@ Go through the change along these lines. Skip the ones that do not apply.
    personal data in logs.
 7. **Description against code.** Each claim from Step 4: true, false, or not
    checkable from here.
+
+**Checklists by kind of change.** When the change is a cache, a migration, a
+message producer or consumer, an endpoint, or a call to an external service, go
+through its list in `references/checklists.md` as well, against the paths and
+inputs from Step 4.
 
 **Size the work.** Count the changed lines of logic, not of fixtures,
 snapshots, generated code, or lockfiles. A pull request you can read in one
@@ -296,7 +323,10 @@ if the task were done wrong.
    wired, the serializer and client actually used, deployment settings such as
    health checks and environment variables, the values that really reach a
    cache or a queue. A difference that would let production break while the
-   test passes is a finding.
+   test passes is a finding. A value that is serialized, stored, or sent is
+   tested with the shapes real data has — every subtype of a polymorphic type,
+   optional fields missing, the biggest realistic value — and not only with the
+   fixture the pull request brings.
 
 Also check that the tests are deterministic: no dependence on the clock,
 randomness, the order of a set or map, the network, or another test's state.
@@ -313,6 +343,9 @@ For each candidate, try to prove it wrong before you keep it:
 - Check whether a test or a CI check already covers the case.
 - When one cheap, targeted test would settle it, run it in a temporary worktree
   (see Hard rules). Report what you ran.
+- When a finding rests on a number from a running system (a size, a rate, a
+  share of traffic), measure it read-only instead of estimating it, as
+  `references/measuring.md` describes.
 - Decide: `CONFIRMED`, `PLAUSIBLE` (say which step you could not close), or
   drop it.
 
@@ -340,7 +373,7 @@ when it has them; otherwise:
 - **Minor** — worth saying, fine to skip.
 
 Use this shape. In the chat, write it in the chat language (Step 1) and
-translate its headings and labels too (**What it does**, **Problem**,
+translate its headings and labels too (**What it does**, **How it works**, **Problem**,
 **Draft comment**, and the rest), the way a native speaker of that language
 would write them; the saved file uses it in English. Keep as they are in both:
 code, excerpts, paths, identifiers, commands, quoted text, draft comments, the
@@ -351,6 +384,8 @@ verdicts CONFIRMED and PLAUSIBLE.
 **Pull request:** <link> — <title>, by <author>. Reviewed at `<short sha>` (merge base `<short sha>`).
 
 **What it does:** 2–3 lines.
+
+**How it works:** 3–6 lines from Step 4: what the result depends on, where it comes from, which paths reach the changed code, and the life of the data.
 
 **CI:** what passed, what was skipped, what you ran yourself. The base branch: commits since the merge base that touch the same code, and whether it merges cleanly.
 
@@ -489,7 +524,14 @@ changed since it instead of the whole pull request again:
    changed the same modules.
 
 Do a full pass instead when the delta touches most of the pull request, or the
-user asks for one. The result keeps the shape of Step 8, with a section
+user asks for one.
+
+With no delta (same head, nothing new said), a request to review again means
+going deeper: Step 4 again in full, then Steps 5–7 on what the previous round
+covered least — paths, inputs, real data shapes, numbers from the running
+system.
+
+The result keeps the shape of Step 8, with a section
 "Findings of the previous round" before the new findings, and says what changed
 since the previous round in its first lines.
 
@@ -497,6 +539,8 @@ since the previous round in its first lines.
 
 - [ ] Nothing was posted to the pull request before the user chose what to post, and nothing was submitted, approved, or resolved.
 - [ ] The user's working tree is as it was; any temporary worktree is removed.
+- [ ] The result says how the change works (Step 4), and every path that reaches the changed code was checked; when a checklist in `references/checklists.md` matches the change, it was gone through.
+- [ ] Every finding that rests on a number from a running system was measured read-only, or says which measurement would settle it; downloaded personal data is deleted.
 - [ ] Every finding has a file and line, a concrete failure case, and a verdict, and its cited lines were reopened at the head commit.
 - [ ] Every finding about code shows its lines as an excerpt printed by `scripts/excerpt.sh`, unedited, with whether it can be an inline comment.
 - [ ] Every requirement is mapped to a test, the source of the expected values is named, and the core requirement was broken to see the tests fail — or the result says why not.

@@ -39,6 +39,7 @@ docs/
     data-model.md                 optional
     review-pr-<n>.md              a review of pull request <n> (review-pr)
     review-pr-<n>-round-<k>.md    a later round of that review
+    evidence-<YYYY-MM-DD>-<subject>.md   a measurement from a running system (prod-evidence)
     handoff-<YYYY-MM-DD>-<subject>.md    optional, state for a later session
     <anything else>               queries, logs, samples the case needs
 ```

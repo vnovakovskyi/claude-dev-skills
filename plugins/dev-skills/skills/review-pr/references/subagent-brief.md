@@ -8,10 +8,17 @@ the skill, not the conversation, not the other subagents.
 Read-only review of part of a pull request. Do not post anything to the pull
 request or anywhere else. Do not check out, commit, push, stash, or reset in the
 repository; read the code with `git show <head sha>:<path>`. Do not run
-installs, generators, migrations, or builds.
+installs, generators, migrations, or builds. Do not query running systems.
 
 Pull request: <link> — <what it is meant to do, in two lines>
 Head commit: <sha>   Merge base: <sha>   Repository: <local path>
+
+How the change works: <from Step 4 — what the result depends on, where it comes
+from, every path that reaches the changed code, the life of the data>
+Checklist for this kind of change: <the matching list from
+references/checklists.md, pasted in full, or "none">
+Numbers that need a running system: report them as a question, with what would
+settle them; do not estimate them into a finding.
 
 Your area: <files, service, or layer this subagent reviews>
 Do not cover: <the areas other subagents own — name them>

@@ -82,10 +82,11 @@ Want a change before it is released? See
 | `/dev-skills:pr` | Commits the change, pushes the branch, and opens or updates the pull request. It never merges; that is yours. | the pull request; the outcome in the case |
 | `/dev-skills:review-pr` | Reviews a pull request: the whole change, its consumers, the description's claims, and whether the tests prove the task. Shows you every verified finding with a draft comment (a fix on your own pull request), and posts only what you choose, as a pending review you submit yourself. A later round reviews only what changed. | the chat; `review-pr-<n>.md` in a case |
 | `/dev-skills:draft-message` | Drafts a message to a colleague, a product owner, a manager, or testers, in the channel you name, written the way a person writes. It never sends it. | the chat |
+| `/dev-skills:prod-evidence` | Measures a number in the running system instead of estimating it — a size, a rate, a share of traffic, how full a store is — read-only, from metrics, logs, and the store's own statistics, with the source of every value. | the chat; `evidence-<date>-<subject>.md` in a case |
 
-All of them run only when you type the command, except `pr`, `review-pr`, and
-`draft-message`, which also start when you ask for a pull request, a review, or
-a message in plain words.
+All of them run only when you type the command, except `pr`, `review-pr`,
+`draft-message`, and `prod-evidence`, which also start when you ask for a pull
+request, a review, a message, or a measurement in plain words.
 
 ## How to use it
 
