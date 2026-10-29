@@ -31,7 +31,7 @@ going deeper: Step 4 again in full, then Steps 5–7 on what the previous round
 covered least — paths, inputs, real data shapes, numbers from the running
 system.
 
-The review file keeps the shape of Step 8, with a section "Findings of the
+The review file keeps the shape in `review-file.md`, with a section "Findings of the
 previous round" before the new findings, and says what changed since the
 previous round in its first lines. The chat summary gives the previous round's
 findings as one line of counts (fixed, still open, answered, obsolete) before

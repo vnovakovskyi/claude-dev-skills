@@ -21,6 +21,19 @@ repository you work on. Call it the docs root below.
   user once. The exclude file is personal and never committed. Never edit a
   `.gitignore`.
 
+## Language
+
+The knowledge base has one language, so that every skill can search it and
+read what another skill wrote:
+
+- the language the user named for the knowledge base;
+- else the language its cards are already written in;
+- else English.
+
+Every file a skill writes here follows it — cards, research, plans, reviews,
+notes — whatever language the user writes to you in. The chat follows the user.
+Frontmatter keys and values stay as this reference defines them.
+
 ## Layout
 
 ```text
@@ -128,9 +141,11 @@ checkboxes alone:
 ```
 
 The states are `in progress`, `in review`, `merged`, `done` (the "before
-merge" checks are confirmed too), and `rolled out` (the "after rollout" checks
-are confirmed too). The line is written in the card's language; keep its
-shape.
+merge" and "after merge" checks are confirmed too), and `rolled out` (the
+"after rollout" checks are confirmed too). Keep its shape, and keep it under
+about 200 characters: the state, the pull request, and what is left. Run ids,
+commits, digests, and measured values go into the plan, next to the checkbox
+they prove.
 
 ## codebase/<topic>.md
 
@@ -168,6 +183,14 @@ Every skill starts here, before it reads code or writes anything:
    only when every phase is merged; otherwise leave the status to `implement`.
 5. Say what you found in one place of your output, with paths, under "Prior
    work". Say "none found" when there is nothing.
+
+## One fact, one place
+
+A finding is written once, in the file that owns it: how the code works in
+`codebase/`, the task's findings in `research*.md`, the choice in the plan,
+the state in the card. Other files link to it and add only what is new to them.
+When a case covers the subject, anything else that keeps notes for you, such as
+a memory file, gets a pointer to the case, not a copy of it.
 
 ## After you write
 

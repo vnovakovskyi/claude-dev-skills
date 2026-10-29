@@ -163,6 +163,14 @@ folder of the folder Claude was started in, not the repository you researched.
 changes when that folder is itself a repository. After writing, rebuild the
 index with `reindex.sh` as the reference describes.
 
+**A question about a task.** When the question was how to solve a ticket or a
+problem, rather than how the code works, the answer belongs to a case: write
+the parts about the code to `docs/codebase/<topic>.md` as below, then open or
+continue the case as the reference describes, with `research.md` holding only
+the task's side (the problem, the options, the assessment) and a link to the
+note. Then `/dev-skills:plan` can start from it without a separate
+`/dev-skills:research` run.
+
 **Name.** `<topic>` is a short kebab-case name for the subject
 (`payment-retries`, `auth-flow`). In a folder that holds several repositories,
 start it with the repository's name when the subject belongs to one
@@ -174,7 +182,8 @@ added to the file: append it to the questions, add a researched line for it, and
 merge its findings into the sections, keeping what still holds.
 
 **Format.** Keep the headings below in English so other skills can find the
-sections; write the body in the user's language. Write sources as plain
+sections; write the body in the knowledge base's language (see the reference).
+Write sources as plain
 `path:line`, never as markdown links, and give every path from the folder the
 file lives in (`api/pom.xml:12` when the file sits next to several
 repositories), so the file stays readable from anywhere.
@@ -223,6 +232,6 @@ The skill is complete only when:
 - Every count in the answer was re-run or is labelled as a subagent's count.
 - Judgement, when asked for, sits in "Assessment", apart from the facts.
 - The repositories searched are named when there is more than one.
-- Nothing was changed except, on request, `docs/codebase/` and `docs/INDEX.md`
-  in the folder Claude was started in and, when that folder is inside a
-  repository, its local exclude file.
+- Nothing was changed except, on request, `docs/codebase/`, the case of a
+  question about a task, and `docs/INDEX.md` in the folder Claude was started
+  in and, when that folder is inside a repository, its local exclude file.
