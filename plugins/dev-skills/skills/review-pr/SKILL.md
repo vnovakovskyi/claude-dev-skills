@@ -48,7 +48,9 @@ goes to the author. The review is theirs; this skill prepares it.
   Step 6, every time.
 - **Review the change, not the whole service.** A finding is about what the
   pull request adds or changes, or makes worse. A problem that was there before
-  goes to "Outside this pull request" and is never posted against it.
+  goes to "Outside this pull request" and is never posted against it. In an
+  upgrade, code the pull request does not touch but whose behavior the new
+  versions change is part of the change.
 - **Do not repeat what is already said.** Read every review and comment, from
   people and bots. A point already raised is not a new finding: say who raised
   it and whether you agree, with your evidence.
@@ -187,6 +189,10 @@ few lines:
 - **the life of the data:** when it is written, read, updated, expired,
   invalidated, or deleted, and by whom.
 
+In an upgrade of a framework, a server, or a library, the result also depends
+on every layer the new versions change, on every path — not only on the code in
+the diff, and not only on the risk the description names.
+
 This goes into the result as **How it works** (Step 8). When you cannot fill
 those lines in, you have not read enough to review the change: read on before
 Step 5. A question from the user about how the change works is a sign this part
@@ -234,9 +240,9 @@ Go through the change along these lines. Skip the ones that do not apply.
    checkable from here.
 
 **Checklists by kind of change.** When the change is a cache, a migration, a
-message producer or consumer, an endpoint, or a call to an external service, go
-through its list in `references/checklists.md` as well, against the paths and
-inputs from Step 4.
+message producer or consumer, an endpoint, a call to an external service, or a
+dependency or framework upgrade, go through its list in
+`references/checklists.md` as well, against the paths and inputs from Step 4.
 
 **Size the work.** A pull request you can read in one pass: review it yourself.
 A large one: split it across subagents as `references/subagent-brief.md`
@@ -297,7 +303,10 @@ if the task were done wrong.
    test passes is a finding. A value that is serialized, stored, or sent is
    tested with the shapes real data has — every subtype of a polymorphic type,
    optional fields missing, the biggest realistic value — and not only with the
-   fixture the pull request brings.
+   fixture the pull request brings. A test that builds the request by hand or
+   mocks the server skips the server: when the server or the framework
+   changes, at least one test goes through the real server with what real
+   clients send.
 
 Also check that the tests are deterministic: no dependence on the clock,
 randomness, the order of a set or map, the network, or another test's state.

@@ -54,6 +54,11 @@ To see which version you have installed, run `claude plugin list`.
 - `review-pr` pre-approves the read-only commands its steps use, `git -C`
   forms, the excerpt script, and the index script included, so a review asks
   for fewer permissions. Deny and ask rules in your settings still apply.
+- `review-pr` reviews a dependency or framework upgrade beyond its diff: it
+  lists every version that moves, transitive ones included, follows the request
+  path layer by layer for code that relies on old behavior, and asks for a test
+  through the real server with what real clients send. `plan` makes the same
+  checks a rule for every phase of an upgrade.
 
 ## [1.0.0] - 2026-10-22
 

@@ -84,3 +84,31 @@ is named in the result, with what would settle it.
   reused; tokens cached until they expire.
 - **Where it runs.** On the request path, or somewhere the latency does not
   reach a user.
+
+## A dependency or framework upgrade
+
+The diff shows version numbers; what breaks is code the pull request does not
+touch. The risk the description names is one item on this list, not its edge.
+
+- **What moves.** Compare the dependency tree of the base and the head
+  (`mvn dependency:tree`, `npm ls`, the lockfile) and list every major or minor
+  jump, transitive ones included: the server, the serializer, the security
+  layer, the database driver, the HTTP client. Not only the ones the pull
+  request names.
+- **What each jump changes.** For each, the behavior changes from its migration
+  guide or changelog. Where a guide is silent about something the code relies
+  on, compare the library's source at both versions.
+- **The request path, layer by layer.** For an inbound request: the server
+  (header names and their case, encodings, path normalization, size limits) →
+  filters and security → how arguments are bound (header and parameter maps,
+  path matching, trailing slashes) → body (de)serialization → error handling →
+  the response. The same for outbound calls and for messages. For each layer,
+  search the module for code that relies on its old behavior.
+- **A test through the real stack.** For each group of endpoints, is there a
+  test that sends a real request through the real server, with what real
+  clients send: authentication, tenant and other custom headers, in the case
+  and shape the clients use? A mocked server (MockMvc, a hand-built request or
+  header map) skips the server layer, so a change there passes unseen.
+- **Before and after.** When the pull request compares the old and new
+  versions, check that the comparison used those real requests, not only the
+  unauthenticated or error paths.

@@ -178,6 +178,12 @@ cost), and quality criteria where relevant.
 - Feature: numbered functional requirements.
 - Upgrade, migration, infrastructure: numbered rules every phase follows (which
   versions, which patterns are allowed, what must not be used).
+- Upgrade of a framework, a server, or a library: the rules include that every
+  phase lists the versions that move in its dependency tree (transitive ones
+  too) and checks their behavior changes against the module, and that every
+  group of endpoints has a test through the real server with what real clients
+  send (authentication, custom headers, their case). A mocked server does not
+  see a change in the server.
 
 ## 7. Dependencies and People
 
