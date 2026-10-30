@@ -54,6 +54,37 @@ To see which version you have installed, run `claude plugin list`.
 - `review-pr` pre-approves the read-only commands its steps use, `git -C`
   forms, the excerpt script, and the index script included, so a review asks
   for fewer permissions. Deny and ask rules in your settings still apply.
+- `review-pr` reviews a dependency or framework upgrade beyond its diff: it
+  lists every version that moves, transitive ones included, follows the request
+  path layer by layer for code that relies on old behavior, and asks for a test
+  through the real server with what real clients send. `plan` makes the same
+  checks a rule for every phase of an upgrade.
+- `plan`, `implement`, and `pr` check whether you can push to each repository
+  before any work: the plan's header records the access, `implement` says so
+  before it starts a phase, and `pr` offers a fork, created only on your yes,
+  when you have read access only.
+- `implement` asks about an open question that blocks the phase before it
+  starts it, and checks right after it starts a workflow, a deploy, or a
+  release that the expected jobs began.
+- Plans get a "Manual, after merge" group for checks in the environment the
+  merge deploys to (a test or staging environment), apart from "after
+  rollout" in production.
+- `plan` writes an outward action that runs a workflow as the exact command,
+  checked against how the workflow reads its inputs, and writes a short plan
+  for small work: header, goal, scope, phases, open questions, next step.
+- The knowledge base has one language: the one you name, else the one its
+  cards are in, else English. `plan`, `research-codebase`, `review-pr`, and
+  `prod-evidence` follow it; the chat follows you.
+- A finding is written once in the knowledge base and linked from elsewhere;
+  a phase's `Outcome` line in the card stays under about 200 characters, with
+  the evidence next to the plan's checkboxes.
+- `research-codebase` saves an answer about how to solve a task into a case as
+  well, so `plan` can start from it without a separate `research` run.
+- `implement` has one report shape instead of two, written in your language.
+- `review-pr` on a pull request written in the same session hands the code
+  review to a subagent that has not seen the work, and does not repeat the
+  checks the session already ran. The review file's template moved to
+  `references/review-file.md`.
 
 ## [1.0.0] - 2026-10-22
 

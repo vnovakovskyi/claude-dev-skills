@@ -11,7 +11,8 @@ the normal flow. The discipline lives in the skills themselves:
 
 - `plan` produces a **phased plan** in the active case's `plan.md`. Each phase has its own
   **Automated** and **Manual** success-criteria checkboxes (manual ones split
-  into "before merge" and "after rollout"), its dependencies, its outward
+  into "before merge", "after merge" — in the environment the merge deploys
+  to — and "after rollout"), its dependencies, its outward
   actions, and a rollback, plus an explicit "Out of Scope". `plan` never writes
   code — it ends by asking you to review and then run `/dev-skills:implement`.
 - `implement` does **one phase at a time**, each on its own new branch from an
@@ -136,6 +137,9 @@ service, the work continues in the same case.
   the pull request merged marks it `solved`. A case whose plan has several
   phases stays `in-progress` until the last phase: it becomes `in-review` with
   the last phase's pull request and `solved` when that one is merged.
+- The knowledge base has one language, so every skill can search it: the one
+  you name, else the one its cards are in, else English. The chat follows the
+  language you write in.
 - `INDEX.md` is rebuilt from the cards by `plugins/dev-skills/scripts/reindex.sh`
   after every change, so it never drifts from them.
 
@@ -231,7 +235,8 @@ with whether the skill agrees. Problems that were there before the pull request
 are listed apart and never posted against it.
 
 Nothing goes to the pull request first. The full review — every finding with
-its code, evidence, and a draft comment in your voice — is saved in English as
+its code, evidence, and a draft comment in your voice — is saved in the
+knowledge base's language as
 `review-pr-<n>.md` in a case of the knowledge base, so you can re-read and check
 it. The chat gets a short summary in the language you asked in: the verdict,
 one line per finding sorted by severity, the state of the tests, and the path

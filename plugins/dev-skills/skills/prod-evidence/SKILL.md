@@ -145,7 +145,7 @@ Answer in the chat in the language of the request:
 ## Saving
 
 When a case in the knowledge base covers the subject, write the measurement to
-`evidence-<YYYY-MM-DD>-<subject>.md` in that case, in English, in the shape
+`evidence-<YYYY-MM-DD>-<subject>.md` in that case, in the knowledge base's language, in the shape
 above, and add one line to the card's findings. Otherwise save only when the
 user asks. A reusable access recipe — where a system's metrics or logs live and
 how to reach them — is worth a line in the knowledge base too. Never save

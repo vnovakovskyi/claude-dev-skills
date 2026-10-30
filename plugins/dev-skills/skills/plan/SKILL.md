@@ -50,9 +50,8 @@ created, and why. Below, "the case" means `docs/cases/<that slug>/`.
 - You may create or update files only in the knowledge base, never inside a
   repository's tracked files.
 - Main output is `plan.md` in the case folder.
-- **Write in the language the user asked in**, the headings included. Use the
-  same language in every file you write in this run, `case.md` included; keep
-  the frontmatter keys and values as the reference defines them.
+- **Write files in the knowledge base's language** (see the reference), the
+  headings included; talk to the user in theirs.
 - **Keep the phase structure `implement` reads.** Every phase keeps the parts
   of the template, in its order. Word each label one way and use that wording
   in every phase: `implement` recognizes the parts by what they say, not by
@@ -103,6 +102,18 @@ a search can answer it: a version in a config file, a setting in the
 infrastructure code, an existing ticket, a library's release notes. Only what
 needs a person or a decision goes to "Open Questions".
 
+**Know where you can write.** For every repository the plan changes, check the
+user's access (`gh repo view <owner>/<repo> --json viewerPermission`). Read
+access only means the phase needs a fork, or someone to grant access or to
+merge: put that in the phase's outward actions and, when it needs a person, in
+"Open Questions". For a repository many others build from (shared CI, a shared
+library), also say who uses it and who reviews changes to it.
+
+**Write outward actions as commands.** An outward action that runs a workflow,
+a deploy, or a release names the exact command with its inputs, checked against
+how the workflow reads them (its `inputs` and the step that parses them), so
+that `implement` does not learn the format from a failed run.
+
 ## Working process
 
 1. Pick the case and read the inputs (see above). Note the prior work you found.
@@ -129,11 +140,16 @@ and the user asks for a new one rather than a revision, write
 Use this structure. Sections 5 and 6 depend on the kind of work: use the
 variant that fits, or leave the section out when it would add nothing.
 
+**A short plan for small work.** When every phase is size S and the work needs
+no architecture or data-model decision, write only the header, 0 (when prior
+work exists), 1, 3, 9, 13, and 14, and fold the few risks that matter into the
+phases. The phases keep every part of the template.
+
 ````md
 # Plan: <subject>
 
 **Date:** <YYYY-MM-DD>
-**Repos:** <repo> `<base branch>` `<short commit>` (one per repository; `implement` starts each phase's branch from that base)
+**Repos:** <repo> `<base branch>` `<short commit>` <access: write / read only> (one per repository; `implement` starts each phase's branch from that base)
 **Inputs:** <research files, codebase notes, related cases>
 
 ## 0. Prior work
@@ -178,6 +194,12 @@ cost), and quality criteria where relevant.
 - Feature: numbered functional requirements.
 - Upgrade, migration, infrastructure: numbered rules every phase follows (which
   versions, which patterns are allowed, what must not be used).
+- Upgrade of a framework, a server, or a library: the rules include that every
+  phase lists the versions that move in its dependency tree (transitive ones
+  too) and checks their behavior changes against the module, and that every
+  group of endpoints has a test through the real server with what real clients
+  send (authentication, custom headers, their case). A mocked server does not
+  see a change in the server.
 
 ## 7. Dependencies and People
 
@@ -214,8 +236,9 @@ phase numbers, when true.
 **Changes:** Short description of the change.
 
 **Outward actions:** actions others see (close or comment on a pull request,
-release to production, send a message, change shared settings). `implement`
-asks the user before each one. "None" when there are none.
+release to production, send a message, change shared settings), each as the
+exact command when it runs one. `implement` asks the user before each one.
+"None" when there are none.
 
 **Rollback:** how to undo the phase if it goes wrong.
 
@@ -227,6 +250,11 @@ asks the user before each one. "None" when there are none.
 **Success criteria — Manual, before merge:**
 - [ ] <behaviour the user should verify by hand>
 - [ ] No regressions in <related area>
+
+**Success criteria — Manual, after merge:** (only when the merge itself
+deploys somewhere to check, such as a test or staging environment, before the
+next phase or the production release)
+- [ ] <what to check there>
 
 **Success criteria — Manual, after rollout:** (only when the phase is deployed
 and needs time to prove itself, such as a day in production)
@@ -246,9 +274,9 @@ the recipe once as a phase block without a number, and list the phases in a
 table: one row per phase, with only what differs. Each row is still a phase with
 its own number and checkboxes:
 
-| Phase | Target | What differs | Depends on | Size | Automated | Manual, before merge | Manual, after rollout |
-|---|---|---|---|---|---|---|---|
-| N | <module> | <specifics> | <phases> | S | [ ] | [ ] | [ ] |
+| Phase | Target | What differs | Depends on | Size | Automated | Manual, before merge | Manual, after merge | Manual, after rollout |
+|---|---|---|---|---|---|---|---|---|
+| N | <module> | <specifics> | <phases> | S | [ ] | [ ] | [ ] | [ ] |
 
 ## 10. Testing Strategy
 
@@ -269,7 +297,8 @@ What documentation must be created or updated.
 |---|---|---|---|
 | 1 | <question> | <person or role> | Phase N / nothing |
 
-No question may block Phase 1.
+No question may block Phase 1. `implement` asks about a question that blocks
+the phase it is about to start.
 
 ## 14. Next Step
 
@@ -280,7 +309,8 @@ The phase to implement first, and the command to start it.
 
 Planning is complete only when:
 
-- `plan.md` exists in the case folder, written in the user's language.
+- `plan.md` exists in the case folder, written in the knowledge base's language.
+- Every repository in the header says whether the user can write to it.
 - `case.md` has a `Decision` section that says what was chosen, its `updated`
   is today, and the index was rebuilt.
 - Scope is explicit (including an explicit "Out of Scope").

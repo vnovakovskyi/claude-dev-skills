@@ -53,7 +53,8 @@ was made with.
 - **Claim only what is true.** "How to verify" lists steps a reviewer can run. A
   check you did not run is reported as not run.
 - **What this skill may do, and nothing more:** create a working branch,
-  commit to it, push it, and open or update its pull request.
+  commit to it, push it, and open or update its pull request — and, on the
+  user's yes, fork the repository when they cannot push to it (Step 4).
 - **Never merge. Only the user merges.** Don't merge the pull request, don't
   enable auto-merge, don't add it to a merge queue, and don't merge or push the
   branch into the base or the default branch by any other route. This holds
@@ -78,6 +79,9 @@ Before changing anything, find out:
 - what is uncommitted, and which of it belongs to this change;
 - whether the branch already has an open pull request (`gh pr view`). If it does,
   this run **updates** it;
+- whether the user can push to the repository
+  (`gh repo view --json viewerPermission`). With read access only, say so
+  before you commit, and go on only as Step 4 describes;
 - the repository's habits: recent commit subjects and pull request titles
   (language, tense, prefixes), a pull request template
   (`.github/PULL_REQUEST_TEMPLATE.md` and its usual variants), and what
@@ -163,6 +167,13 @@ Already run: <check → result>. Not run: <check, and why>.
    commits.
 6. Without `gh`: push, then give the user the title, the body, and the link the
    remote printed for opening the pull request by hand.
+7. Without write access to the repository: GitHub opens a pull request only
+   from a branch that is already on GitHub, so the branch needs a repository
+   the user can push to. Ask the user to choose: a fork under their account
+   (`gh repo fork --remote --remote-name fork`, push to `fork`, then
+   `gh pr create --repo <owner>/<repo> --head <user>:<branch>`), or asking the
+   owners for access. A fork is a new repository: create it only on the user's
+   yes.
 
 ## Step 5 — Record the outcome
 
