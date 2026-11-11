@@ -83,10 +83,12 @@ Want a change before it is released? See
 | `/dev-skills:review-pr` | Reviews a pull request: the whole change, its consumers, the description's claims, and whether the tests prove the task. Gives you a short summary in the chat and saves the full review, every verified finding with a draft comment (a fix on your own pull request), in the knowledge base. Posts only what you choose, as a pending review you submit yourself. A later round reviews only what changed. | a summary in the chat; `review-pr-<n>.md` in a case |
 | `/dev-skills:draft-message` | Drafts a message to a colleague, a product owner, a manager, or testers, in the channel you name, written the way a person writes. It never sends it. | the chat |
 | `/dev-skills:prod-evidence` | Measures a number in the running system instead of estimating it — a size, a rate, a share of traffic, how full a store is — read-only, from metrics, logs, and the store's own statistics, with the source of every value. | the chat; `evidence-<date>-<subject>.md` in a case |
+| `/dev-skills:update-memory` | Keeps what a session learned: goes through the conversation and writes each decision, finding, lesson, correction, and follow-up once, to the knowledge base, Claude's memory, or your project's own notes. `refresh` corrects what went stale; `optimize` tidies the stores up. Never commits or posts. | the knowledge base, memory, your notes |
 
 All of them run only when you type the command, except `pr`, `review-pr`,
-`draft-message`, and `prod-evidence`, which also start when you ask for a pull
-request, a review, a message, or a measurement in plain words.
+`draft-message`, `prod-evidence`, and `update-memory`, which also start when you
+ask for a pull request, a review, a message, a measurement, or to save what
+matters in plain words.
 
 ## How to use it
 

@@ -303,14 +303,47 @@ arithmetic of what it derived, lists the caveats (bots, sampling, one-day
 windows), and ends with the commands to repeat it. When a case covers the
 subject, it is saved as `evidence-<YYYY-MM-DD>-<subject>.md` in that case.
 
+## Updating the working memory
+
+When a session ends, what it decided, found, and left open is gone unless it
+was written down.
+
+```text
+/dev-skills:update-memory [refresh | optimize] [what to keep, or the subject or store to refresh or tidy]
+```
+
+`update-memory` goes through the conversation, the part summarized after a compaction
+included, and collects what is worth keeping: work done, decisions, findings
+and lessons, your corrections, facts about people and the project, problems
+left, and open follow-ups. It writes each item once, to the store that owns it:
+
+- the knowledge base, for what belongs to a case or explains the code;
+- your project's own notes, when the folder's `CLAUDE.md` or `AGENTS.md`
+  describes them (a work log, a decision log, notes per service), in their
+  format;
+- Claude's memory, for your preferences and corrections, and for facts no file
+  holds.
+
+When a case covers an item, the case holds it, and a log in your notes gets one
+line with a link to the case. Other stores get a link, not a copy. Rules for every future session go into
+`CLAUDE.md` or `AGENTS.md` only on your yes.
+
+`update-memory refresh <subject>` checks what the stores hold about a subject against the
+code, the pull requests, and the conversation, and corrects it.
+`update-memory optimize` merges duplicates, removes stale facts, closes cases whose pull
+requests are merged, and keeps the indexes short. In your notes it adds and
+corrects, but merges, condenses, or deletes what you wrote only after asking,
+and it never commits, pushes, or posts.
+
 ## Who starts a skill
 
 The workflow skills and `research-codebase` run only when you type the command. Claude never starts
 them on its own (`disable-model-invocation: true`). `pr` also starts when you ask
 for a pull request in plain words, `review-pr` when you ask for a review of one,
 `draft-message` when you ask for a message, an email, or a comment to
-someone, and `prod-evidence` when a question depends on a number from the
-running system or you ask to measure something in production.
+someone, `prod-evidence` when a question depends on a number from the running
+system or you ask to measure something in production, and `update-memory` when
+you ask to save, remember, or tidy up what was learned.
 
 Every command carries the plugin's name. Short names such as `plan` or
 `research` are easy to collide with, both with built-in commands and with other

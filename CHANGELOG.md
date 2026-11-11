@@ -23,6 +23,12 @@ To see which version you have installed, run `claude plugin list`.
   store's own statistics, or a few read requests. Every value names its source,
   query, and time window; downloaded logs are reduced to counts and deleted.
   `review-pr` uses it for findings that rest on such a number.
+- `update-memory` keeps what a session learned. It goes through the conversation and
+  writes each decision, finding, lesson, correction, and open follow-up once:
+  to the knowledge base, Claude's memory, or the project's own notes as its
+  `CLAUDE.md` or `AGENTS.md` describes them. `update-memory refresh` corrects stale
+  entries about a subject; `update-memory optimize` merges duplicates, drops stale
+  facts, closes merged cases, and keeps the indexes short.
 
 ### Changed
 
