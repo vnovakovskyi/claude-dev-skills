@@ -324,14 +324,16 @@ left, and open follow-ups. It writes each item once, to the store that owns it:
 - Claude's memory, for your preferences and corrections, and for facts no file
   holds.
 
-Other stores get a link, not a copy. Rules for every future session go into
+When a case covers an item, the case holds it, and a log in your notes gets one
+line with a link to the case. Other stores get a link, not a copy. Rules for every future session go into
 `CLAUDE.md` or `AGENTS.md` only on your yes.
 
 `update-memory refresh <subject>` checks what the stores hold about a subject against the
 code, the pull requests, and the conversation, and corrects it.
 `update-memory optimize` merges duplicates, removes stale facts, closes cases whose pull
-requests are merged, and keeps the indexes short. It never deletes what you
-wrote without asking, and it never commits, pushes, or posts.
+requests are merged, and keeps the indexes short. In your notes it adds and
+corrects, but merges, condenses, or deletes what you wrote only after asking,
+and it never commits, pushes, or posts.
 
 ## Who starts a skill
 

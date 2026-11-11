@@ -49,11 +49,17 @@ Text after the mode narrows it: a subject ("the FS-1006 pull request"), a store
   future session behaves belongs in `CLAUDE.md` or `AGENTS.md`. Show the exact
   lines and where they go, and write them only when the user says yes in their
   own message.
-- **Never delete what the user wrote.** Merging, rewording, and moving are fine
-  where the store's rules allow them. A case is closed with a status, never
-  deleted. A note, a case, or a line the user wrote is deleted only on the
-  user's yes. A memory entry that is wrong or merged into another may be
-  deleted.
+- **Add and correct freely; restructure what the user wrote only on a yes.**
+  In the project's notes you may add to an entry, correct a fact that its
+  source (the code, the pull request, the ticket, this conversation) shows no
+  longer holds, and add a link. Two notes that only disagree with each other
+  are listed under **Needs your yes**, not settled by picking one. Merging two entries,
+  replacing text that still holds with a link, condensing, moving, or deleting
+  text there is proposed under **Needs your yes**, unless the project's rules
+  for its notes say otherwise. The knowledge base and Claude's memory are
+  written by the skills and by you: tidy them as `references/optimize.md`
+  says, but a case is closed with a status, never deleted, and two cases are
+  merged only on the user's yes.
 - **Nothing secret, nothing personal.** No tokens, passwords, keys, or
   connection strings, and no personal data from logs or databases. Quote an
   error text, not the user or the token it carried.
@@ -78,7 +84,7 @@ Find out which of these this session has, and read their entry points:
 4. **Instruction files**: `CLAUDE.md` and `AGENTS.md` of the folder and of the
    repositories worked on.
 
-Say in one line which stores exist and which do not.
+The report's **Stores** line (Step 5) says which exist and which do not.
 
 ## Step 2 — Collect the items
 
@@ -130,10 +136,15 @@ Collect what is wrong, missing, or settled:
 |---|---|
 | A finding, decision, outcome, or lesson of a task that has a case | the case: its card's `Findings`, `Decision`, `Outcome`, or `Lessons`, details in its other files |
 | How existing code works, worth reading again | `docs/codebase/<topic>.md` |
-| Work done, problems found, decisions, people, follow-ups — when the project's notes have a place for it | that place, in its format |
+| Work done, problems found, decisions, people, follow-ups that have no case — when the project's notes have a place for it | that place, in its format |
 | The user's role, preferences, and corrections; facts about the project or people that no file holds; where to find a dashboard or a document | Claude's memory |
 | A rule every future session must follow | an instruction file, on the user's yes |
 
+- When an item belongs to a case, the case owns it. A log in the project's
+  notes that keeps items of that kind (a work log, a decision log, a task
+  register) gets one line in its own format: the date, the subject, and a link
+  to the case, not the reasoning, the numbers, or the details. When the project's rules ask
+  for more in that line (an id, the evidence), give it.
 - When the project's notes and Claude's memory could both hold an item, the
   project's notes win: the user reads them, and they can be searched. Memory
   then gets a pointer, and only when it changes how you work.
@@ -148,6 +159,10 @@ Collect what is wrong, missing, or settled:
 - Write each item in its store's format: the card's sections and frontmatter
   from `../../references/knowledge-base.md`, the memory format from your
   instructions, the project's templates and tags from its instructions.
+- A write that a hook or a permission refuses (the phase gate before a plan is
+  approved, for example) is not retried another way, not through the shell and
+  not through a script. List the item under **Not saved** with the message, so
+  it can be saved once the write is allowed.
 - Update the entry that covers the item; add a new entry only when none does.
   Remove a marker for an unknown (`❓`) wherever its answer is now written.
 - Set the date the store keeps for "last changed" (`updated:` and the like) on
@@ -164,12 +179,14 @@ Collect what is wrong, missing, or settled:
 In the chat, in the language of the request, and short:
 
 ```md
+**Stores:** <the stores found in Step 1, and the ones missing>
+
 **Saved**
 - <store> · <file, linked> — <what was written or changed, one line>
 
-**Not saved:** <items left out and why, or "nothing">
+**Not saved:** <items left out and why, refused writes included, or "nothing">
 
-**Needs your yes:** <proposed instruction-file lines or deletions, shown in full, or "nothing">
+**Needs your yes:** <proposed instruction-file lines, merges, and deletions, shown in full, or "nothing">
 ```
 
 ## Completion criteria
@@ -179,5 +196,7 @@ The skill is complete only when:
 - Every item worth keeping is in exactly one store, with links from the others
   where they need them.
 - Every edited file has its date updated, and every touched index is rebuilt.
-- Nothing was committed, pushed, posted, or deleted without the user's yes.
+- Nothing was committed, pushed, or posted, and nothing in the project's notes
+  or the instruction files was merged, condensed, or deleted without the
+  user's yes.
 - The user has the short report, with the changes that wait for their yes.

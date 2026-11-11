@@ -4,8 +4,9 @@ The `optimize` mode keeps the stores small and true. The work is in the
 indexes and the cards first, and in a full file only when an index points at
 a problem. Go through the stores named in the request, or all of them.
 
-Fix what the rules in `SKILL.md` allow. Collect the rest under **Needs your
-yes**: deleting or merging what the user wrote, and editing an instruction
+Fix what the hard rules in `SKILL.md` allow. Collect the rest under **Needs
+your yes**: merging, condensing, replacing with a link, moving, or deleting
+text in the project's notes, merging two cases, and editing an instruction
 file.
 
 ## Claude's memory
@@ -47,12 +48,13 @@ file.
   close an item (move it to a "Done" section, never delete it), do that.
 - **Answered unknowns.** A `❓` whose answer is written elsewhere is replaced
   with the answer or a link to it.
-- **One fact, one place.** The same fact in two notes stays in the note that
-  owns it; the other gets a link.
+- **One fact, one place.** The same fact in two notes: propose keeping it in
+  the note that owns it, with a link from the other, under **Needs your yes**.
 - **Broken links** to notes that were renamed or never written: fix the link,
   or list it.
-- **Entry notes** such as a "where I stopped" block or a start page: anything
-  older than the notes they summarize is brought up to date or marked as old.
+- **Entry notes** such as a "where I stopped" block or a start page: correct a
+  line that no longer holds and add what is newer, each from its source. A
+  rewrite of the block goes under **Needs your yes**.
 - Files the instructions mark as the user's own, or as kept verbatim, are
   only read, never tidied.
 
