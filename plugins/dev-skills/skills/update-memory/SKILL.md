@@ -2,6 +2,7 @@
 name: update-memory
 description: Update the working memory with what a session learned, so the next session starts from it. Goes through the conversation (decisions, findings, lessons, the user's corrections, work done, open follow-ups) and writes each item once, to the place that owns it - the knowledge base (cases and codebase notes), Claude's memory, or the project's own notes as its instructions describe them. Also corrects entries that went stale and tidies the stores up (duplicates, outdated facts, an overgrown index). Never commits, pushes, or posts. Use when the user asks to save, remember, record, or write down what matters from the work, or to update or tidy up the memory, the notes, or the knowledge base. Only when the user asks - never start it on your own at the end of a task.
 argument-hint: '[refresh | optimize] [what to keep, or the subject or store to refresh or tidy]'
+allowed-tools: Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/reindex.sh *)
 ---
 
 # Update the working memory
@@ -115,8 +116,9 @@ compaction included. Collect each of these that happened:
   known.
 
 Then check what is already stored: the skills that ran in this session (`pr`,
-`review-pr`, `research`, …) may have saved part of it. Keep only what is new
-or changed.
+`review-pr`, `research`, …) may have saved part of it, and so may you, earlier
+in this session. Keep only what is new or changed: what is already stored is
+not written again, and not reported as saved.
 
 Leave out what does not need saving:
 
@@ -124,6 +126,12 @@ Leave out what does not need saving:
   records;
 - what mattered only inside this conversation;
 - secrets, and personal data from logs or databases.
+
+`record` saves; it does not tidy. A problem you notice in a store on the way —
+a duplicate, an index line to a missing file, a stale entry that this session
+did not touch — stays as it is and is named under **Noticed** in the report,
+for `optimize`. The index line of an entry you write is kept right as you
+write it.
 
 **refresh:** collect what the stores hold about the subject: cards, notes,
 memory entries, lines in the project's notes. For each fact, find its source
@@ -153,6 +161,13 @@ Collect what is wrong, missing, or settled:
   register) gets one line in its own format: the date, the subject, and a link
   to the case, not the reasoning, the numbers, or the details. When the project's rules ask
   for more in that line (an id, the evidence), give it.
+- Inside a case, a fact is written once: in the card when it is one of the few
+  that matter, otherwise in `research.md`, which the card links to — not in
+  both.
+- A correction that rests on something the case found — "don't propose X
+  again, we tried it" — is split. What was tried and what happened is a
+  finding of the case. The rule for you goes to memory, in one line with a
+  link to the case.
 - When the project's notes and Claude's memory could both hold an item, the
   project's notes win: the user reads them, and they can be searched. Memory
   then gets a pointer, and only when it changes how you work.
@@ -182,8 +197,10 @@ Collect what is wrong, missing, or settled:
 - Write in each store's language: the knowledge base's, the language the
   project's notes are written in, the language memory is already written in.
   English when there is nothing to go by.
-- Rebuild the indexes you touched: run `reindex.sh` for the knowledge base, and
-  keep one line per entry in `MEMORY.md`.
+- Rebuild the indexes you touched. For the knowledge base, run
+  `bash ${CLAUDE_PLUGIN_ROOT}/scripts/reindex.sh <docs root>`, and never edit
+  `docs/INDEX.md` by hand: when the script cannot run, list the rebuild under
+  **Not saved**. In `MEMORY.md`, keep one line per entry.
 
 ## Step 5 — Report
 
@@ -192,12 +209,14 @@ In the chat, in the language of the request, and short:
 ```md
 **Stores:** <the stores found in Step 1, and the ones missing>
 
-**Saved**
+**Saved** (what this run wrote, nothing older)
 - <store> · <file, linked> — <what was written or changed, one line>
 
 **Not saved:** <items left out and why, refused writes included, or "nothing">
 
 **Needs your yes:** <proposed instruction-file lines, merges, and deletions, shown in full, or "nothing">
+
+**Noticed:** <problems in the stores left for `optimize`; leave the line out when there are none>
 ```
 
 ## Completion criteria

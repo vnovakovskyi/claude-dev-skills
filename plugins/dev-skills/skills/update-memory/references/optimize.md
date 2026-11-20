@@ -33,8 +33,9 @@ instruction file.
 
 ## The knowledge base
 
-- Run `reindex.sh` and fix every warning it prints: a missing field, a card
-  without frontmatter.
+- Run `reindex.sh` with the full path that `SKILL.md`, Step 4, gives, and fix
+  every warning it prints: a missing field, a card without frontmatter, a
+  status the format does not know.
 - **Cases in `in-review`:** check their pull requests
   (`gh pr view <pr> --json state`). Merged → `solved`, with `Outcome` updated,
   as `../../references/knowledge-base.md` describes. For a plan with phases,

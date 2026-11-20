@@ -72,7 +72,7 @@ is, the `case.md` card, how to search it, and how to rebuild the index.
    `research-<YYYY-MM-DD>-<subject>.md`, the subject in a few kebab-case
    words), create or update `case.md` — `Problem`, `Findings`, `symptoms`,
    `services`, `repos`, `tickets`, `summary`, status `open` — and run
-   `reindex.sh`.
+   `bash ${CLAUDE_PLUGIN_ROOT}/scripts/reindex.sh <docs root>`.
 
 ## Output file
 

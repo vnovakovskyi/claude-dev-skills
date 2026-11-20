@@ -161,7 +161,8 @@ files, so they never show up in a diff, and nobody has to add them to a shared
 folder of the folder Claude was started in, not the repository you researched.
 `../../references/knowledge-base.md` says how to keep it out of a repository's
 changes when that folder is itself a repository. After writing, rebuild the
-index with `reindex.sh` as the reference describes.
+index with `bash ${CLAUDE_PLUGIN_ROOT}/scripts/reindex.sh <docs root>` as the
+reference describes.
 
 **A question about a task.** When the question was how to solve a ticket or a
 problem, rather than how the code works, the answer belongs to a case: write

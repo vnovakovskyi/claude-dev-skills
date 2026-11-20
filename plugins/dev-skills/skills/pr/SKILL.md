@@ -191,7 +191,7 @@ When the work belongs to a knowledge-base case, update its `case.md`:
 - write `Lessons`: how to recognize this problem next time, and what worked or
   did not;
 - tighten `summary` so it says how the case ended, set `updated`, and rebuild
-  the index with `reindex.sh`.
+  the index with `bash ${CLAUDE_PLUGIN_ROOT}/scripts/reindex.sh <docs root>`.
 
 The card is the user's knowledge base, outside the repository: it never goes
 into a commit. A later skill that finds the pull request merged sets the card
