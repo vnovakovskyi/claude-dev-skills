@@ -32,6 +32,10 @@ To see which version you have installed, run `claude plugin list`.
 
 ### Changed
 
+- `pr`, `research`, `research-codebase`, and `update-memory` give `reindex.sh`
+  its full path (`${CLAUDE_PLUGIN_ROOT}/scripts/reindex.sh`). Without it a
+  skill could not always find the script and edited `docs/INDEX.md` by hand,
+  which the knowledge base now forbids outright.
 - `implement`, `pr`, and `review-pr` keep comments in the code they write or
   suggest to a minimum: the code explains itself, and a comment says only what
   the code cannot, such as why the obvious way is wrong. The rule lives in

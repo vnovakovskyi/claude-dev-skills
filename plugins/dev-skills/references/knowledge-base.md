@@ -195,10 +195,13 @@ a memory file, gets a pointer to the case, not a copy of it.
 ## After you write
 
 - Set `updated` on the card you changed.
-- Run `bash <plugin>/scripts/reindex.sh <docs root>`, where `<plugin>` is two
-  levels above the skill's base directory. It rebuilds `docs/INDEX.md` from the
+- Run `bash <plugin>/scripts/reindex.sh <docs root>`. A skill gives the full
+  path as `${CLAUDE_PLUGIN_ROOT}/scripts/reindex.sh`; `<plugin>` is two levels
+  above the skill's base directory. It rebuilds `docs/INDEX.md` from the
   frontmatter and prints a warning for every card with a missing field; fix
   those.
+- Never edit `docs/INDEX.md` by hand, not even when the script cannot run.
+  Say that the index was not rebuilt instead; the next run rebuilds it.
 
 ## What never goes into the knowledge base
 
