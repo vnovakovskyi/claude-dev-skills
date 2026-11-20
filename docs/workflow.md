@@ -330,10 +330,11 @@ line with a link to the case. Other stores get a link, not a copy. Rules for eve
 
 `update-memory refresh <subject>` checks what the stores hold about a subject against the
 code, the pull requests, and the conversation, and corrects it.
-`update-memory optimize` merges duplicates, removes stale facts, closes cases whose pull
+`update-memory optimize` merges duplicates, corrects stale facts, closes cases whose pull
 requests are merged, and keeps the indexes short. In your notes it adds and
-corrects, but merges, condenses, or deletes what you wrote only after asking,
-and it never commits, pushes, or posts.
+corrects, but merges, condenses, or deletes what you wrote only after asking.
+In memory it deletes only duplicates, copies of other stores, and secrets;
+any other deletion waits for your yes. It never commits, pushes, or posts.
 
 ## Who starts a skill
 

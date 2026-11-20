@@ -1,7 +1,7 @@
 {
   "name": "dev-skills",
   "version": "1.0.0",
-  "description": "Skills that make Claude research and plan before it codes, turn finished work into a pull request, review other people's pull requests, and draft the messages around the work.",
+  "description": "Skills that make Claude research and plan before it codes, turn finished work into a pull request, review other people's pull requests, draft the messages around the work, and keep what each session learned.",
   "author": {
     "name": "Vadym Novakovskyi",
     "url": "https://github.com/vnovakovskyi"

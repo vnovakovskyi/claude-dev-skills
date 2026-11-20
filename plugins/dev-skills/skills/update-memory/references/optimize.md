@@ -6,8 +6,9 @@ a problem. Go through the stores named in the request, or all of them.
 
 Fix what the hard rules in `SKILL.md` allow. Collect the rest under **Needs
 your yes**: merging, condensing, replacing with a link, moving, or deleting
-text in the project's notes, merging two cases, and editing an instruction
-file.
+text in the project's notes, merging two cases, deleting a memory entry that
+is not a duplicate, a copy, or out of place (below), and editing an
+instruction file.
 
 ## Claude's memory
 
@@ -18,12 +19,17 @@ file.
 - **Duplicates.** Two entries about the same fact become one. Keep the better
   one, merge in what the other adds, delete the other, and fix the links to it.
 - **Stale facts.** A file, function, flag, URL, or person that an entry names
-  still exists. A date in the past turns a plan into history: reword it or
-  drop it. Relative dates ("next week") become absolute ones or go.
+  still exists. A date in the past turns a plan into history: reword it.
+  Relative dates ("next week") become absolute ones.
 - **Copies of other stores.** An entry that repeats a case, a codebase note, or
   the project's notes becomes a pointer to it, or goes when it adds nothing.
 - **What does not belong.** Facts the repository or its history already
-  records, and anything secret or personal, are deleted.
+  records, secrets, and personal data copied from logs or databases are
+  deleted. Entries about the user — their role, preferences, and
+  circumstances — stay: that is what memory is for.
+- **Any other deletion** — a stale entry, a plan whose date passed, an entry
+  that seems to matter no more — is proposed under **Needs your yes**. The
+  memory directory has no history to restore it from.
 
 ## The knowledge base
 

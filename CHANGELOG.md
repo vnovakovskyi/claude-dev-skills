@@ -27,7 +27,7 @@ To see which version you have installed, run `claude plugin list`.
   writes each decision, finding, lesson, correction, and open follow-up once:
   to the knowledge base, Claude's memory, or the project's own notes as its
   `CLAUDE.md` or `AGENTS.md` describes them. `update-memory refresh` corrects stale
-  entries about a subject; `update-memory optimize` merges duplicates, drops stale
+  entries about a subject; `update-memory optimize` merges duplicates, corrects stale
   facts, closes merged cases, and keeps the indexes short.
 
 ### Changed

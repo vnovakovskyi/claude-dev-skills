@@ -1,6 +1,6 @@
 ---
 name: update-memory
-description: Update the working memory with what a session learned, so the next session starts from it. Goes through the conversation (decisions, findings, lessons, the user's corrections, work done, open follow-ups) and writes each item once, to the place that owns it - the knowledge base (cases and codebase notes), Claude's memory, or the project's own notes as its instructions describe them. Also corrects entries that went stale and tidies the stores up (duplicates, outdated facts, an overgrown index). Never commits, pushes, or posts. Use when the user asks to save, remember, record, or write down what matters from the work, or to update or tidy up the memory, the notes, or the knowledge base.
+description: Update the working memory with what a session learned, so the next session starts from it. Goes through the conversation (decisions, findings, lessons, the user's corrections, work done, open follow-ups) and writes each item once, to the place that owns it - the knowledge base (cases and codebase notes), Claude's memory, or the project's own notes as its instructions describe them. Also corrects entries that went stale and tidies the stores up (duplicates, outdated facts, an overgrown index). Never commits, pushes, or posts. Use when the user asks to save, remember, record, or write down what matters from the work, or to update or tidy up the memory, the notes, or the knowledge base. Only when the user asks - never start it on your own at the end of a task.
 argument-hint: '[refresh | optimize] [what to keep, or the subject or store to refresh or tidy]'
 ---
 
@@ -31,6 +31,9 @@ Text after the mode narrows it: a subject ("the FS-1006 pull request"), a store
 
 ## Hard rules
 
+- **Only on request.** This skill runs when the user asks for it, by the
+  command or in plain words. Never start it on your own: not at the end of a
+  task, not after a correction, not because something seems worth keeping.
 - **Only what is true.** Everything you write comes from this conversation, a
   file, or a tool's output. A fact you could not check is marked as unchecked,
   in the store's own way (for example a `❓`), or left out. Never fill a gap with
@@ -58,11 +61,14 @@ Text after the mode narrows it: a subject ("the FS-1006 pull request"), a store
   text there is proposed under **Needs your yes**, unless the project's rules
   for its notes say otherwise. The knowledge base and Claude's memory are
   written by the skills and by you: tidy them as `references/optimize.md`
-  says, but a case is closed with a status, never deleted, and two cases are
-  merged only on the user's yes.
+  says, but a case is closed with a status, never deleted, two cases are
+  merged only on the user's yes, and a memory entry is deleted only where
+  `references/optimize.md` allows it.
 - **Nothing secret, nothing personal.** No tokens, passwords, keys, or
   connection strings, and no personal data from logs or databases. Quote an
-  error text, not the user or the token it carried.
+  error text, not the user or the token it carried. What the user tells you
+  about themselves — their role, preferences, circumstances — is not this: it
+  goes to memory (Step 3).
 - **Local only.** This skill writes files. It never commits, pushes, posts,
   sends, or comments anywhere, and starts no new work.
 
@@ -72,7 +78,9 @@ Find out which of these this session has, and read their entry points:
 
 1. **The knowledge base**: the `docs/` folder of the folder Claude was started
    in, as `../../references/knowledge-base.md` describes. Read `docs/INDEX.md`
-   and `docs/.active`.
+   and `docs/.active`, and any `handoff-*-update-memory.md` in the active
+   case: items an earlier run could not save. Write those that are now
+   allowed, and remove them from the file; delete the file once it is empty.
 2. **Claude's memory**: the persistent memory directory that your instructions
    name (Claude Code's auto memory, with `MEMORY.md` as its index), in the
    format those instructions give. Read `MEMORY.md`. When the session has no
@@ -115,7 +123,7 @@ Leave out what does not need saving:
 - what the code, the git history, the pull request, or the ticket already
   records;
 - what mattered only inside this conversation;
-- anything secret or personal.
+- secrets, and personal data from logs or databases.
 
 **refresh:** collect what the stores hold about the subject: cards, notes,
 memory entries, lines in the project's notes. For each fact, find its source
@@ -161,8 +169,11 @@ Collect what is wrong, missing, or settled:
   instructions, the project's templates and tags from its instructions.
 - A write that a hook or a permission refuses (the phase gate before a plan is
   approved, for example) is not retried another way, not through the shell and
-  not through a script. List the item under **Not saved** with the message, so
-  it can be saved once the write is allowed.
+  not through a script. Keep the item for a later run instead: when a case is
+  active, add it to `handoff-<YYYY-MM-DD>-update-memory.md` in that case
+  (`docs/` stays writable under the phase gate), with the store and file it
+  was meant for. List it under **Not saved** with the message and where it was
+  kept.
 - Update the entry that covers the item; add a new entry only when none does.
   Remove a marker for an unknown (`❓`) wherever its answer is now written.
 - Set the date the store keeps for "last changed" (`updated:` and the like) on
@@ -194,7 +205,8 @@ In the chat, in the language of the request, and short:
 The skill is complete only when:
 
 - Every item worth keeping is in exactly one store, with links from the others
-  where they need them.
+  where they need them — or, when its write was refused, listed under **Not
+  saved** and kept in the active case's handoff file.
 - Every edited file has its date updated, and every touched index is rebuilt.
 - Nothing was committed, pushed, or posted, and nothing in the project's notes
   or the instruction files was merged, condensed, or deleted without the
